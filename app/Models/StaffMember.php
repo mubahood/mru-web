@@ -29,6 +29,7 @@ class StaffMember extends Model
         return ['is_published' => 'boolean'];
     }
 
+    /** @return BelongsTo<Faculty, $this> */
     public function faculty(): BelongsTo
     {
         return $this->belongsTo(Faculty::class);

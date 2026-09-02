@@ -26,6 +26,7 @@ class UniversityEvent extends Model
         ];
     }
 
+    /** @return BelongsTo<Faculty, $this> */
     public function faculty(): BelongsTo
     {
         return $this->belongsTo(Faculty::class);
@@ -48,6 +49,6 @@ class UniversityEvent extends Model
 
     public function isUpcoming(): bool
     {
-        return $this->starts_at?->gte(now()->startOfDay()) ?? false;
+        return $this->starts_at->gte(now()->startOfDay());
     }
 }

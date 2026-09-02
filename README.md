@@ -1,27 +1,34 @@
-# muhindo-app
+# Muteesa I Royal University — Website
 
-Muhindo Mubaraka's personal platform: a **public portfolio site** in front, and, behind
-one login, a **learning management system** for students taking his courses and a
-**client/project management system** for tracking work delivered to clients.
+The official website of **Muteesa I Royal University** (mru.ac.ug): the public university site,
+the admissions funnel, university news and events, the **MRU Scholar** research repository, and
+**MRU e-Learning** (short online courses with verifiable certificates) — one Laravel application
+with a complete admin back office.
 
-Built on Laravel 12 (PHP 8.2+), Blade + Livewire + Alpine.js, Tailwind CSS.
+Built on Laravel 12 (PHP 8.2+), Blade + Livewire + Alpine.js. Derived from a production-grade
+model application; see `docs/00-BLUEPRINT.md` for the full rebuild story, and
+`docs/04-IMPLEMENTATION-LOG.md` for how the legacy site's content was migrated.
 
 ## What's here
 
-- **Public site** (`/`), portfolio (about, projects, skills, experience, research,
-  products, contact), backed by a database-driven CMS editable from the admin.
-- **Courses** (`/courses`), a public catalogue; free courses self-enrol, paid courses
-  checkout via Flutterwave.
-- **`/dashboard`**, one entry point after login; content branches by role:
-  - **Owner / admin**, full back office: portfolio CMS, courses, clients, projects,
-    invoices/payments, users, settings.
-  - **Student** (`/learn`), enrolled courses, lesson player, progress, certificates.
-  - **Client** (`/portal`), their own projects, progress updates, documents, invoices.
+- **Public site** (`/`) — homepage, About cluster (governance, council, staff directory),
+  Admissions cluster (requirements, how to apply, fees, scholarships, intakes, international,
+  FAQs), Faculties & the filterable Programme Finder, Student Life pages, News (`/news`),
+  Events, Vacancies, Gallery, Downloads (44 official documents), Contact (spam-shielded form).
+- **MRU Scholar** (`/scholar`) — the research repository: searchable publications with DOI
+  links and counted PDF downloads, research areas, scholars directory and profiles.
+- **MRU e-Learning** (`/e-learning`) — course catalogue; free courses self-enrol, paid courses
+  check out via Flutterwave (mobile money, card, bank, USSD). Students learn at `/learn`
+  (video player, progress, quizzes, assignments, certificates verifiable at `/verify`).
+- **`/admin`** — back office: all university content (faculties, programmes, staff, events,
+  almanac, scholarships, vacancies, partners, scholars, publications, research areas), news,
+  gallery, the full LMS (courses → modules → lessons, gradebook, grading queue, enrolments),
+  invoices/payments, first-party analytics, users and settings.
 
 ## Requirements
 
 - PHP 8.2+, Composer 2
-- MySQL 5.7+/8 (MAMP socket supported), the app uses a `muhindo_app` database
+- MySQL 5.7+/8 (MAMP socket supported); the app uses the `mru_new_web` database
 - Node 18+ (for building front-end assets)
 
 ## Setup
@@ -30,58 +37,69 @@ Built on Laravel 12 (PHP 8.2+), Blade + Livewire + Alpine.js, Tailwind CSS.
 composer install
 npm install
 
-cp.env.example.env
+cp .env.example .env
 php artisan key:generate
-#   Set DB_DATABASE=muhindo_app, DB_USERNAME/DB_PASSWORD, and (MAMP) DB_SOCKET.
+#   Set DB_DATABASE=mru_new_web, DB_USERNAME/DB_PASSWORD, and (MAMP) DB_SOCKET.
 
-mysql -uroot -proot -e "CREATE DATABASE muhindo_app CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+mysql -uroot -proot -e "CREATE DATABASE mru_new_web CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
 
-php artisan migrate --seed   # roles, owner account, districts, portfolio content
-php artisan storage:link     # avatars / uploads on the public disk
-npm run build                # or `npm run dev` while developing
+php artisan migrate --seed          # roles, owner account, districts
+php artisan db:seed --class=UniversityContentSeeder   # university identity & admissions copy
+php artisan storage:link            # public images, documents, publication PDFs
+npm run build                       # or `npm run dev` while developing
 php artisan serve
 ```
 
+### Migrating the legacy content (one-time)
+
+With the legacy dumps loaded into scratch databases `mru_legacy` (custom CMS, `mru_mru2.sql`)
+and `mru_legacy_wp` (live WordPress, `mru_wp435.sql`), and the backup tree available at the
+path in `App\Console\Commands\ImportLegacyContent::BACKUP_ROOT`:
+
+```bash
+php artisan mru:import-legacy       # idempotent; add --skip-wp to skip news/scholar
+```
+
+This imports faculties, programmes (with the university's published fee bands), the staff/
+council/committees/guild directory, events, almanac, scholarships, partners, newsletter
+subscribers, the MRU Scholar repository (scholars, publications, PDFs) and the genuine news
+archive (spam from the old site's compromise is filtered). Details and data-quality decisions:
+`docs/04-IMPLEMENTATION-LOG.md`.
+
 ## Spam protection on public forms
 
-Every public form, contact, project brief, register, sign in, password reset,
-runs two independent layers.
+Every public form runs two independent layers:
 
-1. **Honeypot + timing** (`App\Support\Spam\FormShield`). Always on, needs no
-   keys and no JavaScript. Catches the scripted POST that never loads the page.
-2. **Google reCAPTCHA v2** (`anhskohbo/no-captcha`, gated by
-   `App\Support\Spam\Captcha`). **Off until you add keys.**
-
-To switch reCAPTCHA on, get a v2 "I'm not a robot" pair at
-<https://www.google.com/recaptcha/admin>, add your domains, then set both in
-`.env`:
+1. **Honeypot + timing** (`App\Support\Spam\FormShield`) — always on, needs no keys.
+2. **Google reCAPTCHA v2** (`anhskohbo/no-captcha`) — **off until you add keys**:
 
 ```
 NOCAPTCHA_SITEKEY=your-site-key
 NOCAPTCHA_SECRET=your-secret
 ```
 
-Then `php artisan config:clear`. Every form picks the widget up at once; no code
-changes. Leaving either value empty keeps it off, deliberately, so that
-installing the package cannot start rejecting every submission on a site that
-has never been to the Google console. Layer 1 covers the forms either way.
-
-Note that reCAPTCHA is a call to Google on every submission, so a visitor with
-Google blocked cannot submit while it is on.
-
 ## Tests
 
 ```bash
-php artisan test     # test suite (SQLite in-memory)
-vendor/bin/pint       # code style
-vendor/bin/phpstan analyse   # static analysis
+php artisan test              # SQLite in-memory; 1100+ tests
+vendor/bin/pint               # code style
+vendor/bin/phpstan analyse    # static analysis
 ```
 
-## Notes
+## Before production deploy
 
-- **Payments:** Flutterwave, behind a swappable `PaymentGateway` interface
-  (`app/Services/Gateway/`). Set `FLW_*` keys in `.env` to enable checkout.
-- **Documents:** project documents are stored on the private `local` disk and only ever
-  streamed through an authorization check, never web-served directly.
-- **Branding:** logo/favicon assets under `public/` are still placeholders inherited from
-  this codebase's source project, swap them for real brand assets before shipping.
+- Rotate `APP_KEY`, all mail credentials, and the Flutterwave keys (`FLW_*`); set real
+  reCAPTCHA keys.
+- Replace the seeded owner account password (`database/seeders/AdminUserSeeder.php`).
+- The legacy production DB password from the old site must be rotated regardless — it was
+  committed to that site's web root in plaintext (`docs/02-OLD-SITE-ANALYSIS.md` §5).
+- Point `APP_URL` at https://mru.ac.ug and serve `public/` as the web root (never the repo
+  root, which was the old site's fatal habit).
+- Re-obtain the Prospectus and Students' Handbook PDFs from the university — they were linked
+  on the old site but absent from its backup.
+
+## Payments
+
+Flutterwave, behind a swappable `PaymentGateway` interface (`app/Services/Gateway/`).
+Set `FLW_*` keys in `.env` to enable checkout. `FLW_PAYMENT_OPTIONS` defaults to
+`mobilemoneyuganda,card,banktransfer,ussd`.

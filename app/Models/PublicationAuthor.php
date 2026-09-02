@@ -13,11 +13,13 @@ class PublicationAuthor extends Model
 
     protected $fillable = ['publication_id', 'scholar_id', 'external_name', 'author_order'];
 
+    /** @return BelongsTo<Scholar, $this> */
     public function scholar(): BelongsTo
     {
         return $this->belongsTo(Scholar::class);
     }
 
+    /** @return BelongsTo<Publication, $this> */
     public function publication(): BelongsTo
     {
         return $this->belongsTo(Publication::class);

@@ -12,6 +12,7 @@ class ResearchArea extends Model
 
     protected $fillable = ['name', 'slug', 'description'];
 
+    /** @return BelongsToMany<Publication, $this> */
     public function publications(): BelongsToMany
     {
         return $this->belongsToMany(Publication::class, 'publication_research_area');

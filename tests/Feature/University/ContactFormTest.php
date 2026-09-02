@@ -3,7 +3,6 @@
 namespace Tests\Feature\University;
 
 use App\Models\ContactMessage;
-use App\Support\Spam\FormShield;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Crypt;
 use Tests\TestCase;

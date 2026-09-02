@@ -28,21 +28,25 @@ class Faculty extends Model
         ];
     }
 
+    /** @return HasMany<Programme, $this> */
     public function programmes(): HasMany
     {
         return $this->hasMany(Programme::class)->orderBy('sort_order')->orderBy('name');
     }
 
+    /** @return HasMany<StaffMember, $this> */
     public function staff(): HasMany
     {
         return $this->hasMany(StaffMember::class)->orderBy('sort_order')->orderBy('name');
     }
 
+    /** @return HasMany<UniversityEvent, $this> */
     public function events(): HasMany
     {
         return $this->hasMany(UniversityEvent::class);
     }
 
+    /** @return BelongsTo<StaffMember, $this> */
     public function dean(): BelongsTo
     {
         return $this->belongsTo(StaffMember::class, 'dean_staff_id');

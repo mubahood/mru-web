@@ -22,16 +22,19 @@ class Scholar extends Model
         return ['is_published' => 'boolean'];
     }
 
+    /** @return BelongsTo<Faculty, $this> */
     public function faculty(): BelongsTo
     {
         return $this->belongsTo(Faculty::class);
     }
 
+    /** @return BelongsTo<StaffMember, $this> */
     public function staffMember(): BelongsTo
     {
         return $this->belongsTo(StaffMember::class);
     }
 
+    /** @return BelongsToMany<Publication, $this> */
     public function publications(): BelongsToMany
     {
         return $this->belongsToMany(Publication::class, 'publication_author')

@@ -34,6 +34,7 @@ class Programme extends Model
         ];
     }
 
+    /** @return BelongsTo<Faculty, $this> */
     public function faculty(): BelongsTo
     {
         return $this->belongsTo(Faculty::class);

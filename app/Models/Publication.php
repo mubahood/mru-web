@@ -51,6 +51,7 @@ class Publication extends Model
         });
     }
 
+    /** @return BelongsToMany<Scholar, $this> */
     public function scholars(): BelongsToMany
     {
         return $this->belongsToMany(Scholar::class, 'publication_author')
@@ -58,11 +59,13 @@ class Publication extends Model
             ->orderBy('publication_author.author_order');
     }
 
+    /** @return HasMany<PublicationAuthor, $this> */
     public function authorRows(): HasMany
     {
         return $this->hasMany(PublicationAuthor::class)->orderBy('author_order');
     }
 
+    /** @return BelongsToMany<ResearchArea, $this> */
     public function researchAreas(): BelongsToMany
     {
         return $this->belongsToMany(ResearchArea::class, 'publication_research_area');
@@ -82,7 +85,7 @@ class Publication extends Model
     public function authorNames(): array
     {
         return $this->authorRows
-            ->map(fn ($row) => $row->scholar?->name ?? $row->external_name)
+            ->map(fn ($row) => $row->scholar->name ?? $row->external_name)
             ->filter()
             ->values()
             ->all();
