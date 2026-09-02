@@ -1,0 +1,55 @@
+*.log
+.DS_Store
+.env
+.env.backup
+.env.production
+.phpactor.json
+.phpunit.result.cache
+/.fleet
+/.idea
+/.nova
+/.phpunit.cache
+/.vscode
+/.zed
+/auth.json
+/node_modules
+/_db_seed
+/public/build
+/public/hot
+/public/storage
+/storage/*.key
+/storage/pail
+/vendor
+Homestead.json
+Homestead.yaml
+Thumbs.db
+ssh.txt
+# oEmbed verdicts for courses:verify-links — a rebuildable cache, not a source
+course-content/_link-cache.json
+.env
+credentials.txt
+# One-off deploy/repair scripts written against the live server. They are kept
+# out of the repo root because that root IS the document root on cPanel: a copy
+# of seed_remote.php sitting there was reachable at
+# https://muhindomubaraka.com/seed_remote.php and re-ran a database seeder for
+# anyone who asked. remote_env.txt holds production secrets. Neither belongs in
+# anything that gets pushed or scp'd.
+_deploy-oneoffs/
+
+# Build plans, agent briefs and build logs. They describe how the codebase was
+# produced rather than what it does, they are no use to anyone reading the repo,
+# and a document root is the wrong place for them. Kept alongside the project in
+# ../muhindo-app-notes/; the committed history still has every earlier version.
+/AGENT_COMMAND.md
+/COURSE_COVER_PROMPTS.md
+/COURSE_IMPORT_COMMAND.md
+/COURSE_IMPORT_LOG.md
+/IMAGES.md
+/LMS_BUILD_LOG.md
+/LMS_MASTER_PLAN.md
+/LOGO_SPEC.md
+/PORTFOLIO_REDESIGN_PLAN.md
+/PROJECT_PLAN.md
+/PUBLIC_BUILD_LOG.md
+/PUBLIC_SITE_COMMAND.md
+/PUBLIC_SITE_PLAN.md

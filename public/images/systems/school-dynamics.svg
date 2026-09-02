@@ -1,0 +1,205 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" width="1600" height="1000" role="img">
+  <rect x="0.0" y="0.0" width="1600.0" height="1000.0" fill="#F5F6FC"/>
+  <rect x="0.0" y="0.0" width="1600.0" height="44.0" fill="#2E2A86"/>
+  <circle cx="24.0" cy="22.0" r="4.5" fill="#FFFFFF" opacity="0.28"/>
+  <circle cx="44.0" cy="22.0" r="4.5" fill="#FFFFFF" opacity="0.38"/>
+  <circle cx="64.0" cy="22.0" r="4.5" fill="#FFFFFF" opacity="0.48"/>
+  <text x="800.0" y="26.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="500" fill="#FFFFFF" text-anchor="middle" letter-spacing="0.3" opacity="0.62">schooldynamics.ug — School Management Information System</text>
+  <rect x="1308.0" y="9.0" width="168.0" height="26.0" fill="#FFFFFF" rx="13" opacity="0.1"/>
+  <circle cx="1324.0" cy="21.0" r="4.4" fill="none" stroke="#FFFFFF" stroke-width="1.5" opacity="0.5"/>
+  <line x1="1327.2" y1="24.2" x2="1330.4" y2="27.4" stroke="#FFFFFF" stroke-width="1.7" stroke-linecap="round" opacity="0.5"/>
+  <text x="1338.0" y="26.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#FFFFFF" text-anchor="start" opacity="0.42">Search</text>
+  <path d="M 1500 26 v -5 a 6 6 0 0 1 12 0 v 5 z" fill="none" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" opacity="0.55"/>
+  <line x1="1497.0" y1="26.0" x2="1515.0" y2="26.0" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round" opacity="0.55"/>
+  <circle cx="1512.0" cy="15.0" r="5.0" fill="#EF4444"/>
+  <text x="1512.0" y="18.5" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="8" font-weight="700" fill="#FFFFFF" text-anchor="middle">3</text>
+  <circle cx="1538.0" cy="22.0" r="4.0" fill="#FFFFFF" opacity="0.35"/>
+  <circle cx="1548.0" cy="22.0" r="4.0" fill="#FFFFFF" opacity="0.35"/>
+  <circle cx="1558.0" cy="22.0" r="4.0" fill="#FFFFFF" opacity="0.35"/>
+  <rect x="0.0" y="44.0" width="1600.0" height="96.0" fill="#3730A3"/>
+  <rect x="44.0" y="74.0" width="34.0" height="34.0" fill="#0EA5E9" rx="8"/>
+  <path d="M 50 93 l 11 -6 l 11 6 l -11 6 z" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M 68 96 v 7" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="88.0" y="88.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="16" font-weight="700" fill="#FFFFFF" text-anchor="start">School Dynamics</text>
+  <text x="88.0" y="105.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="500" fill="#FFFFFF" text-anchor="start" letter-spacing="0.5" opacity="0.5">St. Kizito S.S. · Term II</text>
+  <text x="377.0" y="96.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13.5" font-weight="400" fill="#FFFFFF" text-anchor="middle" opacity="0.6">Overview</text>
+  <text x="470.4" y="96.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13.5" font-weight="400" fill="#FFFFFF" text-anchor="middle" opacity="0.6">Students</text>
+  <text x="566.3" y="96.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13.5" font-weight="700" fill="#FFFFFF" text-anchor="middle" opacity="1">Timetable</text>
+  <rect x="532.8" y="116.0" width="67.0" height="3.0" fill="#0EA5E9" rx="2"/>
+  <text x="676.7" y="96.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13.5" font-weight="400" fill="#FFFFFF" text-anchor="middle" opacity="0.6">Examinations</text>
+  <text x="771.3" y="96.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13.5" font-weight="400" fill="#FFFFFF" text-anchor="middle" opacity="0.6">Fees</text>
+  <text x="846.4" y="96.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13.5" font-weight="400" fill="#FFFFFF" text-anchor="middle" opacity="0.6">Library</text>
+  <circle cx="1534.0" cy="92.0" r="15.0" fill="#FFFFFF" opacity="0.2"/>
+  <text x="1534.0" y="96.5" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#FFFFFF" text-anchor="middle">AN</text>
+  <text x="1508.0" y="96.5" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="500" fill="#FFFFFF" text-anchor="end" opacity="0.78">A. Nabirye</text>
+  <text x="44.0" y="192.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="30" font-weight="700" fill="#1B1B32" text-anchor="start">Timetable &amp; attendance</text>
+  <text x="44.0" y="219.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13.5" font-weight="400" fill="#4E4E70" text-anchor="start">S.3 East · week 7 of 13 · generated in 2 seconds, no room or teacher clashes</text>
+  <rect x="1409.0" y="174.0" width="147.1" height="38.0" fill="#0EA5E9" rx="5"/>
+  <text x="1482.5" y="197.6" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="600" fill="#FFFFFF" text-anchor="middle">Publish to parents</text>
+  <rect x="1334.7" y="174.0" width="62.3" height="38.0" fill="#FFFFFF" rx="5" stroke="#E4E4F0" stroke-width="1.4"/>
+  <text x="1365.8" y="197.6" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="600" fill="#4E4E70" text-anchor="middle">Print</text>
+  <rect x="44.0" y="252.0" width="489.3" height="108.0" fill="#FFFFFF" rx="8" stroke="#E4E4F0" stroke-width="1.4"/>
+  <text x="64.0" y="281.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#9A9AB5" text-anchor="start" letter-spacing="1.1">STUDENTS ENROLLED</text>
+  <text x="64.0" y="322.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="30" font-weight="700" fill="#1B1B32" text-anchor="start">2,140</text>
+  <text x="64.0" y="343.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#9A9AB5" text-anchor="start">across 38 streams</text>
+  <rect x="555.3" y="252.0" width="489.3" height="108.0" fill="#FFFFFF" rx="8" stroke="#E4E4F0" stroke-width="1.4"/>
+  <text x="575.3" y="281.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#9A9AB5" text-anchor="start" letter-spacing="1.1">PRESENT TODAY</text>
+  <text x="575.3" y="322.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="30" font-weight="700" fill="#1B1B32" text-anchor="start">94.2%</text>
+  <text x="575.3" y="343.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#9A9AB5" text-anchor="start">124 absences, every one logged</text>
+  <rect x="1066.7" y="252.0" width="489.3" height="108.0" fill="#FFFFFF" rx="8" stroke="#E4E4F0" stroke-width="1.4"/>
+  <text x="1086.7" y="281.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#9A9AB5" text-anchor="start" letter-spacing="1.1">FEES COLLECTED</text>
+  <text x="1086.7" y="322.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="30" font-weight="700" fill="#0EA5E9" text-anchor="start">UGX 38.4M</text>
+  <text x="1086.7" y="343.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#9A9AB5" text-anchor="start">81% of the term target</text>
+  <rect x="44.0" y="386.0" width="828.0" height="580.0" fill="#FFFFFF" rx="8" stroke="#E4E4F0" stroke-width="1.4"/>
+  <text x="66.0" y="420.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#9A9AB5" text-anchor="start" letter-spacing="1.2">S.3 EAST — WEEK 7</text>
+  <text x="850.0" y="420.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#0EA5E9" text-anchor="end" letter-spacing="1">NO CLASHES</text>
+  <text x="209.2" y="452.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#9A9AB5" text-anchor="middle" letter-spacing="1">MON</text>
+  <text x="351.6" y="452.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#9A9AB5" text-anchor="middle" letter-spacing="1">TUE</text>
+  <text x="494.0" y="452.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#9A9AB5" text-anchor="middle" letter-spacing="1">WED</text>
+  <text x="636.4" y="452.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#9A9AB5" text-anchor="middle" letter-spacing="1">THU</text>
+  <text x="778.8" y="452.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#9A9AB5" text-anchor="middle" letter-spacing="1">FRI</text>
+  <text x="120.0" y="510.0" font-family="SFMono-Regular, Menlo, Consolas, monospace" font-size="11" font-weight="600" fill="#9A9AB5" text-anchor="end">08:00</text>
+  <rect x="141.0" y="471.0" width="136.4" height="70.0" fill="#3730A3" rx="6"/>
+  <text x="153.0" y="496.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#FFFFFF" text-anchor="start">Mathematics</text>
+  <text x="153.0" y="513.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#FFFFFF" text-anchor="start" opacity="0.68">Mr Okello</text>
+  <text x="153.0" y="530.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="9.5" font-weight="400" fill="#FFFFFF" text-anchor="start" opacity="0.45">Room 12</text>
+  <rect x="283.4" y="471.0" width="136.4" height="70.0" fill="#FFFFFF" rx="6" stroke="#E4E4F0" stroke-width="1.4"/>
+  <text x="295.4" y="496.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#1B1B32" text-anchor="start">English</text>
+  <text x="295.4" y="513.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#1B1B32" text-anchor="start" opacity="0.68">Ms Aber</text>
+  <text x="295.4" y="530.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="9.5" font-weight="400" fill="#1B1B32" text-anchor="start" opacity="0.45">Room 13</text>
+  <rect x="425.8" y="471.0" width="136.4" height="70.0" fill="#0EA5E9" rx="6"/>
+  <text x="437.8" y="496.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#FFFFFF" text-anchor="start">Physics lab</text>
+  <text x="437.8" y="513.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#FFFFFF" text-anchor="start" opacity="0.68">Mr Ojok</text>
+  <text x="437.8" y="530.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="9.5" font-weight="400" fill="#FFFFFF" text-anchor="start" opacity="0.45">Room 14</text>
+  <rect x="568.2" y="471.0" width="136.4" height="70.0" fill="#FFFFFF" rx="6" stroke="#E4E4F0" stroke-width="1.4"/>
+  <text x="580.2" y="496.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#1B1B32" text-anchor="start">History</text>
+  <text x="580.2" y="513.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#1B1B32" text-anchor="start" opacity="0.68">Ms Nalwoga</text>
+  <text x="580.2" y="530.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="9.5" font-weight="400" fill="#1B1B32" text-anchor="start" opacity="0.45">Room 15</text>
+  <rect x="710.6" y="471.0" width="136.4" height="70.0" fill="#3730A3" rx="6"/>
+  <text x="722.6" y="496.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#FFFFFF" text-anchor="start">Mathematics</text>
+  <text x="722.6" y="513.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#FFFFFF" text-anchor="start" opacity="0.68">Mr Okello</text>
+  <text x="722.6" y="530.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="9.5" font-weight="400" fill="#FFFFFF" text-anchor="start" opacity="0.45">Room 16</text>
+  <text x="120.0" y="590.0" font-family="SFMono-Regular, Menlo, Consolas, monospace" font-size="11" font-weight="600" fill="#9A9AB5" text-anchor="end">09:20</text>
+  <rect x="141.0" y="551.0" width="136.4" height="70.0" fill="#FFFFFF" rx="6" stroke="#E4E4F0" stroke-width="1.4"/>
+  <text x="153.0" y="576.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#1B1B32" text-anchor="start">Biology</text>
+  <text x="153.0" y="593.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#1B1B32" text-anchor="start" opacity="0.68">Ms Kemigisa</text>
+  <text x="153.0" y="610.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="9.5" font-weight="400" fill="#1B1B32" text-anchor="start" opacity="0.45">Room 15</text>
+  <rect x="283.4" y="551.0" width="136.4" height="70.0" fill="#0EA5E9" rx="6"/>
+  <text x="295.4" y="576.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#FFFFFF" text-anchor="start">Chemistry lab</text>
+  <text x="295.4" y="593.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#FFFFFF" text-anchor="start" opacity="0.68">Mr Ssali</text>
+  <text x="295.4" y="610.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="9.5" font-weight="400" fill="#FFFFFF" text-anchor="start" opacity="0.45">Room 16</text>
+  <rect x="425.8" y="551.0" width="136.4" height="70.0" fill="#FFFFFF" rx="6" stroke="#E4E4F0" stroke-width="1.4"/>
+  <text x="437.8" y="576.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#1B1B32" text-anchor="start">English</text>
+  <text x="437.8" y="593.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#1B1B32" text-anchor="start" opacity="0.68">Ms Aber</text>
+  <text x="437.8" y="610.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="9.5" font-weight="400" fill="#1B1B32" text-anchor="start" opacity="0.45">Room 17</text>
+  <rect x="568.2" y="551.0" width="136.4" height="70.0" fill="#3730A3" rx="6"/>
+  <text x="580.2" y="576.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#FFFFFF" text-anchor="start">Mathematics</text>
+  <text x="580.2" y="593.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#FFFFFF" text-anchor="start" opacity="0.68">Mr Okello</text>
+  <text x="580.2" y="610.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="9.5" font-weight="400" fill="#FFFFFF" text-anchor="start" opacity="0.45">Room 18</text>
+  <rect x="710.6" y="551.0" width="136.4" height="70.0" fill="#FFFFFF" rx="6" stroke="#E4E4F0" stroke-width="1.4"/>
+  <text x="722.6" y="576.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#1B1B32" text-anchor="start">Geography</text>
+  <text x="722.6" y="593.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#1B1B32" text-anchor="start" opacity="0.68">Mr Wandera</text>
+  <text x="722.6" y="610.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="9.5" font-weight="400" fill="#1B1B32" text-anchor="start" opacity="0.45">Room 19</text>
+  <text x="120.0" y="670.0" font-family="SFMono-Regular, Menlo, Consolas, monospace" font-size="11" font-weight="600" fill="#9A9AB5" text-anchor="end">10:40</text>
+  <rect x="141.0" y="631.0" width="136.4" height="70.0" fill="#0EA5E9" rx="6"/>
+  <text x="153.0" y="656.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#FFFFFF" text-anchor="start">Computer lab</text>
+  <text x="153.0" y="673.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#FFFFFF" text-anchor="start" opacity="0.68">Mr Mubaraka</text>
+  <text x="153.0" y="690.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="9.5" font-weight="400" fill="#FFFFFF" text-anchor="start" opacity="0.45">Room 18</text>
+  <rect x="283.4" y="631.0" width="136.4" height="70.0" fill="#3730A3" rx="6"/>
+  <text x="295.4" y="656.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#FFFFFF" text-anchor="start">Mathematics</text>
+  <text x="295.4" y="673.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#FFFFFF" text-anchor="start" opacity="0.68">Mr Okello</text>
+  <text x="295.4" y="690.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="9.5" font-weight="400" fill="#FFFFFF" text-anchor="start" opacity="0.45">Room 19</text>
+  <rect x="425.8" y="631.0" width="136.4" height="70.0" fill="#FFFFFF" rx="6" stroke="#E4E4F0" stroke-width="1.4"/>
+  <text x="437.8" y="656.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#1B1B32" text-anchor="start">Biology</text>
+  <text x="437.8" y="673.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#1B1B32" text-anchor="start" opacity="0.68">Ms Kemigisa</text>
+  <text x="437.8" y="690.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="9.5" font-weight="400" fill="#1B1B32" text-anchor="start" opacity="0.45">Room 20</text>
+  <rect x="568.2" y="631.0" width="136.4" height="70.0" fill="#F5F6FC" rx="6"/>
+  <text x="636.4" y="670.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11" font-weight="500" fill="#9A9AB5" text-anchor="middle">free</text>
+  <rect x="710.6" y="631.0" width="136.4" height="70.0" fill="#FFFFFF" rx="6" stroke="#E4E4F0" stroke-width="1.4"/>
+  <text x="722.6" y="656.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#1B1B32" text-anchor="start">Physics</text>
+  <text x="722.6" y="673.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#1B1B32" text-anchor="start" opacity="0.68">Mr Ojok</text>
+  <text x="722.6" y="690.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="9.5" font-weight="400" fill="#1B1B32" text-anchor="start" opacity="0.45">Room 22</text>
+  <text x="120.0" y="750.0" font-family="SFMono-Regular, Menlo, Consolas, monospace" font-size="11" font-weight="600" fill="#9A9AB5" text-anchor="end">12:00</text>
+  <rect x="141.0" y="711.0" width="136.4" height="70.0" fill="#F5F6FC" rx="6"/>
+  <text x="209.2" y="750.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11" font-weight="500" fill="#9A9AB5" text-anchor="middle">free</text>
+  <rect x="283.4" y="711.0" width="136.4" height="70.0" fill="#FFFFFF" rx="6" stroke="#E4E4F0" stroke-width="1.4"/>
+  <text x="295.4" y="736.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#1B1B32" text-anchor="start">History</text>
+  <text x="295.4" y="753.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#1B1B32" text-anchor="start" opacity="0.68">Ms Nalwoga</text>
+  <text x="295.4" y="770.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="9.5" font-weight="400" fill="#1B1B32" text-anchor="start" opacity="0.45">Room 22</text>
+  <rect x="425.8" y="711.0" width="136.4" height="70.0" fill="#FFFFFF" rx="6" stroke="#E4E4F0" stroke-width="1.4"/>
+  <text x="437.8" y="736.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#1B1B32" text-anchor="start">Chemistry</text>
+  <text x="437.8" y="753.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#1B1B32" text-anchor="start" opacity="0.68">Mr Ssali</text>
+  <text x="437.8" y="770.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="9.5" font-weight="400" fill="#1B1B32" text-anchor="start" opacity="0.45">Room 23</text>
+  <rect x="568.2" y="711.0" width="136.4" height="70.0" fill="#FFFFFF" rx="6" stroke="#E4E4F0" stroke-width="1.4"/>
+  <text x="580.2" y="736.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#1B1B32" text-anchor="start">English</text>
+  <text x="580.2" y="753.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#1B1B32" text-anchor="start" opacity="0.68">Ms Aber</text>
+  <text x="580.2" y="770.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="9.5" font-weight="400" fill="#1B1B32" text-anchor="start" opacity="0.45">Room 24</text>
+  <rect x="710.6" y="711.0" width="136.4" height="70.0" fill="#F5F6FC" rx="6"/>
+  <text x="778.8" y="750.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11" font-weight="500" fill="#9A9AB5" text-anchor="middle">free</text>
+  <text x="120.0" y="830.0" font-family="SFMono-Regular, Menlo, Consolas, monospace" font-size="11" font-weight="600" fill="#9A9AB5" text-anchor="end">14:00</text>
+  <rect x="141.0" y="791.0" width="136.4" height="70.0" fill="#F5F6FC" rx="6" stroke="#E4E4F0" stroke-width="1.4"/>
+  <text x="153.0" y="816.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#4E4E70" text-anchor="start">Games</text>
+  <text x="153.0" y="833.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#4E4E70" text-anchor="start" opacity="0.68">Coach Mugisha</text>
+  <text x="153.0" y="850.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="9.5" font-weight="400" fill="#4E4E70" text-anchor="start" opacity="0.45">Room 24</text>
+  <rect x="283.4" y="791.0" width="136.4" height="70.0" fill="#F5F6FC" rx="6" stroke="#E4E4F0" stroke-width="1.4"/>
+  <text x="295.4" y="816.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#4E4E70" text-anchor="start">Games</text>
+  <text x="295.4" y="833.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#4E4E70" text-anchor="start" opacity="0.68">Coach Mugisha</text>
+  <text x="295.4" y="850.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="9.5" font-weight="400" fill="#4E4E70" text-anchor="start" opacity="0.45">Room 25</text>
+  <rect x="425.8" y="791.0" width="136.4" height="70.0" fill="#F5F6FC" rx="6" stroke="#E4E4F0" stroke-width="1.4"/>
+  <text x="437.8" y="816.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#4E4E70" text-anchor="start">Library</text>
+  <text x="437.8" y="833.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#4E4E70" text-anchor="start" opacity="0.68">Ms Adong</text>
+  <text x="437.8" y="850.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="9.5" font-weight="400" fill="#4E4E70" text-anchor="start" opacity="0.45">Room 26</text>
+  <rect x="568.2" y="791.0" width="136.4" height="70.0" fill="#0EA5E9" rx="6"/>
+  <text x="580.2" y="816.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#FFFFFF" text-anchor="start">Computer lab</text>
+  <text x="580.2" y="833.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#FFFFFF" text-anchor="start" opacity="0.68">Mr Mubaraka</text>
+  <text x="580.2" y="850.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="9.5" font-weight="400" fill="#FFFFFF" text-anchor="start" opacity="0.45">Room 27</text>
+  <rect x="710.6" y="791.0" width="136.4" height="70.0" fill="#F5F6FC" rx="6" stroke="#E4E4F0" stroke-width="1.4"/>
+  <text x="722.6" y="816.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#4E4E70" text-anchor="start">Assembly</text>
+  <text x="722.6" y="833.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10" font-weight="400" fill="#4E4E70" text-anchor="start" opacity="0.68">All staff</text>
+  <text x="722.6" y="850.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="9.5" font-weight="400" fill="#4E4E70" text-anchor="start" opacity="0.45">Room 28</text>
+  <rect x="66.0" y="928.0" width="12.0" height="12.0" fill="#3730A3" rx="3"/>
+  <text x="86.0" y="938.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="500" fill="#4E4E70" text-anchor="start">Core subject</text>
+  <rect x="244.0" y="928.0" width="12.0" height="12.0" fill="#0EA5E9" rx="3"/>
+  <text x="264.0" y="938.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="500" fill="#4E4E70" text-anchor="start">Practical / lab</text>
+  <rect x="422.0" y="928.0" width="12.0" height="12.0" fill="#F5F6FC" rx="3" stroke="#E4E4F0" stroke-width="1.4"/>
+  <text x="442.0" y="938.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="500" fill="#4E4E70" text-anchor="start">Non-teaching</text>
+  <rect x="896.0" y="386.0" width="660.0" height="292.0" fill="#FFFFFF" rx="8" stroke="#E4E4F0" stroke-width="1.4"/>
+  <text x="916.0" y="420.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#9A9AB5" text-anchor="start" letter-spacing="1.2">FEE COLLECTION, TERM II</text>
+  <path d="M 1226.0 462.0 A 66 66 0 1 1 1180.8 576.1" fill="none" stroke="#3730A3" stroke-width="24" stroke-linecap="butt" stroke-linejoin="round"/>
+  <path d="M 1180.8 576.1 A 66 66 0 0 1 1164.6 503.7" fill="none" stroke="#0EA5E9" stroke-width="24" stroke-linecap="butt" stroke-linejoin="round"/>
+  <path d="M 1164.6 503.7 A 66 66 0 0 1 1226.0 462.0" fill="none" stroke="#E4E4F0" stroke-width="24" stroke-linecap="butt" stroke-linejoin="round"/>
+  <text x="1226.0" y="524.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="29" font-weight="700" fill="#1B1B32" text-anchor="middle">81%</text>
+  <text x="1226.0" y="545.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11" font-weight="500" fill="#9A9AB5" text-anchor="middle">collected</text>
+  <rect x="916.0" y="607.0" width="11.0" height="11.0" fill="#3730A3" rx="2"/>
+  <text x="934.0" y="616.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="500" fill="#4E4E70" text-anchor="start">MTN &amp; Airtel Money</text>
+  <text x="1536.0" y="616.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#1B1B32" text-anchor="end">UGX 29.4M</text>
+  <rect x="916.0" y="629.0" width="11.0" height="11.0" fill="#0EA5E9" rx="2"/>
+  <text x="934.0" y="638.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="500" fill="#4E4E70" text-anchor="start">Bank and Visa</text>
+  <text x="1536.0" y="638.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#1B1B32" text-anchor="end">UGX 9.0M</text>
+  <rect x="916.0" y="651.0" width="11.0" height="11.0" fill="#E4E4F0" rx="2"/>
+  <text x="934.0" y="660.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="500" fill="#4E4E70" text-anchor="start">Still outstanding</text>
+  <text x="1536.0" y="660.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#1B1B32" text-anchor="end">UGX 9.1M</text>
+  <rect x="896.0" y="702.0" width="660.0" height="264.0" fill="#FFFFFF" rx="8" stroke="#E4E4F0" stroke-width="1.4"/>
+  <text x="916.0" y="734.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#9A9AB5" text-anchor="start" letter-spacing="1.2">SIGNED IN RIGHT NOW</text>
+  <rect x="916.0" y="752.0" width="620.0" height="64.0" fill="#F5F6FC" rx="8"/>
+  <circle cx="948.0" cy="784.0" r="18.0" fill="#3730A3" opacity="0.12"/>
+  <circle cx="948.0" cy="780.0" r="3.6" fill="none" stroke="#3730A3" stroke-width="1.8" opacity="0.85"/>
+  <path d="M 941 792 a 7 7 0 0 1 14 0" fill="none" stroke="#3730A3" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.85"/>
+  <text x="978.0" y="778.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="700" fill="#1B1B32" text-anchor="start">Parents</text>
+  <text x="978.0" y="796.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="400" fill="#9A9AB5" text-anchor="start">results, fees, absences</text>
+  <text x="1522.0" y="790.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="16" font-weight="700" fill="#0EA5E9" text-anchor="end">1,884</text>
+  <rect x="916.0" y="822.0" width="620.0" height="64.0" fill="#F5F6FC" rx="8"/>
+  <circle cx="948.0" cy="854.0" r="18.0" fill="#3730A3" opacity="0.12"/>
+  <circle cx="948.0" cy="850.0" r="3.6" fill="none" stroke="#3730A3" stroke-width="1.8" opacity="0.85"/>
+  <path d="M 941 862 a 7 7 0 0 1 14 0" fill="none" stroke="#3730A3" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.85"/>
+  <text x="978.0" y="848.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="700" fill="#1B1B32" text-anchor="start">Teachers</text>
+  <text x="978.0" y="866.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="400" fill="#9A9AB5" text-anchor="start">marks and attendance</text>
+  <text x="1522.0" y="860.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="16" font-weight="700" fill="#0EA5E9" text-anchor="end">96</text>
+  <rect x="916.0" y="892.0" width="620.0" height="64.0" fill="#F5F6FC" rx="8"/>
+  <circle cx="948.0" cy="924.0" r="18.0" fill="#3730A3" opacity="0.12"/>
+  <circle cx="948.0" cy="920.0" r="3.6" fill="none" stroke="#3730A3" stroke-width="1.8" opacity="0.85"/>
+  <path d="M 941 932 a 7 7 0 0 1 14 0" fill="none" stroke="#3730A3" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.85"/>
+  <text x="978.0" y="918.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="700" fill="#1B1B32" text-anchor="start">Administrators</text>
+  <text x="978.0" y="936.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="400" fill="#9A9AB5" text-anchor="start">full access, audited</text>
+  <text x="1522.0" y="930.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="16" font-weight="700" fill="#0EA5E9" text-anchor="end">12</text>
+</svg>

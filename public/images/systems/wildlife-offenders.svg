@@ -1,0 +1,177 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" width="1600" height="1000" role="img">
+  <rect x="0.0" y="0.0" width="1600.0" height="1000.0" fill="#101B15"/>
+  <rect x="0.0" y="0.0" width="1600.0" height="44.0" fill="#0B1D16"/>
+  <circle cx="24.0" cy="22.0" r="4.5" fill="#FFFFFF" opacity="0.28"/>
+  <circle cx="44.0" cy="22.0" r="4.5" fill="#FFFFFF" opacity="0.38"/>
+  <circle cx="64.0" cy="22.0" r="4.5" fill="#FFFFFF" opacity="0.48"/>
+  <text x="800.0" y="26.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="500" fill="#FFFFFF" text-anchor="middle" letter-spacing="0.3" opacity="0.62">Wildlife Offenders Database — Uganda Wildlife Authority</text>
+  <rect x="1308.0" y="9.0" width="168.0" height="26.0" fill="#FFFFFF" rx="13" opacity="0.1"/>
+  <circle cx="1324.0" cy="21.0" r="4.4" fill="none" stroke="#FFFFFF" stroke-width="1.5" opacity="0.5"/>
+  <line x1="1327.2" y1="24.2" x2="1330.4" y2="27.4" stroke="#FFFFFF" stroke-width="1.7" stroke-linecap="round" opacity="0.5"/>
+  <text x="1338.0" y="26.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#FFFFFF" text-anchor="start" opacity="0.42">Search</text>
+  <path d="M 1500 26 v -5 a 6 6 0 0 1 12 0 v 5 z" fill="none" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" opacity="0.55"/>
+  <line x1="1497.0" y1="26.0" x2="1515.0" y2="26.0" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round" opacity="0.55"/>
+  <circle cx="1512.0" cy="15.0" r="5.0" fill="#EF4444"/>
+  <text x="1512.0" y="18.5" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="8" font-weight="700" fill="#FFFFFF" text-anchor="middle">3</text>
+  <circle cx="1538.0" cy="22.0" r="4.0" fill="#FFFFFF" opacity="0.35"/>
+  <circle cx="1548.0" cy="22.0" r="4.0" fill="#FFFFFF" opacity="0.35"/>
+  <circle cx="1558.0" cy="22.0" r="4.0" fill="#FFFFFF" opacity="0.35"/>
+  <rect x="0.0" y="44.0" width="252.0" height="956.0" fill="#0B1D16"/>
+  <rect x="24.0" y="70.0" width="34.0" height="34.0" fill="#F97316" rx="8"/>
+  <path d="M 32 93 v -8 a 9 9 0 0 1 18 0 v 8" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M 30 84 l 11 -8 l 11 8" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="68.0" y="86.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#FFFFFF" text-anchor="start">Offenders DB</text>
+  <text x="68.0" y="102.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="500" fill="#FFFFFF" text-anchor="start" letter-spacing="0.5" opacity="0.5">UWA · Enforcement</text>
+  <line x1="24.0" y1="128.0" x2="228.0" y2="128.0" stroke="#FFFFFF" stroke-width="1" stroke-linecap="butt" opacity="0.14"/>
+  <path d="M 23 173 v -13 h 6 l 2 3 h 10 v 10 z" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.45"/>
+  <text x="58.0" y="170.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="400" fill="#FFFFFF" text-anchor="start" opacity="0.55">Case board</text>
+  <rect x="14.0" y="195.0" width="224.0" height="40.0" fill="#F97316" rx="6" opacity="0.18"/>
+  <rect x="0.0" y="195.0" width="3.0" height="40.0" fill="#F97316"/>
+  <circle cx="32.0" cy="210.0" r="3.6" fill="none" stroke="#F97316" stroke-width="1.8" opacity="1"/>
+  <path d="M 25 222 a 7 7 0 0 1 14 0" fill="none" stroke="#F97316" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity="1"/>
+  <text x="58.0" y="218.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="600" fill="#FFFFFF" text-anchor="start" opacity="0.98">Offenders</text>
+  <path d="M 32 253 l 8 4 v 9 l -8 4 l -8 -4 v -9 z" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.45"/>
+  <path d="M 24 257 l 8 4 l 8 -4" fill="none" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.45"/>
+  <text x="58.0" y="266.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="400" fill="#FFFFFF" text-anchor="start" opacity="0.55">Seizures</text>
+  <circle cx="31.0" cy="308.0" r="6.0" fill="none" stroke="#FFFFFF" stroke-width="1.9" opacity="0.45"/>
+  <line x1="35.5" y1="312.5" x2="40.0" y2="317.0" stroke="#FFFFFF" stroke-width="2.1" stroke-linecap="round" opacity="0.45"/>
+  <text x="58.0" y="314.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="400" fill="#FFFFFF" text-anchor="start" opacity="0.55">Biometrics</text>
+  <rect x="24.0" y="357.0" width="4.0" height="9.0" fill="#FFFFFF" rx="1" opacity="0.45"/>
+  <rect x="30.0" y="352.0" width="4.0" height="14.0" fill="#FFFFFF" rx="1" opacity="0.45"/>
+  <rect x="36.0" y="349.0" width="4.0" height="17.0" fill="#FFFFFF" rx="1" opacity="0.45"/>
+  <text x="58.0" y="362.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="400" fill="#FFFFFF" text-anchor="start" opacity="0.55">Analytics</text>
+  <path d="M 32 397 c -4 0 -6.5 3 -6.5 6 c 0 5 6.5 12 6.5 12 s 6.5 -7 6.5 -12 c 0 -3 -2.5 -6 -6.5 -6 z" fill="none" stroke="#FFFFFF" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" opacity="0.45"/>
+  <text x="58.0" y="410.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="400" fill="#FFFFFF" text-anchor="start" opacity="0.55">Ranger posts</text>
+  <line x1="24.0" y1="920.0" x2="228.0" y2="920.0" stroke="#FFFFFF" stroke-width="1" stroke-linecap="butt" opacity="0.14"/>
+  <circle cx="40.0" cy="952.0" r="14.0" fill="#F97316"/>
+  <text x="40.0" y="956.5" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#FFFFFF" text-anchor="middle">SO</text>
+  <text x="64.0" y="948.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="600" fill="#FFFFFF" text-anchor="start" opacity="0.9">S. Openy</text>
+  <text x="64.0" y="963.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="400" fill="#FFFFFF" text-anchor="start" opacity="0.45">Enforcement officer</text>
+  <text x="296.0" y="96.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="30" font-weight="700" fill="#ECFDF5" text-anchor="start">Offender file UWA-4471</text>
+  <text x="296.0" y="123.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13.5" font-weight="400" fill="#9CBDAC" text-anchor="start">Poaching, ivory · Murchison Falls · opened 3 Feb 2026 · now in court</text>
+  <rect x="1469.4" y="78.0" width="86.6" height="38.0" fill="#F97316" rx="5"/>
+  <text x="1512.7" y="101.6" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="600" fill="#FFFFFF" text-anchor="middle">Escalate</text>
+  <rect x="1351.6" y="78.0" width="105.8" height="38.0" fill="#18291F" rx="5" stroke="#24392D" stroke-width="1.4"/>
+  <text x="1404.5" y="101.6" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="13" font-weight="600" fill="#9CBDAC" text-anchor="middle">Export brief</text>
+  <rect x="296.0" y="156.0" width="405.3" height="108.0" fill="#18291F" rx="8" stroke="#24392D" stroke-width="1.4"/>
+  <text x="316.0" y="185.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#6E8D7B" text-anchor="start" letter-spacing="1.1">CASES OPEN</text>
+  <text x="316.0" y="226.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="30" font-weight="700" fill="#ECFDF5" text-anchor="start">1,286</text>
+  <text x="316.0" y="247.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#6E8D7B" text-anchor="start">across ten national parks</text>
+  <rect x="723.3" y="156.0" width="405.3" height="108.0" fill="#18291F" rx="8" stroke="#24392D" stroke-width="1.4"/>
+  <text x="743.3" y="185.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#6E8D7B" text-anchor="start" letter-spacing="1.1">OFFENDERS ON FILE</text>
+  <text x="743.3" y="226.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="30" font-weight="700" fill="#ECFDF5" text-anchor="start">4,371</text>
+  <text x="743.3" y="247.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#6E8D7B" text-anchor="start">fingerprint and photograph</text>
+  <rect x="1150.7" y="156.0" width="405.3" height="108.0" fill="#18291F" rx="8" stroke="#24392D" stroke-width="1.4"/>
+  <text x="1170.7" y="185.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#6E8D7B" text-anchor="start" letter-spacing="1.1">BROUGHT TO COURT</text>
+  <text x="1170.7" y="226.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="30" font-weight="700" fill="#F97316" text-anchor="start">68%</text>
+  <text x="1170.7" y="247.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11" font-weight="400" fill="#6E8D7B" text-anchor="start">of cases opened since 2021</text>
+  <rect x="296.0" y="290.0" width="388.0" height="392.0" fill="#18291F" rx="8" stroke="#24392D" stroke-width="1.4"/>
+  <text x="316.0" y="324.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#6E8D7B" text-anchor="start" letter-spacing="1.2">FINGERPRINT MATCH</text>
+  <rect x="316.0" y="340.0" width="348.0" height="246.0" fill="#0B1D16" rx="8"/>
+  <path d="M 475.0 476 a 15 17.25 0 0 1 30 0" fill="none" stroke="#F97316" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.22"/>
+  <path d="M 461.0 476 a 29 33.349999999999994 0 0 1 58 0" fill="none" stroke="#F97316" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.32"/>
+  <path d="M 447.0 476 a 43 49.449999999999996 0 0 1 86 0" fill="none" stroke="#F97316" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.42000000000000004"/>
+  <path d="M 433.0 476 a 57 65.55 0 0 1 114 0" fill="none" stroke="#F97316" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.52"/>
+  <path d="M 419.0 476 a 71 81.64999999999999 0 0 1 142 0" fill="none" stroke="#F97316" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.62"/>
+  <path d="M 405.0 476 a 85 97.74999999999999 0 0 1 170 0" fill="none" stroke="#F97316" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.72"/>
+  <path d="M 391.0 476 a 99 113.85 0 0 1 198 0" fill="none" stroke="#F97316" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.8200000000000001"/>
+  <path d="M 484.0 476 a 8 9 0 0 1 12 0" fill="none" stroke="#F97316" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+  <line x1="396.0" y1="394.0" x2="396.0" y2="420.0" stroke="#F97316" stroke-width="3" stroke-linecap="round"/>
+  <line x1="396.0" y1="394.0" x2="422.0" y2="394.0" stroke="#F97316" stroke-width="3" stroke-linecap="round"/>
+  <line x1="584.0" y1="538.0" x2="584.0" y2="512.0" stroke="#F97316" stroke-width="3" stroke-linecap="round"/>
+  <line x1="584.0" y1="538.0" x2="558.0" y2="538.0" stroke="#F97316" stroke-width="3" stroke-linecap="round"/>
+  <text x="316.0" y="616.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#6E8D7B" text-anchor="start" letter-spacing="1.1">CONFIDENCE</text>
+  <text x="664.0" y="616.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#F97316" text-anchor="end">99.2%</text>
+  <rect x="316.0" y="628.0" width="348.0" height="8.0" fill="#24392D" rx="4"/>
+  <rect x="316.0" y="628.0" width="345.2" height="8.0" fill="#F97316" rx="4"/>
+  <text x="316.0" y="660.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="400" fill="#6E8D7B" text-anchor="start">Matched against 4,371 records in 0.4 seconds</text>
+  <rect x="296.0" y="702.0" width="388.0" height="208.0" fill="#18291F" rx="8" stroke="#24392D" stroke-width="1.4"/>
+  <text x="316.0" y="736.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#6E8D7B" text-anchor="start" letter-spacing="1.2">WHERE THIS IS HAPPENING</text>
+  <clipPath id="uwa-clip"><path d="M 563.5 768.0 L 571.1 763.0 L 580.6 760.7 L 590.2 763.0 L 597.3 760.7 L 605.6 758.7 L 613.9 755.9 L 621.1 752.8 L 629.4 748.8 L 637.7 750.4 L 642.5 757.1 L 647.2 760.7 L 652.0 764.7 L 656.0 770.6 L 659.1 775.4 L 662.2 781.3 L 660.3 792.0 L 657.4 801.5 L 654.3 808.7 L 650.8 814.6 L 647.2 820.6 L 643.7 822.9 L 640.8 826.5 L 638.4 830.6 L 639.4 834.8 L 641.7 839.1 L 640.1 843.9 L 638.4 848.6 L 637.2 853.9 L 636.5 859.1 L 629.4 862.2 L 619.9 866.2 L 611.6 871.7 L 600.9 872.9 L 589.0 873.3 L 577.1 873.3 L 565.2 874.1 L 556.9 874.5 L 552.1 874.3 L 546.2 878.1 L 542.1 884.0 L 538.6 881.9 L 536.2 877.6 L 534.8 871.7 L 533.8 866.2 L 535.5 861.0 L 537.1 855.8 L 538.6 850.3 L 537.1 844.8 L 537.8 839.1 L 540.9 833.6 L 544.3 828.9 L 548.5 824.1 L 552.8 820.1 L 556.9 816.3 L 561.6 811.5 L 566.4 806.8 L 569.9 802.0 L 573.5 797.3 L 574.7 791.6 L 572.8 786.1 L 571.1 780.6 L 568.8 775.9 L 566.4 771.8 Z"/></clipPath>
+  <rect x="530.0" y="740.0" width="136.0" height="154.0" fill="#101B15" opacity="0.55"/>
+  <g clip-path="url(#uwa-clip)">
+  <rect x="530.0" y="740.0" width="136.0" height="154.0" fill="#0B1D16"/>
+  </g>
+  <path d="M 563.5 768.0 L 571.1 763.0 L 580.6 760.7 L 590.2 763.0 L 597.3 760.7 L 605.6 758.7 L 613.9 755.9 L 621.1 752.8 L 629.4 748.8 L 637.7 750.4 L 642.5 757.1 L 647.2 760.7 L 652.0 764.7 L 656.0 770.6 L 659.1 775.4 L 662.2 781.3 L 660.3 792.0 L 657.4 801.5 L 654.3 808.7 L 650.8 814.6 L 647.2 820.6 L 643.7 822.9 L 640.8 826.5 L 638.4 830.6 L 639.4 834.8 L 641.7 839.1 L 640.1 843.9 L 638.4 848.6 L 637.2 853.9 L 636.5 859.1 L 629.4 862.2 L 619.9 866.2 L 611.6 871.7 L 600.9 872.9 L 589.0 873.3 L 577.1 873.3 L 565.2 874.1 L 556.9 874.5 L 552.1 874.3 L 546.2 878.1 L 542.1 884.0 L 538.6 881.9 L 536.2 877.6 L 534.8 871.7 L 533.8 866.2 L 535.5 861.0 L 537.1 855.8 L 538.6 850.3 L 537.1 844.8 L 537.8 839.1 L 540.9 833.6 L 544.3 828.9 L 548.5 824.1 L 552.8 820.1 L 556.9 816.3 L 561.6 811.5 L 566.4 806.8 L 569.9 802.0 L 573.5 797.3 L 574.7 791.6 L 572.8 786.1 L 571.1 780.6 L 568.8 775.9 L 566.4 771.8 Z" fill="none" stroke="#9CBDAC" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.85"/>
+  <circle cx="584.7" cy="794.9" r="15.0" fill="#F97316" opacity="0.3"/>
+  <path d="M 584.7 774.9 c -7 0 -12 5 -12 11 c 0 8 12 20 12 20 s 12 -12 12 -20 c 0 -6 -5 -11 -12 -11 z" fill="#F97316"/>
+  <circle cx="584.7" cy="785.9" r="4.2" fill="#FFFFFF"/>
+  <circle cx="575.9" cy="841.5" r="5.0" fill="#FFFFFF" stroke="#F97316" stroke-width="2.4"/>
+  <circle cx="637.7" cy="832.0" r="5.0" fill="#FFFFFF" stroke="#F97316" stroke-width="2.4"/>
+  <circle cx="545.0" cy="857.4" r="5.0" fill="#FFFFFF" stroke="#F97316" stroke-width="2.4"/>
+  <text x="316.0" y="766.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="500" fill="#9CBDAC" text-anchor="start">Murchison Falls</text>
+  <text x="496.0" y="766.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="700" fill="#ECFDF5" text-anchor="end">412</text>
+  <rect x="316.0" y="774.0" width="180.0" height="5.0" fill="#24392D" rx="3"/>
+  <rect x="316.0" y="774.0" width="180.0" height="5.0" fill="#F97316" rx="3" opacity="1"/>
+  <text x="316.0" y="810.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="500" fill="#9CBDAC" text-anchor="start">Queen Elizabeth</text>
+  <text x="496.0" y="810.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="700" fill="#ECFDF5" text-anchor="end">288</text>
+  <rect x="316.0" y="818.0" width="180.0" height="5.0" fill="#24392D" rx="3"/>
+  <rect x="316.0" y="818.0" width="126.0" height="5.0" fill="#9CBDAC" rx="3" opacity="0.6"/>
+  <text x="316.0" y="854.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11.5" font-weight="500" fill="#9CBDAC" text-anchor="start">Kidepo Valley</text>
+  <text x="496.0" y="854.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12.5" font-weight="700" fill="#ECFDF5" text-anchor="end">134</text>
+  <rect x="316.0" y="862.0" width="180.0" height="5.0" fill="#24392D" rx="3"/>
+  <rect x="316.0" y="862.0" width="59.4" height="5.0" fill="#9CBDAC" rx="3" opacity="0.6"/>
+  <text x="710.0" y="324.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#6E8D7B" text-anchor="start" letter-spacing="1.2">CASE BOARD</text>
+  <text x="1556.0" y="324.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#F97316" text-anchor="end" letter-spacing="1">FILTER: MURCHISON FALLS</text>
+  <rect x="710.0" y="340.0" width="846.0" height="346.0" fill="#18291F" rx="8" stroke="#24392D" stroke-width="1.4"/>
+  <rect x="711.4" y="345.0" width="843.2" height="48.0" fill="#101B15"/>
+  <line x1="710.0" y1="393.0" x2="1556.0" y2="393.0" stroke="#24392D" stroke-width="1.4" stroke-linecap="butt"/>
+  <text x="730.0" y="373.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#6E8D7B" text-anchor="start" letter-spacing="1">CASE</text>
+  <text x="902.0" y="373.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#6E8D7B" text-anchor="start" letter-spacing="1">OFFENCE</text>
+  <text x="1152.0" y="373.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#6E8D7B" text-anchor="start" letter-spacing="1">RANGER POST</text>
+  <text x="1348.0" y="373.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#6E8D7B" text-anchor="start" letter-spacing="1"></text>
+  <text x="730.0" y="421.5" font-family="SFMono-Regular, Menlo, Consolas, monospace" font-size="12" font-weight="600" fill="#ECFDF5" text-anchor="start">UWA-4471</text>
+  <text x="902.0" y="421.5" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#9CBDAC" text-anchor="start">Poaching · ivory</text>
+  <text x="1152.0" y="421.5" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#9CBDAC" text-anchor="start">Pakuba</text>
+  <rect x="1348.0" y="406.0" width="72.4" height="22.0" fill="#382E12" rx="4"/>
+  <text x="1384.2" y="420.8" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#FBBF24" text-anchor="middle" letter-spacing="0.3">IN COURT</text>
+  <line x1="724.0" y1="441.0" x2="1542.0" y2="441.0" stroke="#24392D" stroke-width="1" stroke-linecap="butt"/>
+  <text x="730.0" y="469.5" font-family="SFMono-Regular, Menlo, Consolas, monospace" font-size="12" font-weight="600" fill="#ECFDF5" text-anchor="start">UWA-4468</text>
+  <text x="902.0" y="469.5" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#9CBDAC" text-anchor="start">Illegal grazing</text>
+  <text x="1152.0" y="469.5" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#9CBDAC" text-anchor="start">Tangi</text>
+  <rect x="1348.0" y="454.0" width="70.5" height="22.0" fill="#22392C" rx="4"/>
+  <text x="1383.3" y="468.8" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#9CBDAC" text-anchor="middle" letter-spacing="0.3">CHARGED</text>
+  <line x1="724.0" y1="489.0" x2="1542.0" y2="489.0" stroke="#24392D" stroke-width="1" stroke-linecap="butt"/>
+  <text x="730.0" y="517.5" font-family="SFMono-Regular, Menlo, Consolas, monospace" font-size="12" font-weight="600" fill="#ECFDF5" text-anchor="start">UWA-4462</text>
+  <text x="902.0" y="517.5" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#9CBDAC" text-anchor="start">Bushmeat trade</text>
+  <text x="1152.0" y="517.5" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#9CBDAC" text-anchor="start">Bugungu</text>
+  <rect x="1348.0" y="502.0" width="63.6" height="22.0" fill="#16351F" rx="4"/>
+  <text x="1379.8" y="516.8" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#4ADE80" text-anchor="middle" letter-spacing="0.3">CLOSED</text>
+  <line x1="724.0" y1="537.0" x2="1542.0" y2="537.0" stroke="#24392D" stroke-width="1" stroke-linecap="butt"/>
+  <text x="730.0" y="565.5" font-family="SFMono-Regular, Menlo, Consolas, monospace" font-size="12" font-weight="600" fill="#ECFDF5" text-anchor="start">UWA-4455</text>
+  <text x="902.0" y="565.5" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#9CBDAC" text-anchor="start">Snaring</text>
+  <text x="1152.0" y="565.5" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#9CBDAC" text-anchor="start">Karuma</text>
+  <rect x="1348.0" y="550.0" width="72.4" height="22.0" fill="#382E12" rx="4"/>
+  <text x="1384.2" y="564.8" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#FBBF24" text-anchor="middle" letter-spacing="0.3">IN COURT</text>
+  <line x1="724.0" y1="585.0" x2="1542.0" y2="585.0" stroke="#24392D" stroke-width="1" stroke-linecap="butt"/>
+  <text x="730.0" y="613.5" font-family="SFMono-Regular, Menlo, Consolas, monospace" font-size="12" font-weight="600" fill="#ECFDF5" text-anchor="start">UWA-4450</text>
+  <text x="902.0" y="613.5" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#9CBDAC" text-anchor="start">Trafficking · pangolin</text>
+  <text x="1152.0" y="613.5" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#9CBDAC" text-anchor="start">Pakuba</text>
+  <rect x="1348.0" y="598.0" width="84.4" height="22.0" fill="#3A1D1D" rx="4"/>
+  <text x="1390.2" y="612.8" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#F87171" text-anchor="middle" letter-spacing="0.3">ESCALATED</text>
+  <line x1="724.0" y1="633.0" x2="1542.0" y2="633.0" stroke="#24392D" stroke-width="1" stroke-linecap="butt"/>
+  <text x="730.0" y="661.5" font-family="SFMono-Regular, Menlo, Consolas, monospace" font-size="12" font-weight="600" fill="#ECFDF5" text-anchor="start">UWA-4441</text>
+  <text x="902.0" y="661.5" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#9CBDAC" text-anchor="start">Poaching · pangolin</text>
+  <text x="1152.0" y="661.5" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="12" font-weight="400" fill="#9CBDAC" text-anchor="start">Chobe</text>
+  <rect x="1348.0" y="646.0" width="70.5" height="22.0" fill="#22392C" rx="4"/>
+  <text x="1383.3" y="660.8" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#9CBDAC" text-anchor="middle" letter-spacing="0.3">CHARGED</text>
+  <text x="710.0" y="696.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#6E8D7B" text-anchor="start" letter-spacing="1.2">SEIZURES BY QUARTER</text>
+  <text x="1556.0" y="696.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#F97316" text-anchor="end" letter-spacing="1">2025 → 2026</text>
+  <rect x="710.0" y="712.0" width="846.0" height="198.0" fill="#18291F" rx="8" stroke="#24392D" stroke-width="1.4"/>
+  <rect x="740.0" y="813.2" width="72.5" height="46.8" fill="#9CBDAC" rx="3" opacity="0.55"/>
+  <text x="776.2" y="879.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#6E8D7B" text-anchor="middle">Q1</text>
+  <rect x="841.9" y="796.9" width="72.5" height="63.1" fill="#9CBDAC" rx="3" opacity="0.55"/>
+  <text x="878.2" y="879.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#6E8D7B" text-anchor="middle">Q2</text>
+  <rect x="943.9" y="808.1" width="72.5" height="51.9" fill="#9CBDAC" rx="3" opacity="0.55"/>
+  <text x="980.1" y="879.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#6E8D7B" text-anchor="middle">Q3</text>
+  <rect x="1045.8" y="780.6" width="72.5" height="79.4" fill="#9CBDAC" rx="3" opacity="0.55"/>
+  <text x="1082.0" y="879.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#6E8D7B" text-anchor="middle">Q4</text>
+  <rect x="1147.7" y="764.3" width="72.5" height="95.7" fill="#9CBDAC" rx="3" opacity="0.55"/>
+  <text x="1184.0" y="879.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#6E8D7B" text-anchor="middle">Q1</text>
+  <rect x="1249.7" y="787.7" width="72.5" height="72.3" fill="#9CBDAC" rx="3" opacity="0.55"/>
+  <text x="1285.9" y="879.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#6E8D7B" text-anchor="middle">Q2</text>
+  <rect x="1351.6" y="770.4" width="72.5" height="89.6" fill="#9CBDAC" rx="3" opacity="0.55"/>
+  <text x="1387.8" y="879.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#6E8D7B" text-anchor="middle">Q3</text>
+  <rect x="1453.5" y="746.0" width="72.5" height="114.0" fill="#F97316" rx="3" opacity="1"/>
+  <text x="1489.8" y="879.0" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="10.5" font-weight="600" fill="#6E8D7B" text-anchor="middle">Q4</text>
+</svg>

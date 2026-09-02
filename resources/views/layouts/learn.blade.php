@@ -1,0 +1,288 @@
+{{-- Muhindo Mubaraka, Learning shell (full-bleed course player) --}}
+{{--
+  A distraction-free shell for pages inside a course: a fixed 44px header, a
+  fixed sidebar running top → bottom with its own scrollbar, an independently
+  scrolling content column, and an optional slim action bar.
+
+  It loads exactly the same stylesheets as layouts/admin, Livewire's head merge
+  appends the incoming page's assets without removing the outgoing ones, so a
+  second design system here would leave both layered on top of each other the
+  moment a student moves between My Courses and a lesson. Shared assets are what
+  make that navigation instant instead of a full reload.
+--}}
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  @include('partials.sw-kill')
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <title>{{ $title ?? $__env->yieldContent('title', 'Learning') }} · Muhindo Mubaraka</title>
+  <link rel="icon" type="image/png" sizes="48x48" href="{{ asset('favicon.png') }}">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="stylesheet" href="{{ asset('vendor/fonts/inter/inter.css') }}">
+  <link rel="stylesheet" href="{{ asset('vendor/fa/css/all.min.css') }}">
+  <link rel="stylesheet" href="{{ asset('css/td-admin.css') }}?v={{ filemtime(public_path('css/td-admin.css')) }}">
+  @livewireStyles
+
+  <style>
+  /* Shell tokens
+     The player's own vocabulary, mapped onto the shared design system so the
+     two never drift apart on colour. Scoped to the shell so nothing leaks. */
+  .learn-shell{
+    --lsw:272px; --lhd:44px; --abh:50px;
+    --pri:var(--br); --pri-d:var(--br-d); --pri-soft:var(--br-soft);
+    --gold:#c99a2e; --gold-d:#8a6a1c; --gold-soft:#fbf3e0;
+    --tx2:var(--mt); --tx3:var(--mt2);
+  }
+
+  /* Classic building blocks the course pages are written against. */
+  .learn-shell .card{background:var(--surface);border:1px solid var(--line);padding:12px 14px;margin-bottom:10px;}
+  .learn-shell .card:last-child{margin-bottom:0;}
+  .learn-shell .card-title{font-weight:600;margin-bottom:8px;font-size:13px;}
+  .learn-shell .grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px;}
+  .learn-shell .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;font-family:var(--font);
+    font-size:12.5px;font-weight:500;min-height:34px;padding:6px 12px;cursor:pointer;
+    border:1px solid var(--pri);background:var(--pri);color:#fff;transition:background .13s,border-color .13s;}
+  .learn-shell .btn:hover{background:var(--pri-d);border-color:var(--pri-d);}
+  .learn-shell .btn.gold{border-color:var(--gold);background:var(--gold);color:#231a05;}
+  .learn-shell .btn.gold:hover{background:var(--gold-d);border-color:var(--gold-d);color:#fff;}
+  .learn-shell .btn[disabled],.learn-shell .btn.disabled{opacity:.55;pointer-events:none;}
+  .learn-shell .badge-pill{display:inline-flex;align-items:center;font-size:10.5px;font-weight:600;letter-spacing:.03em;
+    text-transform:uppercase;padding:3px 8px;background:var(--pri-soft);color:var(--pri);}
+  .learn-shell .alert-success{background:var(--ok-soft);color:var(--ok);border:1px solid var(--ok);
+    padding:8px 12px;margin-bottom:10px;font-size:12.5px;}
+
+  /* Header */
+  .learn-hd{position:fixed;top:0;left:0;right:0;height:var(--lhd);z-index:50;background:#0d2237;color:#fff;
+    display:flex;align-items:center;gap:12px;padding:0 12px;}
+  .learn-hd .exit{display:inline-flex;align-items:center;gap:7px;color:rgba(255,255,255,.75);font-size:12px;
+    font-weight:500;flex-shrink:0;padding:6px 4px;}
+  .learn-hd .exit:hover{color:#fff;}
+  .learn-hd .divider{width:1px;height:20px;background:rgba(255,255,255,.18);flex-shrink:0;}
+  .learn-hd .course-t{font-size:12.5px;font-weight:600;color:#fff;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .learn-hd .page-t{font-size:12px;color:rgba(255,255,255,.65);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;}
+  .learn-hd .pos{font-size:11px;color:rgba(255,255,255,.75);white-space:nowrap;flex-shrink:0;}
+  .learn-hd .timer{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:var(--gold);
+    white-space:nowrap;flex-shrink:0;font-variant-numeric:tabular-nums;}
+  .learn-hd .timer.paused{color:rgba(255,255,255,.45);}
+  .learn-hd .timer.paused i{opacity:.6;}
+  .learn-hd .hd-progress{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+  .learn-hd .hd-progress .bar{width:110px;height:4px;background:rgba(255,255,255,.18);overflow:hidden;}
+  .learn-hd .hd-progress .bar i{display:block;height:100%;background:var(--gold);transition:width .4s ease;}
+  .learn-hd .hd-progress .pct{font-size:11px;font-weight:600;color:var(--gold);min-width:32px;text-align:right;}
+  .learn-hd a:focus-visible,.learn-hd button:focus-visible{outline:2px solid #fff;outline-offset:2px;}
+  .learn-toggle{display:none;align-items:center;gap:6px;border:1px solid rgba(255,255,255,.25);background:none;
+    color:#fff;padding:6px 10px;font-size:11.5px;font-weight:500;cursor:pointer;flex-shrink:0;}
+
+  /* Sidebar */
+  .learn-side{position:fixed;top:var(--lhd);left:0;bottom:0;width:var(--lsw);z-index:45;
+    background:var(--surface);border-right:1px solid var(--line);display:flex;flex-direction:column;}
+  .learn-side-close{display:none;background:none;border:none;color:var(--tx3);cursor:pointer;font-size:15px;padding:4px;flex-shrink:0;}
+  .learn-side-top{display:none;padding:10px 12px;border-bottom:1px solid var(--line);flex-shrink:0;
+    align-items:center;justify-content:space-between;gap:8px;}
+  .learn-side-top .learn-side-course{font-size:12.5px;font-weight:600;line-height:1.35;}
+  .learn-side-links{display:flex;flex-wrap:wrap;border-bottom:1px solid var(--line);flex-shrink:0;}
+  .learn-side-links a{flex:1 0 33.333%;display:flex;align-items:center;justify-content:center;gap:5px;padding:8px 3px;
+    font-size:10.5px;font-weight:500;color:var(--tx2);border-right:1px solid var(--line);}
+  .learn-side-links a:hover{color:var(--pri);background:var(--pri-soft);}
+  .learn-side-links a.on{color:var(--pri);background:var(--pri-soft);font-weight:600;}
+  .learn-side-links a i{font-size:11px;}
+  .learn-side-list{overflow-y:auto;flex:1;overscroll-behavior:contain;}
+
+  /* Collapsible chapters, native <details>, so collapse works with zero JS. */
+  .mod-group{border-bottom:1px solid var(--line);}
+  .mod-group summary{list-style:none;display:flex;align-items:center;gap:8px;padding:8px 12px;cursor:pointer;
+    font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--tx3);background:var(--surface-2);user-select:none;}
+  .mod-group summary::-webkit-details-marker{display:none;}
+  .mod-group summary .chev{font-size:9px;transition:transform .15s;flex-shrink:0;}
+  .mod-group[open] summary .chev{transform:rotate(90deg);}
+  .mod-group summary .name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .mod-group summary .count{font-size:10px;font-weight:600;flex-shrink:0;}
+  .mod-group summary .count.all-done{color:var(--ok);}
+  .lesson-link,.learn-side span.locked{display:flex;align-items:center;gap:8px;padding:6px 12px 6px 14px;
+    font-size:12.5px;color:var(--tx2);border-top:1px solid var(--line);line-height:1.35;}
+  .lesson-link .st{font-size:10px;flex-shrink:0;width:12px;text-align:center;}
+  .lesson-link .st .fa-circle-check{color:var(--ok);}
+  .lesson-link .t{flex:1;min-width:0;}
+  .lesson-link .min{font-size:10px;color:var(--tx3);flex-shrink:0;}
+  .lesson-link.on{background:var(--pri-soft);color:var(--pri);font-weight:600;box-shadow:inset 3px 0 0 var(--gold);}
+  .learn-side span.locked{color:var(--tx3);cursor:not-allowed;}
+  .learn-side span.locked .fa-lock{font-size:10px;width:12px;text-align:center;flex-shrink:0;}
+
+  /* A topic's quiz or task. Indented and quieter than the lesson it belongs
+     to, so the curriculum still reads as a list of topics with their work
+     hanging off each one rather than a flat run of equal items. */
+  .act-link{display:flex;align-items:center;gap:8px;padding:5px 12px 5px 30px;
+    font-size:11.5px;color:var(--tx3);border-top:1px solid var(--line);line-height:1.35;
+    position:relative;}
+  .act-link::before{content:'';position:absolute;left:20px;top:0;bottom:0;width:1px;background:var(--line-2);}
+  .act-link:hover{color:var(--tx);background:var(--surface-2,#f6f7f9);}
+  .act-link .st{font-size:9.5px;flex-shrink:0;width:12px;text-align:center;}
+  .act-link .t{flex:1;min-width:0;}
+  .act-link.is-done{color:var(--tx2);}
+  .act-link.is-done .fa-circle-check{color:var(--ok);}
+  .act-link.is-locked{cursor:not-allowed;}
+  .act-link .req{flex-shrink:0;font-size:9px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;
+    color:#8a5a06;background:#fdf4e3;padding:1px 5px;}
+
+  /* A lesson whose video cannot be embedded. Deliberately looks like a real
+     piece of content rather than an error, because it is one. */
+  .watch-out{display:flex;gap:18px;align-items:center;padding:18px;margin-bottom:18px;
+    background:var(--surface);border:1px solid var(--line);border-left:3px solid #c00;}
+  .watch-out img{width:220px;aspect-ratio:16/9;object-fit:cover;flex-shrink:0;background:var(--line);}
+  .watch-out-body{flex:1;min-width:0;}
+  .watch-out-eyebrow{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:600;
+    letter-spacing:.08em;text-transform:uppercase;color:#c00;margin:0 0 6px;}
+  .watch-out h3{font-size:16px;font-weight:600;margin:0 0 7px;line-height:1.35;}
+  .watch-out-note{font-size:12.5px;line-height:1.6;color:var(--tx2);margin:0 0 13px;}
+  @media(max-width:640px){
+    .watch-out{flex-direction:column;align-items:stretch;}
+    .watch-out img{width:100%;}
+  }
+
+  .learn-backdrop{display:none;}
+
+  /* Content column */
+  .learn-main{margin-left:var(--lsw);margin-top:var(--lhd);padding:10px 14px calc(var(--abh) + 14px);}
+  .learn-main.no-bar{padding-bottom:16px;}
+  .learn-main h1{font-size:17px;font-weight:600;margin-bottom:10px;}
+  .learn-main h2{font-size:15px;font-weight:600;}
+  .learn-main .page-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px;}
+  .learn-main:focus{outline:none;}
+
+  /* Slim fixed action bar, pinned to the content column, never overlaps the sidebar. */
+  .learn-action-bar{position:fixed;bottom:0;left:var(--lsw);right:0;min-height:var(--abh);background:var(--surface);
+    border-top:1px solid var(--line);padding:7px 14px;z-index:44;display:flex;align-items:center;}
+  .learn-action-bar-inner{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;}
+  .learn-prev{display:inline-flex;align-items:center;gap:6px;color:var(--tx2);font-size:12.5px;font-weight:500;padding:6px 4px;}
+  .learn-prev.disabled{color:var(--tx3);opacity:.5;pointer-events:none;}
+  .learn-prev:hover{color:var(--pri);}
+
+  .learn-modal-backdrop{position:fixed;inset:0;background:rgba(6,15,31,.6);display:flex;align-items:center;justify-content:center;z-index:100;}
+  .learn-modal{background:var(--surface);padding:36px;max-width:420px;text-align:center;}
+  .learn-modal h2{font-size:20px;font-weight:400;margin-bottom:10px;}
+
+  .markdown-body h1,.markdown-body h2,.markdown-body h3{margin:1.1em 0 .5em;font-weight:600;color:var(--pri);}
+  .markdown-body h1:first-child,.markdown-body h2:first-child,.markdown-body h3:first-child{margin-top:0;}
+  .markdown-body p{margin-bottom:.9em;}
+  .markdown-body p:last-child{margin-bottom:0;}
+  .markdown-body ul,.markdown-body ol{margin:0 0 .9em 1.4em;list-style:revert;}
+  .markdown-body img{max-width:100%;height:auto;margin:.5em 0;}
+  .markdown-body code{background:var(--surface-2);padding:2px 5px;font-size:.9em;}
+  .markdown-body pre{background:#0d2237;color:#eef1f6;padding:12px 14px;overflow-x:auto;margin-bottom:.9em;}
+  .markdown-body pre code{background:none;padding:0;color:inherit;}
+  .markdown-body blockquote{border-left:3px solid var(--gold);padding-left:14px;color:var(--tx2);margin-bottom:.9em;}
+  .markdown-body a{color:var(--pri);text-decoration:underline;}
+
+  /* Tablet (portrait iPad) and phone: sidebar becomes an off-canvas drawer covering
+     the full viewport height; content and action bar take the full width. */
+  @media(max-width:960px){
+    .learn-hd .course-t,.learn-hd .divider,.learn-hd .pos{display:none;}
+    .learn-toggle{display:inline-flex;}
+    .learn-main{margin-left:0;padding:8px 10px calc(var(--abh) + 12px);}
+    .learn-main.no-bar{padding-bottom:14px;}
+    .learn-action-bar{left:0;padding:6px 10px;padding-bottom:calc(6px + env(safe-area-inset-bottom));}
+    .learn-side{top:0;width:88vw;max-width:320px;z-index:70;transform:translateX(-100%);
+      transition:transform .22s ease;box-shadow:10px 0 28px rgba(0,0,0,.18);}
+    .learn-side.open{transform:translateX(0);}
+    .learn-side-top{display:flex;}
+    .learn-side-close{display:inline-flex;}
+    .learn-backdrop{display:block;position:fixed;inset:0;background:rgba(6,15,31,.5);z-index:65;opacity:0;
+      pointer-events:none;transition:opacity .2s ease;}
+    .learn-backdrop.open{opacity:1;pointer-events:auto;}
+  }
+  @media(max-width:560px){
+    .learn-hd{gap:8px;padding:0 8px;}
+    .learn-hd .exit span{display:none;}
+    .learn-hd .hd-progress .bar{width:64px;}
+    .learn-prev span{display:none;}
+  }
+  [x-cloak]{display:none!important;}
+    /* Course-wide debug mode. Deliberately loud: while it is on, everyone on
+     the course can finish it without doing the work, so nobody should be able
+     to miss that it is on. */
+  .dbg-strip{display:flex;align-items:flex-start;gap:10px;padding:11px 14px;margin-bottom:14px;
+    background:#fdf6e6;border:1px solid #e8c98a;border-left:3px solid #b45309;
+    font-size:12.5px;line-height:1.55;color:#7a5f2a;}
+  .dbg-strip i{color:#b45309;font-size:14px;margin-top:1px;}
+  .dbg-strip b{color:#8a5a06;}
+</style>
+  @stack('styles')
+</head>
+<body>
+
+<a href="#learn-content" class="tb-skip">Skip to lesson content</a>
+
+@php
+  /* The shell resolves its own sidebar/progress data from the course + signed-in
+     user, so every course-context page gets identical chrome without each
+     controller passing it. $currentLesson is set only by the lesson player.
+     A child view that needs $shell inside its own sections builds it first
+     (child sections are buffered before this layout runs), reuse it if so,
+     so the queries only ever happen once per request. */
+  $shell = $shell ?? new \App\Support\Learning\LearnShell($course, auth()->user(), $currentLesson ?? null);
+  $shellPaths = \App\Support\AppShell::paths();
+@endphp
+
+@include('partials.toast-host')
+
+<div class="learn-shell" x-data="@yield('shell_component', 'learnShell()')" x-init="init()">
+  <header class="learn-hd">
+    <a href="{{ route('learn.index') }}" wire:navigate class="exit" title="Back to My Courses">
+      <i class="fas fa-arrow-left" aria-hidden="true"></i> <span>Exit</span>
+      <span class="sr-only">Back to My Courses</span>
+    </a>
+    <span class="divider" aria-hidden="true"></span>
+    <span class="course-t">{{ $course->title }}</span>
+    <span class="page-t">@yield('page_title', '')</span>
+    @yield('header_meta')
+    <span class="hd-progress" role="img"
+          aria-label="Course progress: {{ $shell->doneLessons() }} of {{ $shell->totalLessons() }} lessons complete">
+      <span class="bar" aria-hidden="true"><i style="width:{{ $shell->progressPercent() }}%"></i></span>
+      <span class="pct" aria-hidden="true">{{ $shell->progressPercent() }}%</span>
+    </span>
+    <button type="button" class="learn-toggle" @click="sidebarOpen = true"
+            :aria-expanded="sidebarOpen ? 'true' : 'false'" aria-controls="learn-side">
+      <i class="fas fa-list-ul" aria-hidden="true"></i> Contents
+    </button>
+  </header>
+
+  <div class="learn-backdrop" :class="{open: sidebarOpen}" @click="sidebarOpen = false"></div>
+
+  @include('learn.partials.sidebar', ['shell' => $shell, 'course' => $course, 'currentLesson' => $currentLesson ?? null])
+
+  <main class="learn-main @yield('main_class', 'no-bar')" id="learn-content" tabindex="-1">
+    @yield('banner')
+    @if(session('success'))<div class="alert-success" role="status">{{ session('success') }}</div>@endif
+    @if(session('error'))<div class="alert-success" role="alert" style="background:var(--bad-soft);color:var(--bad);border-color:var(--bad);">{{ session('error') }}</div>@endif
+    @yield('learn_content')
+  </main>
+
+  @yield('action_bar')
+  @yield('overlays')
+</div>
+
+<script>
+/** Base shell behaviour: the mobile sidebar drawer. The lesson player supplies
+ *  its own richer component (lessonPlayer) that includes these same keys. */
+function learnShell() {
+  return {
+    sidebarOpen: false,
+    init() {
+      const onKey = (e) => { if (e.key === 'Escape' && this.sidebarOpen) this.sidebarOpen = false; };
+      window.addEventListener('keydown', onKey);
+      // pjax-safety: wire:navigate keeps the JS context alive across body swaps.
+      document.addEventListener('livewire:navigating', () => window.removeEventListener('keydown', onKey), { once: true });
+    },
+  };
+}
+</script>
+
+@include('partials.app-navigation', ['shellPaths' => $shellPaths])
+
+@livewireScripts
+@stack('scripts')
+<x-analytics.beacon />
+</body>
+</html>
