@@ -11,16 +11,13 @@ class JsonLdTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_the_home_page_emits_person_and_organization_json_ld(): void
+    public function test_the_home_page_emits_college_or_university_json_ld(): void
     {
-        $this->seed(\Database\Seeders\PortfolioContentSeeder::class);
-
         $response = $this->get('/');
 
         $response->assertOk();
-        $response->assertSee('"@type":"Person"', false);
-        $response->assertSee('"@type":"Organization"', false);
-        $response->assertSee('Muhindo Mubaraka');
+        $response->assertSee('"@type":"CollegeOrUniversity"', false);
+        $response->assertSee('Muteesa I Royal University');
     }
 
     public function test_a_course_page_emits_course_and_breadcrumb_json_ld(): void

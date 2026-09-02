@@ -54,8 +54,9 @@ class HireJourneyTest extends TestCase
 
     public function test_the_old_contact_and_lead_urls_land_on_it_rather_than_404(): void
     {
-        // Both were linked from the site for months and are in people's history.
-        $this->get('/contact')->assertRedirect(route('hire'));
+        // /contact is a real university page again; only the old project-brief
+        // entry point still forwards to the hire journey.
+        $this->get('/contact')->assertOk();
         $this->get('/start-a-project')->assertRedirect(route('hire'));
     }
 

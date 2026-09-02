@@ -56,7 +56,9 @@ class ELearningDetailPageTest extends TestCase
 
         $response->assertOk();
         $response->assertDontSee('What you\'ll learn', false);
-        $response->assertDontSee('Requirements');
+        // The nav's "Entry requirements" link contains the bare word, so
+        // the assertion anchors to the section heading markup instead.
+        $response->assertDontSee('>Requirements</h2>', false);
     }
 
     public function test_the_buy_box_shows_free_for_a_free_course(): void

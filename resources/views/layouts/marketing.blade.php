@@ -1618,11 +1618,11 @@
             <a href="{{ $item['url'] }}" wire:navigate>{{ $item['label'] }}</a>
           @endif
         @endforeach
-        <a href="{{ route('portfolio.products') }}" wire:navigate>Products</a>
         {{-- An employer checking a certificate has no account and no reason to
              guess the URL; the address is printed on the document, but this is
              where somebody looks for it. --}}
         <a href="{{ route('certificates.lookup') }}" wire:navigate>Verify a certificate</a>
+        <a href="{{ route('downloads') }}" wire:navigate>Downloads</a>
       </div>
 
       <div>

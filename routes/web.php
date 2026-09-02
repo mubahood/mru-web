@@ -68,24 +68,97 @@ Route::post('/currency', function (Illuminate\Http\Request $request) {
     return back();
 })->name('currency.switch');
 
-Route::get('/', [PortfolioController::class, 'home'])->name('home');
+Route::get('/', [\App\Http\Controllers\University\PageController::class, 'home'])->name('home');
 Route::get('/sitemap.xml', [SitemapController::class, 'sitemap'])->name('sitemap');
 Route::get('/robots.txt', [SitemapController::class, 'robots'])->name('robots');
-Route::get('/work', [PortfolioController::class, 'work'])->name('portfolio.work');
-// The full grid. /work is the chapter in the About rail; this is the listing
-// it hands off to, and it must be declared before the {slug} route or "all"
-// would be read as a project slug.
-Route::get('/work/all', [PortfolioController::class, 'projects'])->name('portfolio.projects.index');
-Route::get('/work/{portfolioProject:slug}', [PortfolioController::class, 'project'])->name('portfolio.project');
-Route::get('/about', [PortfolioController::class, 'about'])->name('portfolio.about');
-Route::get('/services', [PortfolioController::class, 'services'])->name('portfolio.services');
-Route::get('/skills', [PortfolioController::class, 'skills'])->name('portfolio.skills');
-Route::get('/experience', [PortfolioController::class, 'experience'])->name('portfolio.experience');
-Route::get('/education', [PortfolioController::class, 'education'])->name('portfolio.education');
-Route::get('/research', [PortfolioController::class, 'research'])->name('portfolio.research');
-Route::get('/cv', [PortfolioController::class, 'cv'])->name('portfolio.cv');
 
-// Insights, writing. Public reading side; authoring lives in the back office.
+/*
+|--------------------------------------------------------------------------
+| University — About & governance
+|--------------------------------------------------------------------------
+*/
+Route::controller(\App\Http\Controllers\University\PageController::class)->group(function () {
+    Route::get('/about', 'about')->name('about');
+    Route::get('/who-we-are', 'whoWeAre')->name('who-we-are');
+    Route::get('/governance', 'governance')->name('governance');
+    Route::get('/university-council', 'council')->name('council');
+    Route::get('/staff-directory', 'staffDirectory')->name('staff.directory');
+    Route::get('/campus-life', 'campusLife')->name('campus-life');
+    Route::get('/accommodation', 'accommodation')->name('accommodation');
+    Route::get('/sports', 'sports')->name('sports');
+    Route::get('/students-guild', 'guild')->name('guild');
+    Route::get('/alumni', 'alumni')->name('alumni');
+    Route::get('/library', 'library')->name('library');
+    Route::get('/almanac', 'almanac')->name('almanac');
+    Route::get('/downloads', 'downloads')->name('downloads');
+    Route::get('/contact', 'contact')->name('contact');
+    Route::post('/contact', 'sendMessage')->middleware('throttle:8,1')->name('contact.store');
+});
+
+/*
+|--------------------------------------------------------------------------
+| University — Admissions
+|--------------------------------------------------------------------------
+*/
+Route::controller(\App\Http\Controllers\University\AdmissionsController::class)
+    ->prefix('admissions')->name('admissions.')->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/requirements', 'requirements')->name('requirements');
+        Route::get('/how-to-apply', 'howToApply')->name('apply');
+        Route::get('/fees', 'fees')->name('fees');
+        Route::get('/scholarships', 'scholarships')->name('scholarships');
+        Route::get('/intakes', 'intakes')->name('intakes');
+        Route::get('/international', 'international')->name('international');
+        Route::get('/faqs', 'faqs')->name('faqs');
+    });
+// The legacy site exposed several of these at the root; keep those URLs alive.
+$movedPermanently('/admission-requirements', '/admissions/requirements');
+$movedPermanently('/application-procedure', '/admissions/how-to-apply');
+$movedPermanently('/fees', '/admissions/fees');
+$movedPermanently('/scholarships', '/admissions/scholarships');
+$movedPermanently('/intakes', '/admissions/intakes');
+$movedPermanently('/faqs', '/admissions/faqs');
+$movedPermanently('/international-students', '/admissions/international');
+
+/*
+|--------------------------------------------------------------------------
+| University — Academics, events, vacancies
+|--------------------------------------------------------------------------
+*/
+Route::get('/faculties', [\App\Http\Controllers\University\FacultyController::class, 'index'])->name('faculties.index');
+Route::get('/faculties/{faculty:slug}', [\App\Http\Controllers\University\FacultyController::class, 'show'])->name('faculties.show');
+Route::get('/programmes', [\App\Http\Controllers\University\ProgrammeController::class, 'index'])->name('programmes.index');
+Route::get('/programmes/{programme:slug}', [\App\Http\Controllers\University\ProgrammeController::class, 'show'])->name('programmes.show');
+$movedPermanently('/programs', '/programmes');
+
+Route::get('/events', [\App\Http\Controllers\University\EventController::class, 'index'])->name('events.index');
+Route::get('/events/{event:slug}', [\App\Http\Controllers\University\EventController::class, 'show'])->name('events.show');
+$movedPermanently('/events-2', '/events');
+
+Route::get('/vacancies', [\App\Http\Controllers\University\VacancyController::class, 'index'])->name('vacancies.index');
+Route::get('/vacancies/{vacancy:slug}', [\App\Http\Controllers\University\VacancyController::class, 'show'])->name('vacancies.show');
+$movedPermanently('/jobs', '/vacancies');
+
+/*
+|--------------------------------------------------------------------------
+| University — MRU Scholar (research repository)
+|--------------------------------------------------------------------------
+*/
+Route::controller(\App\Http\Controllers\University\ScholarPortalController::class)
+    ->prefix('scholar')->name('scholar.')->group(function () {
+        Route::get('/', 'home')->name('home');
+        Route::get('/publications', 'publications')->name('publications');
+        Route::get('/publications/{publication:slug}', 'publication')->name('publication');
+        Route::get('/publications/{publication:slug}/download', 'download')->name('publication.download');
+        // 'directory' as a bare method name collides with PHP's built-in
+        // Directory class inside prependGroupController(), so the method
+        // carries a longer name.
+        Route::get('/directory', 'scholarsDirectory')->name('directory');
+        Route::get('/{scholar:slug}', 'profile')->name('profile');
+    });
+$movedPermanently('/mru-scholar', '/scholar');
+
+// Campus gallery. Public reading side; authoring lives in the back office.
 Route::get('/gallery', [\App\Http\Controllers\GalleryController::class, 'index'])->name('gallery.index');
 
 /*
@@ -119,11 +192,17 @@ Route::middleware('auth')->group(function () {
     Route::get('/my/downloads/{product:slug}/install', [\App\Http\Controllers\Shop\DownloadController::class, 'install'])->name('shop.install');
     Route::get('/my/downloads/{product:slug}', [\App\Http\Controllers\Shop\DownloadController::class, 'download'])->name('shop.download');
 });
-Route::get('/blog', [\App\Http\Controllers\InsightController::class, 'index'])->name('insights.index');
-Route::get('/blog/{post:slug}', [\App\Http\Controllers\InsightController::class, 'show'])->name('insights.show');
-$movedPermanently('/insights', '/blog');
-$movedPermanently('/insights/{post}', '/blog/{post}');
-Route::get('/products', [PortfolioController::class, 'products'])->name('portfolio.products');
+/*
+ * University news. Route *names* stay `insights.*` deliberately — every
+ * route('insights.show', ...) call site keeps working while the public URL
+ * becomes /news (same zero-churn trick the e-learning rename used).
+ */
+Route::get('/news', [\App\Http\Controllers\InsightController::class, 'index'])->name('insights.index');
+Route::get('/news/{post:slug}', [\App\Http\Controllers\InsightController::class, 'show'])->name('insights.show');
+$movedPermanently('/insights', '/news');
+$movedPermanently('/insights/{post}', '/news/{post}');
+$movedPermanently('/blog', '/news');
+$movedPermanently('/blog/{post}', '/news/{post}');
 
 /*
  * Analytics beacon. Unauthenticated because most of the audience is, and
@@ -143,10 +222,8 @@ Route::post('/_a', \App\Http\Controllers\Analytics\BeaconController::class)->nam
  */
 Route::get('/hire', \App\Http\Controllers\HireController::class)->name('hire');
 
-// The generic contact form is gone: "get in touch" produced messages nobody
-// could act on, while a proposal can be priced. Old links land on the journey
-// that replaced it rather than on a 404.
-$movedPermanently('/contact', '/hire');
+// /contact is a real university page again (declared above); only the old
+// project-brief entry point still forwards to the hire journey.
 $movedPermanently('/start-a-project', '/hire');
 
 Route::middleware(['auth'])->group(function () {
@@ -350,6 +427,19 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(fun
     Route::post('invoices/{invoice}/pay/flutterwave', [GatewayPaymentController::class, 'start'])->name('invoices.flutterwave');
     Route::get('payments/{payment}/receipt', [AdminPaymentController::class, 'receipt'])->name('payments.receipt');
     Route::resource('coupons', \App\Http\Controllers\Admin\CouponController::class)->except(['show']);
+
+    // University content
+    Route::resource('faculties', \App\Http\Controllers\Admin\FacultyController::class)->except('show');
+    Route::resource('programmes', \App\Http\Controllers\Admin\ProgrammeController::class)->except('show');
+    Route::resource('staff-members', \App\Http\Controllers\Admin\StaffMemberController::class)->except('show');
+    Route::resource('university-events', \App\Http\Controllers\Admin\UniversityEventController::class)->except('show');
+    Route::resource('almanac', \App\Http\Controllers\Admin\AlmanacEntryController::class)->except('show')->parameters(['almanac' => 'almanacEntry']);
+    Route::resource('scholarships', \App\Http\Controllers\Admin\ScholarshipController::class)->except('show');
+    Route::resource('vacancies', \App\Http\Controllers\Admin\VacancyController::class)->except('show');
+    Route::resource('partners', \App\Http\Controllers\Admin\PartnerController::class)->except('show');
+    Route::resource('scholars', \App\Http\Controllers\Admin\ScholarController::class)->except('show');
+    Route::resource('publications', \App\Http\Controllers\Admin\PublicationController::class)->except('show');
+    Route::resource('research-areas', \App\Http\Controllers\Admin\ResearchAreaController::class)->except('show');
 
     // Users & settings
     Route::resource('users', UserController::class)->middleware('permission:manage-users');

@@ -50,7 +50,7 @@ class WebManifestTest extends TestCase
      */
     public function test_every_public_page_points_a_browser_at_it(): void
     {
-        foreach (['/', '/e-learning', '/work'] as $path) {
+        foreach (['/', '/e-learning', '/programmes'] as $path) {
             $this->get($path)->assertOk()
                 ->assertSee('rel="manifest"', false)
                 ->assertSee('rel="apple-touch-icon"', false);

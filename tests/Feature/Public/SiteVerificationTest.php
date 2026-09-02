@@ -31,7 +31,7 @@ class SiteVerificationTest extends TestCase
     {
         // A property verified against /e-learning fails if the tag lives at
         // the root alone, and which URL was submitted is easy to forget.
-        foreach (['/', '/about', '/e-learning', '/source-code', '/work'] as $path) {
+        foreach (['/', '/about', '/e-learning', '/programmes', '/admissions'] as $path) {
             $this->get($path)->assertOk()->assertSee('google-site-verification', false);
         }
     }
@@ -46,17 +46,10 @@ class SiteVerificationTest extends TestCase
     {
         // The real title comes from this setting, and the real title is where
         // the ampersand lives.
-        \App\Models\Setting::create([
-            'key' => 'portfolio.identity',
-            'group' => 'general',
-            'type' => 'string',
-            'value' => json_encode([
-                'name' => 'Muhindo Mubaraka',
-                'title' => 'Full-Stack Developer & Software Engineer',
-            ]),
-        ]);
 
-        $html = (string) $this->get('/')->assertOk()->getContent();
+        // The faculties listing title carries a literal ampersand
+        // ("Faculties & Schools"), the exact shape the old bug double-escaped.
+        $html = (string) $this->get('/faculties')->assertOk()->getContent();
 
         preg_match('#<title>([^<]*)</title>#', $html, $m);
 
@@ -67,7 +60,7 @@ class SiteVerificationTest extends TestCase
 
     public function test_every_public_title_reads_as_a_sentence(): void
     {
-        foreach (['/', '/about', '/cv', '/e-learning', '/work', '/source-code'] as $path) {
+        foreach (['/', '/about', '/admissions', '/e-learning', '/programmes', '/scholar'] as $path) {
             $html = (string) $this->get($path)->assertOk()->getContent();
             preg_match('#<title>([^<]*)</title>#', $html, $m);
             $title = html_entity_decode($m[1] ?? '', ENT_QUOTES, 'UTF-8');

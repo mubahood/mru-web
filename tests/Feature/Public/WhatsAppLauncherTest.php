@@ -25,7 +25,7 @@ class WhatsAppLauncherTest extends TestCase
 
     public function test_it_is_on_the_public_pages(): void
     {
-        foreach (['/', '/about', '/e-learning', '/source-code', '/work'] as $path) {
+        foreach (['/', '/about', '/e-learning', '/programmes', '/admissions'] as $path) {
             $this->get($path)->assertOk()->assertSee('wa.me/'.self::NUMBER, false);
         }
     }
@@ -76,17 +76,10 @@ class WhatsAppLauncherTest extends TestCase
         $this->assertStringContainsString('Flutter Mobile App Development', $messages[1]);
     }
 
-    public function test_the_message_knows_it_is_on_a_work_page(): void
+    public function test_a_non_course_page_offers_the_generic_messages(): void
     {
-        $project = PortfolioProject::create([
-            'title' => 'ULITS National Livestock Traceability',
-            'slug' => 'ulits-'.Str::random(5),
-            'description' => 'A national system.',
-            'is_featured' => false,
-            'sort_order' => 0,
-        ]);
 
-        $html = (string) $this->get(route('portfolio.project', $project))->assertOk()->getContent();
+        $html = (string) $this->get(route('faculties.index'))->assertOk()->getContent();
 
         preg_match_all('#https://wa\.me/\d+\?text=([^"]+)#', $html, $matches);
         $messages = array_map('rawurldecode', $matches[1]);
@@ -131,17 +124,15 @@ class WhatsAppLauncherTest extends TestCase
      */
     public function test_a_record_with_no_description_does_not_break_its_page(): void
     {
-        $project = PortfolioProject::create([
-            'title' => 'A system with no description yet',
-            'slug' => 'blank-'.Str::random(5),
-            'description' => null,
-            'is_featured' => false,
-            'sort_order' => 0,
+        $publication = \App\Models\Publication::create([
+            'title' => 'A paper with no abstract yet',
+            'abstract' => null,
+            'status' => 'published',
         ]);
 
         $level = ob_get_level();
 
-        $this->get(route('portfolio.project', $project))->assertOk();
+        $this->get(route('scholar.publication', $publication))->assertOk();
 
         $this->assertSame($level, ob_get_level(), 'the page left an output buffer open');
     }

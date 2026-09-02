@@ -25,17 +25,17 @@ class SiteNavTest extends TestCase
     {
         $labels = array_column(SiteNav::items(), 'label');
 
-        // Order is the message: learning first, then who he is, then what can
-        // be bought, then the writing.
-        $this->assertSame(['Learn', 'About Me', 'Source code', 'Blog'], $labels);
+        // Order is the message: identity first, then the admissions funnel,
+        // then study, research, life, and what's happening.
+        $this->assertSame(['About', 'Admissions', 'Academics', 'Research', 'Student Life', 'News & Events'], $labels);
     }
 
-    public function test_the_about_panel_carries_every_page_about_him(): void
+    public function test_the_about_panel_carries_every_page_about_the_university(): void
     {
-        $about = collect(SiteNav::items())->firstWhere('label', 'About Me');
+        $about = collect(SiteNav::items())->firstWhere('label', 'About');
 
         $this->assertSame(
-            ['About me', 'My work', 'My CV', 'Qualifications', 'Skills & experience', 'Research', 'Gallery', 'Consultancy'],
+            ['About MRU', 'Who we are', 'Governance', 'University Council', 'Staff directory', 'Contact us'],
             array_column($about['children'], 'label')
         );
     }
@@ -58,12 +58,12 @@ class SiteNavTest extends TestCase
     public function test_a_child_page_lights_up_its_parent_section(): void
     {
         // Someone deep in /cv still needs to see which section they are in.
-        $html = (string) $this->get(route('portfolio.cv'))->assertOk()->getContent();
+        $html = (string) $this->get(route('admissions.requirements'))->assertOk()->getContent();
 
         $this->assertMatchesRegularExpression(
-            '/<button[^>]*class="nav-link on"[^>]*>\s*About Me/',
+            '/<button[^>]*class="nav-link on"[^>]*>\s*Admissions/',
             $html,
-            'the About Me trigger must show as active while a child page is open'
+            'the Admissions trigger must show as active while a child page is open'
         );
     }
 
@@ -141,7 +141,8 @@ class SiteNavTest extends TestCase
         $moved = [
             '/shop' => '/source-code',
             '/projects-for-sale' => '/source-code',
-            '/insights' => '/blog',
+            '/insights' => '/news',
+            '/blog' => '/news',
             '/courses' => '/e-learning',
         ];
 
@@ -215,39 +216,8 @@ class SiteNavTest extends TestCase
 
         // A <button> trigger is focusable and CSS opens the panel on
         // :focus-within, so the panel works from the keyboard with no script.
-        $this->assertMatchesRegularExpression('/<button[^>]*class="nav-link[^"]*"[^>]*aria-expanded="false"[^>]*aria-controls="mega-about-me"/', $html);
-        $this->assertStringContainsString('id="mega-about-me"', $html);
+        $this->assertMatchesRegularExpression('/<button[^>]*class="nav-link[^"]*"[^>]*aria-expanded="false"[^>]*aria-controls="mega-about"/', $html);
+        $this->assertStringContainsString('id="mega-about"', $html);
     }
 
-    public function test_the_cv_page_is_assembled_from_live_records(): void
-    {
-        /* Seeded deliberately. The earlier version asserted on the words
-           "Experience" and "Skills" with an empty database, and passed only
-           because the old footer happened to link to pages with those names.
-           It was testing the footer, not the CV. */
-        \App\Models\Experience::create([
-            'company' => 'Eight Tech Consults', 'role' => 'Manager, Information Systems',
-            'start_date' => '2021-01-01', 'description' => 'Led delivery of enterprise systems.',
-            'sort_order' => 0,
-        ]);
-        \App\Models\Education::create([
-            'institution' => 'Makerere University', 'degree' => 'MSc', 'field' => 'Computer Science',
-            'start_date' => '2023-01-01', 'sort_order' => 0,
-        ]);
-        \App\Models\Skill::create(['name' => 'Laravel (Expert)', 'category' => 'Backend Frameworks', 'sort_order' => 0]);
-
-        $this->get(route('portfolio.cv'))
-            ->assertOk()
-            ->assertSee('Manager, Information Systems')
-            ->assertSee('Eight Tech Consults')
-            ->assertSee('MSc')
-            ->assertSee('Laravel (Expert)')
-            // Printing is the delivery mechanism, so the control must be there.
-            // The print button is gone. Somebody who wants this CV wants a
-            // file to attach to an email, not a browser-rendered approximation
-            // of the page, so it offers the real PDF instead.
-            ->assertDontSee('window.print()', false)
-            ->assertSee('files/muhindo-mubaraka-cv.pdf', false)
-            ->assertSee('Download CV');
-    }
 }

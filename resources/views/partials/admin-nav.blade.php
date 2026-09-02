@@ -57,6 +57,21 @@
           ['label' => 'Testimonials', 'icon' => 'fa-quote-left', 'route' => 'admin.testimonials.index', 'match' => ['admin.testimonials.*']],
           ['label' => 'Messages', 'icon' => 'fa-envelope', 'route' => 'admin.messages.index', 'match' => ['admin.messages.*']],
       ]],
+      ['key' => 'university', 'label' => 'University', 'icon' => 'fa-building-columns', 'gate' => 'portfolio.manage', 'items' => [
+          ['label' => 'Faculties', 'icon' => 'fa-school', 'route' => 'admin.faculties.index', 'match' => ['admin.faculties.*']],
+          ['label' => 'Programmes', 'icon' => 'fa-book-open', 'route' => 'admin.programmes.index', 'match' => ['admin.programmes.*']],
+          ['label' => 'Staff', 'icon' => 'fa-address-book', 'route' => 'admin.staff-members.index', 'match' => ['admin.staff-members.*']],
+          ['label' => 'Events', 'icon' => 'fa-calendar-days', 'route' => 'admin.university-events.index', 'match' => ['admin.university-events.*']],
+          ['label' => 'Almanac', 'icon' => 'fa-calendar-week', 'route' => 'admin.almanac.index', 'match' => ['admin.almanac.*']],
+          ['label' => 'Scholarships', 'icon' => 'fa-hand-holding-heart', 'route' => 'admin.scholarships.index', 'match' => ['admin.scholarships.*']],
+          ['label' => 'Vacancies', 'icon' => 'fa-briefcase', 'route' => 'admin.vacancies.index', 'match' => ['admin.vacancies.*']],
+          ['label' => 'Partners', 'icon' => 'fa-handshake', 'route' => 'admin.partners.index', 'match' => ['admin.partners.*']],
+      ]],
+      ['key' => 'scholar', 'label' => 'Scholar', 'icon' => 'fa-flask', 'gate' => 'portfolio.manage', 'items' => [
+          ['label' => 'Scholars', 'icon' => 'fa-user-graduate', 'route' => 'admin.scholars.index', 'match' => ['admin.scholars.*']],
+          ['label' => 'Publications', 'icon' => 'fa-file-lines', 'route' => 'admin.publications.index', 'match' => ['admin.publications.*']],
+          ['label' => 'Research areas', 'icon' => 'fa-tags', 'route' => 'admin.research-areas.index', 'match' => ['admin.research-areas.*']],
+      ]],
       ['key' => 'courses', 'label' => 'Courses', 'icon' => 'fa-chalkboard-user', 'gate' => 'courses.manage', 'items' => [
           ['label' => 'Courses', 'icon' => 'fa-book', 'route' => 'admin.courses.index', 'match' => ['admin.courses.*']],
           ['label' => 'Enrollments', 'icon' => 'fa-user-graduate', 'route' => 'admin.enrollments.index', 'match' => ['admin.enrollments.*']],

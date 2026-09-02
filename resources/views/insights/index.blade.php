@@ -7,9 +7,9 @@
 <section class="page-hero tex-glow">
   <span class="hero-mark" aria-hidden="true">BLOG</span>
   <div class="wrap">
-    <div class="eyebrow">Writing</div>
-    <h1>Blog</h1>
-    <p>Notes on building software that lasts, on teaching it, and on the systems I work on day to day.</p>
+    <div class="eyebrow">News &amp; Announcements</div>
+    <h1>University News</h1>
+    <p>Announcements, stories and updates from across Muteesa I Royal University — graduations, admissions, research, sports and student life.</p>
 
     @if($categories->isNotEmpty())
       <div class="subnav">
@@ -27,7 +27,7 @@
   <div class="wrap">
     @if($posts->isEmpty())
       <div class="tb-empty" style="text-align:center;padding:40px 0;">
-        <p class="lead">No articles published yet. The first one is being written.</p>
+        <p class="lead">No news published yet — announcements will appear here.</p>
       </div>
     @else
       <div class="work-grid">

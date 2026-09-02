@@ -4,7 +4,6 @@ namespace Tests\Feature\Public;
 
 use App\Models\Course;
 use App\Models\Enrollment;
-use App\Models\PortfolioProject;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -46,8 +45,8 @@ class ActionBarTest extends TestCase
     {
         $bar = $this->bar(route('home'));
 
-        $this->assertStringContainsString(route('hire'), $bar);
-        $this->assertStringContainsString(route('courses.index'), $bar);
+        $this->assertStringContainsString(route('programmes.index'), $bar);
+        $this->assertStringContainsString('Apply Now', $bar);
     }
 
     public function test_a_paid_course_shows_its_price_and_sends_you_to_the_coupon_field(): void
@@ -119,28 +118,12 @@ class ActionBarTest extends TestCase
         $this->assertStringContainsString(route('checkout.review'), $bar);
     }
 
-    public function test_a_case_study_keeps_the_question_it_is_read_to_answer_on_screen(): void
-    {
-        $project = PortfolioProject::create([
-            'title' => 'Wildlife Offenders Database', 'slug' => 'wod',
-            'description' => 'Enforcement analytics.', 'sort_order' => 1,
-        ]);
-
-        $bar = $this->bar(route('portfolio.project', $project));
-
-        // Hire, and a walkthrough of this system. Most of these are internal,
-        // so "request a demo" is the honest offer, and it carries the slug so
-        // the brief already knows which system.
-        $this->assertStringContainsString(route('hire'), $bar);
-        $this->assertStringContainsString('demo='.$project->slug, $bar);
-    }
-
     public function test_a_listing_page_has_no_bar_because_it_has_no_single_action(): void
     {
         Course::factory()->create(['is_published' => true]);
         Product::factory()->create();
 
-        foreach ([route('courses.index'), route('shop.index'), route('portfolio.projects.index')] as $url) {
+        foreach ([route('courses.index'), route('shop.index'), route('programmes.index')] as $url) {
             $this->assertStringNotContainsString('<div class="act-bar">',
                 (string) $this->get($url)->assertOk()->getContent(),
                 "{$url} should not have an action bar.");

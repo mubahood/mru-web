@@ -1,6 +1,6 @@
 @extends('layouts.marketing')
 @section('title', 'Gallery | Muteesa I Royal University')
-@section('desc', 'The work, the desk, the teams and the study behind the systems.')
+@section('desc', 'Muteesa I Royal University in pictures — campus life, graduations, sports and events at Kakeeka and Kirumba.')
 
 @section('content')
 
@@ -8,17 +8,13 @@
   <span class="hero-mark" aria-hidden="true">GALLERY</span>
   <div class="wrap">
     <div class="eyebrow">In pictures</div>
-    <h1>Gallery</h1>
-    <p>The desk where most of it happens, the rooms where it gets agreed, and the people it gets built with.</p>
+    <h1>University Gallery</h1>
+    <p>Campus life, graduations, sports and events — the university as it actually looks.</p>
   </div>
 </section>
 
 <section class="tex-grid">
   <div class="wrap">
-    <div class="rail-layout">
-      @include('portfolio.partials.rail')
-      <div>
-
     @if($categories->isNotEmpty())
       <nav class="gal-filters" aria-label="Filter photographs by category">
         <a href="{{ route('gallery.index') }}" wire:navigate class="{{ $activeCategory === '' ? 'on' : '' }}">
@@ -32,7 +28,9 @@
     @endif
 
     @if($photos->isEmpty())
-      <div class="tb-empty" style="text-align:center;padding:40px 0;"><p class="lead">No photographs yet.</p></div>
+      <div style="text-align:center;padding:48px 0;">
+        <p class="lead">Photographs are being added — campus life, graduations and events will appear here.</p>
+      </div>
     @else
       {{-- Every tile declares its own aspect ratio from the stored dimensions,
            so the grid is the right shape before a single image has downloaded
@@ -57,13 +55,11 @@
         @endforeach
       </div>
     @endif
-
-    @include('portfolio.partials.chapter-end')
-      </div>
-    </div>
   </div>
 </section>
 
 @include('portfolio.partials.lightbox', ['photos' => $photos, 'grid' => '#gal-grid', 'item' => '.gal-item'])
+
+@include('university.partials.cta-band')
 
 @endsection

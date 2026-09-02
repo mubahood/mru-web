@@ -75,15 +75,18 @@ class ELearningRoutesTest extends TestCase
 
         $response->assertOk();
         $response->assertSee(route('courses.index'), false);
-        $response->assertSee('e&#8209;Learning', false);
+        $response->assertSee('e-Learning', false);
     }
 
-    public function test_home_page_shows_published_courses_in_the_e_learning_strip(): void
+    public function test_the_catalogue_shows_published_courses_only(): void
     {
+        // The university home page leads with academic programmes; courses are
+        // one click away behind the nav's e-Learning entry, so discoverability
+        // is asserted on the catalogue itself.
         $course = Course::factory()->create(['is_published' => true, 'title' => 'Laravel From Scratch']);
         Course::factory()->create(['is_published' => false, 'title' => 'Unpublished Draft Course']);
 
-        $response = $this->get('/');
+        $response = $this->get(route('courses.index'));
 
         $response->assertOk();
         $response->assertSee('Laravel From Scratch');

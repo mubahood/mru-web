@@ -9,7 +9,7 @@
   <div class="wrap">
     <div class="eyebrow">e&#8209;Learning</div>
     <h1>Courses</h1>
-    <p>I teach the same stack I build with: practical, project-based, in plain English. Learn at your pace and finish with a certificate you can verify.</p>
+    <p>Short, practical online courses from Muteesa I Royal University: project-based, self-paced, in plain English — and every completion earns a certificate anyone can verify.</p>
     <div class="trust-chips">
       <span><i class="fas fa-graduation-cap" aria-hidden="true"></i> {{ $courses->total() }} {{ \Illuminate\Support\Str::plural('course', $courses->total()) }}</span>
       <span><i class="fas fa-book" aria-hidden="true"></i> {{ $totalLessonCount }} {{ \Illuminate\Support\Str::plural('lesson', $totalLessonCount) }}</span>
