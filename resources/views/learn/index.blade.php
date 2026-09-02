@@ -52,7 +52,7 @@
                 @if($due && $due->isOutstanding())
                   {{ $due->currency }} {{ number_format((float) $due->balance, 2) }} to pay
                   @if($due->direct_payment_at)
-                    <br><span class="muted">You are paying Muhindo directly. It opens once he confirms.</span>
+                    <br><span class="muted">You are paying the University directly. It opens once the Bursar confirms.</span>
                   @endif
                 @else
                   Payment pending
@@ -90,7 +90,7 @@
             <span class="badge-tb badge-pending">{{ $due && $due->direct_payment_at ? 'Awaiting confirmation' : 'Payment pending' }}</span>
             @if($due && $due->isOutstanding())
               {{-- Straight to the one payment screen, where paying, arranging
-                   to pay Muhindo directly and cancelling all live together. --}}
+                   to pay the University directly and cancelling all live together. --}}
               <a href="{{ route('payments.show', $due) }}" class="btn-tb btn-tb-primary btn-tb-sm">
                 <i class="fas fa-credit-card"></i> Pay {{ $due->currency }} {{ number_format((float) $due->balance, 2) }}
               </a>

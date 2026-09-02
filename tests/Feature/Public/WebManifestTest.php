@@ -22,7 +22,7 @@ class WebManifestTest extends TestCase
         $manifest = json_decode((string) file_get_contents(public_path('manifest.json')), true);
 
         $this->assertIsArray($manifest);
-        $this->assertSame('Muhindo Mubaraka', $manifest['name']);
+        $this->assertSame('Muteesa I Royal University', $manifest['name']);
         $this->assertSame('/', $manifest['start_url']);
         $this->assertNotEmpty($manifest['icons']);
 

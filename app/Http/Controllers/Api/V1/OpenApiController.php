@@ -37,7 +37,7 @@ class OpenApiController extends Controller
         return [
             'openapi' => '3.0.3',
             'info' => [
-                'title' => 'Muhindo Mubaraka API',
+                'title' => 'Muteesa I Royal University API',
                 'version' => '1.0.0',
                 'description' => 'Sanctum-authenticated JSON API for the mobile client. Every response uses the '
                     .'standard envelope {success, code, message, data, errors}; lists add a `meta` block.',

@@ -1,4 +1,4 @@
-{{-- Muhindo Mubaraka, Learning shell (full-bleed course player) --}}
+{{-- Muteesa I Royal University, Learning shell (full-bleed course player) --}}
 {{--
   A distraction-free shell for pages inside a course: a fixed 44px header, a
   fixed sidebar running top → bottom with its own scrollbar, an independently
@@ -17,7 +17,7 @@
   @include('partials.sw-kill')
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="csrf-token" content="{{ csrf_token() }}">
-  <title>{{ $title ?? $__env->yieldContent('title', 'Learning') }} · Muhindo Mubaraka</title>
+  <title>{{ $title ?? $__env->yieldContent('title', 'Learning') }} · MRU e-Learning</title>
   <link rel="icon" type="image/png" sizes="48x48" href="{{ asset('favicon.png') }}">
   <meta name="theme-color" content="#ffffff">
   <link rel="stylesheet" href="{{ asset('vendor/fonts/inter/inter.css') }}">

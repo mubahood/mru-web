@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>{{ $subject ?? 'Muhindo Mubaraka' }}</title>
+<title>{{ $subject ?? 'Muteesa I Royal University' }}</title>
 </head>
 <body style="margin:0;padding:0;background:#F4EFE9;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
 <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background:#F4EFE9;min-height:100vh;">
@@ -18,7 +18,7 @@
       <td style="background:linear-gradient(135deg,#1A0E07 0%,#3A2010 100%);border-radius:12px 12px 0 0;padding:20px 32px;">
         <div style="background:#ffffff;border-radius:8px;display:inline-block;padding:8px 16px;">
           <img src="{{ asset('images/logo-horizontal.png') }}"
-               alt="Muhindo Mubaraka"
+               alt="Muteesa I Royal University"
                width="160"
                style="height:auto;display:block;">
         </div>

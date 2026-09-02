@@ -52,7 +52,7 @@ class SignatureTest extends TestCase
 
         $this->assertStringContainsString(resource_path('brand/signature.png'), $html);
         $this->assertStringContainsString('sig-rule', $html);
-        $this->assertStringContainsString('Muhindo Mubaraka', $html);
+        $this->assertStringContainsString('Muteesa I Royal University', $html);
     }
 
     public function test_the_role_line_can_be_set_per_document(): void
@@ -83,7 +83,7 @@ class SignatureTest extends TestCase
             // sign by hand, not a broken image and not a fatal.
             $this->assertStringNotContainsString('<img', $html);
             $this->assertStringContainsString('sig-rule', $html);
-            $this->assertStringContainsString('Muhindo Mubaraka', $html);
+            $this->assertStringContainsString('Muteesa I Royal University', $html);
         } finally {
             rename($parked, $real);
         }

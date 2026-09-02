@@ -126,7 +126,7 @@ class BuyerPaymentJourneyTest extends TestCase
         // Somebody who scrolls past the flash message still has a standing
         // answer to "why will my course not open?" and a way to pay.
         $this->actingAs($student)->get(route('dashboard'))->assertOk()
-            ->assertSee('paying Muhindo directly', false)
+            ->assertSee('paying the University directly', false)
             ->assertSee(route('payments.show', $invoice), false);
     }
 
@@ -294,7 +294,7 @@ class BuyerPaymentJourneyTest extends TestCase
 
         $this->actingAs($buyer)->get(route('payments.show', $invoice))->assertOk()
             ->assertSee('Complete your payment')
-            ->assertSee('I will pay Mr. Muhindo Mubaraka directly')
+            ->assertSee('I will pay the University directly')
             ->assertSee('UGX 50,000.00');
     }
 

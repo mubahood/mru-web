@@ -1,5 +1,5 @@
 @extends('layouts.marketing')
-@section('title', 'Blog | Muhindo Mubaraka')
+@section('title', 'News | Muteesa I Royal University')
 @section('desc', 'Notes on building software that lasts, teaching it, and the systems I work on.')
 
 @section('content')
@@ -65,7 +65,7 @@
     <p class="lead" style="max-width:460px;margin:10px auto 20px;">Tell me what you are building and I will let you know when something relevant goes up.</p>
     <a href="{{ route('hire') }}" wire:navigate class="btn gold cta">
       <span class="cta-a">Hire Me</span>
-      <span class="cta-b" aria-hidden="true">Hire Muhindo <i class="fas fa-arrow-right"></i></span>
+      <span class="cta-b" aria-hidden="true">Talk to us <i class="fas fa-arrow-right"></i></span>
     </a>
   </div>
 </section>

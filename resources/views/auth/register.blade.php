@@ -37,7 +37,7 @@
   </div>
 @else
   <div class="af-eyebrow">Create an account</div>
-  <h2 class="af-title">Join Muhindo Mubaraka</h2>
+  <h2 class="af-title">Create your MRU account</h2>
   <p class="af-sub">One account for both sides. Pick what brings you here. You can add the other later.</p>
 @endif
 
@@ -63,9 +63,9 @@
     <label class="a-label">I'm here to</label>
     <div class="acct-types">
       @foreach([
-        ['v' => 'student', 'i' => 'fa-graduation-cap', 't' => 'Learn from Muhindo',
+        ['v' => 'student', 'i' => 'fa-graduation-cap', 't' => 'Learn with MRU e-Learning',
          'd' => 'Take his courses, track your progress and earn a verifiable certificate.'],
-        ['v' => 'client',  'i' => 'fa-handshake', 't' => 'Hire Muhindo for a project',
+        ['v' => 'client',  'i' => 'fa-handshake', 't' => 'Work with the University',
          'd' => 'Tell him what you need on the next screen, then follow the build in your own portal.'],
         ['v' => 'both',    'i' => 'fa-layer-group', 't' => 'Both',
          'd' => 'One account for learning and for the work you commission. Switch any time.'],

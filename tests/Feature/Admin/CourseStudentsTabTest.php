@@ -59,7 +59,7 @@ class CourseStudentsTabTest extends TestCase
         $course = Course::factory()->create(['title' => 'Laravel Basics']);
 
         $this->actingAs($admin)->get(route('admin.courses.students', $course))
-            ->assertSee('<title>Laravel Basics | Students · Muhindo Mubaraka</title>', false);
+            ->assertSee('<title>Laravel Basics | Students · MRU Admin</title>', false);
     }
 
     public function test_an_admin_sees_every_enrolled_student(): void

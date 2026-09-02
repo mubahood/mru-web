@@ -127,7 +127,7 @@ class Invoice extends Model
     }
 
     /**
-     * The buyer said they would pay Muhindo directly. Says nothing about
+     * The buyer said they would pay the University directly. Says nothing about
      * whether they have, an arrangement, not a payment.
      */
     public function isAwaitingDirectPayment(): bool

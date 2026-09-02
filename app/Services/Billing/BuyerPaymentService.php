@@ -26,7 +26,7 @@ use RuntimeException;
 class BuyerPaymentService
 {
     /**
-     * "I'll pay Mr. Muhindo Mubaraka directly."
+     * "I'll pay the University directly."
      *
      * Marks the arrangement and lets them leave. The invoice stays Issued and
      * fully payable online, so changing their mind later costs nothing.
@@ -69,12 +69,12 @@ class BuyerPaymentService
         }
 
         if (in_array($invoice->status, [InvoiceStatus::Paid, InvoiceStatus::Refunded], true)) {
-            throw new RuntimeException('This order is already paid. Ask Muhindo about a refund instead.');
+            throw new RuntimeException('This order is already paid. Contact the University about a refund instead.');
         }
 
         if (bccomp((string) $invoice->amount_paid, '0', 2) > 0) {
             throw new RuntimeException(
-                'Part of this order has already been paid, so it cannot be cancelled here. Message Muhindo and he will sort it out.'
+                'Part of this order has already been paid, so it cannot be cancelled here. Contact the University and we will sort it out.'
             );
         }
 

@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
-| muhindo-app API v1
+| MRU website API v1
 |--------------------------------------------------------------------------
 | Sanctum-authenticated JSON API for the mobile client (future) and any
 | headless consumer. Every response uses the App\Support\ApiResponse

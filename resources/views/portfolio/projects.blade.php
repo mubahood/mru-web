@@ -48,7 +48,7 @@
     <p class="lead" style="max-width:480px;margin:12px auto 22px;" data-rise>Tell me what you need and I will tell you honestly whether I am the right fit.</p>
     <div data-rise><a href="{{ route('hire') }}" wire:navigate class="btn gold cta">
       <span class="cta-a">Hire Me</span>
-      <span class="cta-b" aria-hidden="true">Hire Muhindo <i class="fas fa-arrow-right"></i></span>
+      <span class="cta-b" aria-hidden="true">Talk to us <i class="fas fa-arrow-right"></i></span>
     </a></div>
   </div>
 </section>

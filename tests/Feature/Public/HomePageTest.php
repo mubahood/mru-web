@@ -200,14 +200,14 @@ class HomePageTest extends TestCase
 
     public function test_the_organisation_row_is_rendered_twice_so_it_can_loop_seamlessly(): void
     {
-        Settings::set('portfolio.clients', json_encode(['Ministry of Agriculture', 'Muteesa I Royal University']));
+        Settings::set('portfolio.clients', json_encode(['Ministry of Agriculture', 'Uganda Dairy Development Authority']));
 
         $html = (string) $this->get(route('home'))->assertOk()->getContent();
 
         // Two identical tracks scroll as one; the animation resets after
         // exactly one track width, which is what removes the seam.
         $this->assertSame(2, substr_count($html, 'class="marquee-track"'));
-        $this->assertSame(2, substr_count($html, 'Muteesa I Royal University'));
+        $this->assertSame(2, substr_count($html, 'Uganda Dairy Development Authority'));
         /* The duplicate must not be read out a second time. Matched on a
            pattern rather than an exact string: Blade leaves a second space
            where the conditional attribute is emitted, and asserting on

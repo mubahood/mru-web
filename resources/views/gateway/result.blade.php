@@ -1,5 +1,5 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Payment {{ $ok ? 'received' : 'not completed' }} | Muhindo Mubaraka</title>
+<title>Payment {{ $ok ? 'received' : 'not completed' }} | Muteesa I Royal University</title>
 <link rel="stylesheet" href="{{ asset('vendor/fonts/inter/inter.css') }}">
 <link rel="stylesheet" href="{{ asset('vendor/fa/css/all.min.css') }}">
 <style>

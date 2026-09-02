@@ -1,6 +1,6 @@
 @extends('layouts.marketing')
-@section('title', 'e-Learning | Muhindo Mubaraka')
-@section('desc', 'Learn computer programming and computer-related courses with Muhindo Mubaraka: practical, project-based, in plain English.')
+@section('title', 'e-Learning | Muteesa I Royal University')
+@section('desc', 'Short, practical online courses from Muteesa I Royal University: project-based, self-paced, with certificates you can verify.')
 
 @section('content')
 

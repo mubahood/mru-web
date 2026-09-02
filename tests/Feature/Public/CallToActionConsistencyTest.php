@@ -19,7 +19,7 @@ class CallToActionConsistencyTest extends TestCase
     /** The one label each destination is allowed to use. */
     private const CANONICAL = [
         'courses.index' => 'Start Learning',
-        'hire' => 'Hire Muhindo',
+        'hire' => 'Talk to us',
         'portfolio.projects.index' => 'See the projects',
         'shop.index' => 'See the source code',
         // 'contact' has no call to action of its own any more. The buttons

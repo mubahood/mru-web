@@ -1,5 +1,5 @@
 {{--
-  Muhindo's signature over a ruled line, for documents he issues.
+  The Registrar's signature over a ruled line, for documents the University issues.
 
   Lives in resources/, NOT public/. DomPDF loads it off the filesystem, so it
   never needs to be web-reachable, and a signature at a guessable public URL is
@@ -34,6 +34,6 @@
   @endif
 
   <div class="sig-rule"></div>
-  <div class="sig-name">Muhindo Mubaraka</div>
+  <div class="sig-name">Muteesa I Royal University</div>
   <div class="sig-role">{{ $role ?? 'Software engineer & instructor' }}</div>
 </div>

@@ -44,7 +44,7 @@
           <span>
             {{ $invoice->invoice_no }}
             @if($invoice->isAwaitingDirectPayment())
-              · You said you would pay Muhindo directly on {{ $invoice->direct_payment_at->format('j M Y') }}
+              · You said you would pay the University directly on {{ $invoice->direct_payment_at->format('j M Y') }}
             @else
               · {{ $invoice->created_at?->diffForHumans() }}
             @endif

@@ -19,7 +19,7 @@
   {{-- Stage one. Shown until it becomes a project, so nobody has to wonder
        whether their proposal arrived. --}}
   <div class="tb-card" style="margin-bottom:22px;">
-    <div class="tb-card-header"><h2 class="tb-card-title">With Muhindo</h2></div>
+    <div class="tb-card-header"><h2 class="tb-card-title">With the University</h2></div>
     <div class="tb-card-body">
       @foreach($proposals as $proposal)
         <div class="prop">
@@ -38,7 +38,7 @@
           <ol class="prop-flow">
             <li class="done"><b>Proposal sent</b><span>{{ ($proposal->submitted_at ?? $proposal->created_at)->diffForHumans() }}</span></li>
             <li class="{{ $proposal->status->value === 'new' ? 'now' : 'done' }}">
-              <b>Muhindo reads it</b><span>Within one working day</span></li>
+              <b>The University reads it</b><span>Within one working day</span></li>
             <li class="{{ $proposal->status->value === 'contacted' ? 'now' : '' }}">
               <b>A call, then a written scope</b><span>What is in, what it costs, when it lands</span></li>
             <li class="{{ $proposal->status->value === 'converted' ? 'now' : '' }}">

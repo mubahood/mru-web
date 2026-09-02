@@ -11,9 +11,9 @@
   $panels = array_values(array_filter($panels, fn ($p) => ! ($p['skip'] ?? false)));
 
   $types = [
-      ['value' => 'student', 'icon' => 'fa-graduation-cap', 'title' => 'Learn from Muhindo',
+      ['value' => 'student', 'icon' => 'fa-graduation-cap', 'title' => 'Learn with MRU e-Learning',
        'desc' => 'Take his courses, track your progress and earn a verifiable certificate.'],
-      ['value' => 'client', 'icon' => 'fa-handshake', 'title' => 'Hire Muhindo for a project',
+      ['value' => 'client', 'icon' => 'fa-handshake', 'title' => 'Work with the University',
        'desc' => 'Send him a brief, then follow the build in your own client portal.'],
       ['value' => 'both', 'icon' => 'fa-layer-group', 'title' => 'Both',
        'desc' => 'One account for learning and for the work you commission. Switch any time.'],

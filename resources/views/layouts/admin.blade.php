@@ -1,4 +1,4 @@
-{{-- Muhindo Mubaraka, Back-office Layout (light · square · Inter) --}}
+{{-- Muteesa I Royal University, Back-office Layout (light · square · Inter) --}}
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="csrf-token" content="{{ csrf_token() }}">
   {{-- $title is set by Livewire full-page components via ->title(); @yield covers classic Blade pages --}}
-  <title>{{ $title ?? $__env->yieldContent('title', 'Dashboard') }} · Muhindo Mubaraka</title>
+  <title>{{ $title ?? $__env->yieldContent('title', 'Dashboard') }} · MRU Admin</title>
   <link rel="icon" type="image/png" sizes="48x48" href="{{ asset('favicon.png') }}">
   <meta name="theme-color" content="#ffffff">
   <link rel="stylesheet" href="{{ asset('vendor/fonts/inter/inter.css') }}">
@@ -32,9 +32,9 @@
   {{-- Sidebar --}}
   <aside class="tb-sidebar" :class="{'open':side}" aria-label="Main navigation">
     <a wire:navigate href="{{ route('dashboard') }}" class="tb-sidebar-brand">
-      <span class="bk" style="width:30px;height:30px;background:#0b1f3a;color:#b8933f;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;">MM</span>
+      <img src="{{ asset('images/logo-icon.png') }}" alt="" style="width:30px;height:auto;display:block;">
       <span class="btext">
-        <span class="bt">Muhindo Mubaraka</span>
+        <span class="bt">Muteesa I Royal University</span>
         <span class="bs">e-Learning &amp; Projects</span>
       </span>
       <button class="tb-sidebar-close" type="button" @click="side=false"><i class="fas fa-xmark"></i></button>
@@ -70,7 +70,7 @@
                 sync() {
                   const h = document.querySelector('.tb-content h1');
                   if (h && h.textContent.trim()) this.t = h.textContent.trim();
-                  document.title = this.t + ' · Muhindo Mubaraka';
+                  document.title = this.t + ' · MRU Admin';
                 }
               }"
               x-init="$nextTick(() => sync())"
@@ -131,7 +131,7 @@
     </main>
 
     <footer class="tb-footer">
-      <div class="tb-footer-brand"><i class="fas fa-id-card"></i> Muhindo Mubaraka</div>
+      <div class="tb-footer-brand"><i class="fas fa-building-columns"></i> Muteesa I Royal University</div>
       <div class="tb-footer-meta">
         <span class="tb-foot-sm-hide"><i class="fas fa-user-shield"></i> {{ $u->name }} · {{ $u->role_label }}</span>
         <span class="sep tb-foot-sm-hide">·</span>

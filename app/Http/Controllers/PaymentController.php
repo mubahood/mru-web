@@ -63,7 +63,7 @@ class PaymentController extends Controller
     }
 
     /**
-     * "I will pay Mr. Muhindo Mubaraka directly."
+     * "I will pay the University directly."
      *
      * Lets them out of the payment screen without paying. Nothing is unlocked:
      * the invoice stays open and the course or download stays shut until a
@@ -80,7 +80,7 @@ class PaymentController extends Controller
         }
 
         return redirect()->route('dashboard')->with('success', trim(sprintf(
-            'Noted. You will pay Muhindo directly for %s (%s %s). It stays locked until he confirms the payment, and you can pay online any time from My orders.',
+            'Noted. You will pay the University directly for %s (%s %s). It stays locked until the Bursar confirms the payment, and you can pay online any time from My orders.',
             $this->summaryFor($invoice),
             $invoice->currency,
             number_format((float) $invoice->balance, 2)
@@ -137,7 +137,7 @@ class PaymentController extends Controller
 
         return back()->with('error', $result === 'nothing_pending'
             ? 'No payment attempt has been started for this order yet, so there is nothing to check.'
-            : 'We could not find a completed payment for this order yet. If money has left your account, give it a minute and check again, or message Muhindo and he will confirm it manually.');
+            : 'We could not find a completed payment for this order yet. If money has left your account, give it a minute and check again, or contact the University and we will confirm it manually.');
     }
 
     /** Where "done" leads, and what the order is called, per kind of purchase. */

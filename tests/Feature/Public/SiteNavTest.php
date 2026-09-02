@@ -71,9 +71,9 @@ class SiteNavTest extends TestCase
     {
         $html = (string) $this->get(route('home'))->assertOk()->getContent();
 
-        $this->assertStringContainsString('>Hire Me<', $html);
-        $this->assertStringContainsString('Hire Muhindo', $html);
-        $this->assertStringContainsString('Start Learning', $html);
+        $this->assertStringContainsString('>E-Portal<', $html);
+        $this->assertStringContainsString('Student E-Portal', $html);
+        $this->assertStringContainsString('Apply on the E-Portal', $html);
     }
 
     public function test_the_action_buttons_survive_signing_in(): void
@@ -85,8 +85,8 @@ class SiteNavTest extends TestCase
 
         $header = $this->headerOf($this->actingAs($user)->get(route('home')));
 
-        $this->assertStringContainsString('>Hire Me<', $header);
-        $this->assertStringContainsString('>Learn<', $header);
+        $this->assertStringContainsString('>E-Portal<', $header);
+        $this->assertStringContainsString('>Apply Now<', $header);
     }
 
     public function test_account_navigation_sits_behind_the_avatar_not_beside_the_actions(): void
@@ -105,7 +105,7 @@ class SiteNavTest extends TestCase
     {
         $header = $this->headerOf($this->get(route('home')));
 
-        $this->assertStringContainsString('>Hire Me<', $header);
+        $this->assertStringContainsString('>Apply Now<', $header);
         // Sign in is a link, not a button. It must not compete with the actions.
         $this->assertStringContainsString('class="signin desk"', $header);
     }

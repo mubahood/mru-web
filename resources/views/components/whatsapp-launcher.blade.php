@@ -1,4 +1,4 @@
-@props(['phone' => '256783204665'])
+@props(['phone' => '256752033889'])
 {{--
   The WhatsApp launcher.
 
@@ -48,20 +48,17 @@
         }
     }
 
-    $me = 'Muhindo';
+    $me = 'MRU Admissions';
 
     // Two openers, each already specific enough that a reply can be useful.
     $learn = match ($kind) {
-        'course' => "Hello {$me}, I am interested in your \"{$subject}\" course. When does it open, and what does it cover?",
-        'product' => "Hello {$me}, I saw \"{$subject}\" on your site. Do you teach the stack behind it?",
-        default => "Hello {$me}, I would like to learn programming with you. Which course would you recommend for someone at my level?",
+        'course' => "Hello {$me}, I am interested in your \"{$subject}\" short course. When does it open, and what does it cover?",
+        default => "Hello {$me}, I am interested in MRU's short courses on the e-learning platform. Which one would you recommend for me?",
     };
 
-    $hire = match ($kind) {
-        'project' => "Hello {$me}, I saw \"{$subject}\" on your site and I would like something similar built. Can we talk about it?",
-        'product' => "Hello {$me}, I saw \"{$subject}\" on your site. I would like to discuss a project along those lines.",
-        'course' => "Hello {$me}, I found you through your courses. I have a project I would like built. Are you available?",
-        default => "Hello {$me}, I have a project I would like built. Are you taking on new work?",
+    $apply = match ($kind) {
+        'course' => "Hello {$me}, I found you through the \"{$subject}\" course. I would also like to ask about admission to the University's programmes.",
+        default => "Hello {$me}, I would like to join Muteesa I Royal University. Could you guide me on the programmes, entry requirements, fees and how to apply?",
     };
 
     $link = fn (string $text) => 'https://wa.me/'.$phone.'?text='.rawurlencode($text);
@@ -73,26 +70,26 @@
   <div class="wa-panel" x-show="open" x-cloak x-transition.origin.bottom.right
        @click.outside="open = false" role="dialog" aria-label="Start a WhatsApp chat">
     <div class="wa-head">
-      <span class="wa-avatar">MM</span>
+      <span class="wa-avatar">MRU</span>
       <span>
-        <b>{{ $me }} Mubaraka</b>
+        <b>{{ $me }}</b>
         <em>Usually replies within a few hours</em>
       </span>
     </div>
 
     <p class="wa-q">What brings you here?</p>
 
-    <a class="wa-opt" href="{{ $link($learn) }}" target="_blank" rel="noopener"
-       data-a="cta.click" data-a-label="WhatsApp: learn">
-      <i class="fas fa-graduation-cap"></i>
-      <span><b>I want to learn</b><em>Courses, what to start with, what it costs</em></span>
+    <a class="wa-opt" href="{{ $link($apply) }}" target="_blank" rel="noopener"
+       data-a="cta.click" data-a-label="WhatsApp: admissions">
+      <i class="fas fa-building-columns"></i>
+      <span><b>I want to join MRU</b><em>Programmes, requirements, fees, how to apply</em></span>
       <i class="fas fa-chevron-right wa-go"></i>
     </a>
 
-    <a class="wa-opt" href="{{ $link($hire) }}" target="_blank" rel="noopener"
-       data-a="cta.click" data-a-label="WhatsApp: hire">
-      <i class="fas fa-briefcase"></i>
-      <span><b>I want something built</b><em>A system, an app, or a quote</em></span>
+    <a class="wa-opt" href="{{ $link($learn) }}" target="_blank" rel="noopener"
+       data-a="cta.click" data-a-label="WhatsApp: learn">
+      <i class="fas fa-graduation-cap"></i>
+      <span><b>Short courses</b><em>e-Learning, what to start with, what it costs</em></span>
       <i class="fas fa-chevron-right wa-go"></i>
     </a>
 

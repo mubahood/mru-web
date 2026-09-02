@@ -79,7 +79,7 @@
     <b>{{ $counts['unpaid'] }}</b> Unpaid
   </a>
   <a href="{{ route('admin.enrollments.index', ['billing' => 'direct']) }}" class="en-tab {{ $f['billing'] === 'direct' ? 'on' : '' }}">
-    Paying Muhindo directly
+    Paying the University directly
   </a>
   <a href="{{ route('admin.enrollments.index', ['billing' => 'uninvoiced']) }}" class="en-tab {{ $f['billing'] === 'uninvoiced' ? 'on' : '' }}">
     Never invoiced
@@ -117,7 +117,7 @@
         <select class="tb-select" id="billing" name="billing">
           <option value="">Any</option>
           <option value="unpaid" @selected($f['billing'] === 'unpaid')>Unpaid invoice</option>
-          <option value="direct" @selected($f['billing'] === 'direct')>Paying Muhindo directly</option>
+          <option value="direct" @selected($f['billing'] === 'direct')>Paying the University directly</option>
           <option value="uninvoiced" @selected($f['billing'] === 'uninvoiced')>No invoice</option>
         </select>
       </div>
@@ -278,7 +278,7 @@
                       {{ $inv->currency }} {{ number_format((float) $inv->balance, 2) }} outstanding
                       of {{ number_format((float) $inv->total, 2) }}.
                       @if($inv->direct_payment_at)
-                        <br>Said they would pay Muhindo directly on {{ $inv->direct_payment_at->format('j M Y') }}.
+                        <br>Said they would pay the University directly on {{ $inv->direct_payment_at->format('j M Y') }}.
                       @endif
                     </p>
                     @if($inv->isOutstanding())

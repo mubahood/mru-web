@@ -63,7 +63,7 @@ class CourseSeoTest extends TestCase
         $this->assertTrue($node['isAccessibleForFree']);
         $this->assertSame(['Spot SQL injection', 'Write PHP that resists it'], $node['teaches']);
         $this->assertStringContainsString('images/courses/x.png', $node['image']);
-        $this->assertSame('Muhindo Mubaraka', $node['provider']['name']);
+        $this->assertSame('Muteesa I Royal University', $node['provider']['name']);
     }
 
     public function test_the_indexed_description_is_complete_and_carries_no_markdown(): void

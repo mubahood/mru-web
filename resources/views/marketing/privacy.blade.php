@@ -1,5 +1,5 @@
 @extends('layouts.marketing')
-@section('title', 'Privacy Policy | Muhindo Mubaraka')
+@section('title', 'Privacy Policy | Muteesa I Royal University')
 
 @section('content')
 <section>
@@ -7,7 +7,7 @@
     <h1>Privacy Policy</h1>
     <div class="updated">Last updated {{ date('F Y') }}</div>
 
-    <p>This site is operated by Muhindo Mubaraka. This policy explains what information is collected through the portfolio site, the course platform, and the client project portal, and how it's used.</p>
+    <p>This website is operated by Muteesa I Royal University (MRU). This policy explains what information is collected through the university website, the e-learning platform, and the online services, and how it's used.</p>
 
     <h2>Contact form</h2>
     <p>When you send a message through the contact form, your name, email, subject and message are stored so I can reply and keep a record of the conversation.</p>

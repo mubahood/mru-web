@@ -1,5 +1,5 @@
 @extends('layouts.marketing')
-@section('title', 'Gallery | Muhindo Mubaraka')
+@section('title', 'Gallery | Muteesa I Royal University')
 @section('desc', 'The work, the desk, the teams and the study behind the systems.')
 
 @section('content')

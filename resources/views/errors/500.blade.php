@@ -1,5 +1,5 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Something went wrong | Muhindo Mubaraka</title>
+<title>Something went wrong | Muteesa I Royal University</title>
 <style>
   *{box-sizing:border-box;}
   body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;

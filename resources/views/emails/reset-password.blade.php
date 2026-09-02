@@ -1,11 +1,11 @@
-@php $subject = 'Reset Your Muhindo Mubaraka Password'; @endphp
+@php $subject = 'Reset Your MRU Account Password'; @endphp
 @include('emails._header')
 
   <p style="font-size:15px;color:#1A0F07;font-weight:700;margin:0 0 6px;">
     Hello, {{ $user->name }},
   </p>
   <p style="font-size:14px;color:#5A4A3A;line-height:1.7;margin:0 0 24px;">
-    We received a request to reset the password for your Muhindo Mubaraka account.
+    We received a request to reset the password for your Muteesa I Royal University account.
     Click the button below to set a new password.
   </p>
 

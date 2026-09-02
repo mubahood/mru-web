@@ -1,6 +1,6 @@
 @props([
-    'title' => 'Muhindo Mubaraka, Software Engineer & Programming Teacher',
-    'description' => "I teach computer programming and computer-related courses, and I build software for anyone with a real problem: individuals, startups, schools, clinics, NGOs and enterprises across Uganda.",
+    'title' => 'Muteesa I Royal University | Seeking Greater Horizons in Thought and Action',
+    'description' => 'Muteesa I Royal University (MRU) is an NCHE-accredited private university of the Buganda Kingdom offering career-focused certificates, diplomas, bachelors and masters programmes at its Kakeeka (Mengo, Kampala) and Kirumba (Masaka) campuses.',
     'image' => null,
     'type' => 'website',
     'canonical' => null,
@@ -30,7 +30,7 @@
 <title>{{ $seoTitle }}</title>
 <meta name="description" content="{{ $seoDescription }}">
 <link rel="canonical" href="{{ $seoCanonical }}">
-<meta name="theme-color" content="#0b1f3a">
+<meta name="theme-color" content="#05275C">
 <link rel="icon" type="image/png" sizes="48x48" href="{{ asset('favicon.png') }}">
 {{-- Linked here rather than per layout, because a manifest nothing points at
      is a file the browser never asks for: it shipped correct-looking and

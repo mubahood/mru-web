@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="csrf-token" content="{{ csrf_token() }}">
-  <title>@yield('title', 'Sign in') | Muhindo Mubaraka</title>
+  <title>@yield('title', 'Sign in') | Muteesa I Royal University</title>
   <link rel="icon" type="image/png" sizes="48x48" href="{{ asset('favicon.png') }}">
   <meta name="theme-color" content="#ffffff">
   <link rel="stylesheet" href="{{ asset('vendor/fonts/inter/inter.css') }}">
@@ -108,7 +108,7 @@
 </head>
 <body>
   <div class="auth-card {{ trim($__env->yieldContent('card_width', '')) }}">
-    <div class="a-brand"><span style="width:32px;height:32px;background:var(--pri);color:#b8933f;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;">MM</span> <b>Muhindo Mubaraka</b></div>
+    <div class="a-brand"><img src="{{ asset('images/logo-icon.png') }}" alt="" style="width:32px;height:auto;display:block;"> <b>Muteesa I Royal University</b></div>
     <div class="card">
       @yield('form')
     </div>

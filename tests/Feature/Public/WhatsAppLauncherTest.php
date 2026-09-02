@@ -21,7 +21,7 @@ class WhatsAppLauncherTest extends TestCase
 {
     use RefreshDatabase;
 
-    private const NUMBER = '256783204665';
+    private const NUMBER = '256752033889';
 
     public function test_it_is_on_the_public_pages(): void
     {
@@ -36,8 +36,8 @@ class WhatsAppLauncherTest extends TestCase
 
         // The single question that makes the message write itself.
         $this->assertStringContainsString('What brings you here?', $html);
-        $this->assertStringContainsString('I want to learn', $html);
-        $this->assertStringContainsString('I want something built', $html);
+        $this->assertStringContainsString('I want to join MRU', $html);
+        $this->assertStringContainsString('Short courses', $html);
     }
 
     public function test_both_links_go_to_the_right_number_with_a_prepared_message(): void
@@ -51,7 +51,7 @@ class WhatsAppLauncherTest extends TestCase
         foreach ($matches as [$whole, $number, $text]) {
             $this->assertSame(self::NUMBER, $number);
             $message = rawurldecode($text);
-            $this->assertStringStartsWith('Hello Muhindo,', $message);
+            $this->assertStringStartsWith('Hello MRU Admissions,', $message);
             $this->assertGreaterThan(40, strlen($message), 'a prepared message, not a greeting');
         }
     }
@@ -69,9 +69,11 @@ class WhatsAppLauncherTest extends TestCase
         preg_match_all('#https://wa\.me/\d+\?text=([^"]+)#', $html, $matches);
         $messages = array_map('rawurldecode', $matches[1]);
 
+        // Admissions leads, and it still names the course that brought them.
         $this->assertStringContainsString('Flutter Mobile App Development', $messages[0]);
-        // And the hire option still reads as a hire, not a course enquiry.
-        $this->assertStringContainsString('project', $messages[1]);
+        $this->assertStringContainsString('admission', $messages[0]);
+        // The short-course option names the course itself.
+        $this->assertStringContainsString('Flutter Mobile App Development', $messages[1]);
     }
 
     public function test_the_message_knows_it_is_on_a_work_page(): void
@@ -89,8 +91,9 @@ class WhatsAppLauncherTest extends TestCase
         preg_match_all('#https://wa\.me/\d+\?text=([^"]+)#', $html, $matches);
         $messages = array_map('rawurldecode', $matches[1]);
 
-        $this->assertStringContainsString('ULITS National Livestock Traceability', $messages[1]);
-        $this->assertStringContainsString('similar', $messages[1]);
+        // A page about no course still offers the two usable generics.
+        $this->assertStringContainsString('join Muteesa I Royal University', $messages[0]);
+        $this->assertStringContainsString('recommend', $messages[1]);
     }
 
     public function test_a_page_about_nothing_in_particular_still_gets_a_usable_message(): void
@@ -100,8 +103,8 @@ class WhatsAppLauncherTest extends TestCase
         preg_match_all('#https://wa\.me/\d+\?text=([^"]+)#', $html, $matches);
         $messages = array_map('rawurldecode', $matches[1]);
 
-        $this->assertStringContainsString('recommend', $messages[0]);
-        $this->assertStringContainsString('project', $messages[1]);
+        $this->assertStringContainsString('how to apply', $messages[0]);
+        $this->assertStringContainsString('recommend', $messages[1]);
     }
 
     /**

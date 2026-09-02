@@ -1,5 +1,5 @@
 @extends('layouts.marketing')
-@section('title', 'Terms of Service | Muhindo Mubaraka')
+@section('title', 'Terms of Service | Muteesa I Royal University')
 
 @section('content')
 <section>

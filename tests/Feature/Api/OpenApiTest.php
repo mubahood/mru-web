@@ -15,7 +15,7 @@ class OpenApiTest extends TestCase
 
         $res->assertOk()
             ->assertJsonPath('openapi', '3.0.3')
-            ->assertJsonPath('info.title', 'Muhindo Mubaraka API')
+            ->assertJsonPath('info.title', 'Muteesa I Royal University API')
             ->assertJsonStructure([
                 'openapi', 'info', 'servers',
                 'components' => ['securitySchemes' => ['bearerAuth'], 'schemas' => ['Envelope']],

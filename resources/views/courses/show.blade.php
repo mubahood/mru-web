@@ -1,5 +1,5 @@
 @extends('layouts.marketing')
-@section('title', $course->title.' | e-Learning | Muhindo Mubaraka')
+@section('title', $course->title.' | e-Learning | Muteesa I Royal University')
 @section('desc', $course->cardTagline())
 @section('og_image', $course->coverUrl() ?? '')
 

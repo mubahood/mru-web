@@ -14,7 +14,7 @@
     $money = fn ($v) => $payment->invoice->currency.' '.number_format((float) $v, 2);
     $billTo = $payment->invoice->billable?->name ?? 'Customer';
   @endphp
-  <div class="brand">Muhindo Mubaraka</div>
+  <div class="brand">Muteesa I Royal University</div>
   <div class="muted">Kampala, Uganda</div>
   <h2>PAYMENT RECEIPT</h2>
   <div class="muted">{{ $payment->created_at?->format('d M Y H:i') }}</div>

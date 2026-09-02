@@ -261,7 +261,7 @@ class LearningController extends Controller
                 throw new \App\Exceptions\PaymentRequiredException(
                     $invoice,
                     $invoice->isAwaitingDirectPayment()
-                        ? 'This course unlocks once Muhindo confirms your payment. You can also pay online here. It is instant.'
+                        ? 'This course unlocks once the University confirms your payment. You can also pay online here. It is instant.'
                         : 'Almost there, this course unlocks as soon as your payment goes through.'
                 );
             }

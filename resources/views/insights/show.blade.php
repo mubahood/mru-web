@@ -1,5 +1,5 @@
 @extends('layouts.marketing')
-@section('title', $post->title.' | Muhindo Mubaraka')
+@section('title', $post->title.' | Muteesa I Royal University')
 @section('desc', $post->excerpt ?? '')
 @section('og_image', $post->cover_image ? asset('storage/'.$post->cover_image) : '')
 
@@ -11,7 +11,7 @@
     'description' => $post->excerpt,
     'datePublished' => $post->published_at?->toIso8601String(),
     'dateModified' => $post->updated_at?->toIso8601String(),
-    'author' => ['@type' => 'Person', 'name' => $post->author?->name ?? 'Muhindo Mubaraka'],
+    'author' => ['@type' => 'Organization', 'name' => $post->author?->name ?? 'Muteesa I Royal University'],
     'mainEntityOfPage' => route('insights.show', $post),
 ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}</script>
 @endpush
@@ -52,7 +52,7 @@
         @if($post->category)<span class="tag">{{ $post->category }}</span>@endif
         <span><i class="fas fa-calendar" aria-hidden="true"></i> {{ $post->published_at?->format('d M Y') }}</span>
         <span><i class="fas fa-clock" aria-hidden="true"></i> {{ $post->read_minutes }} min read</span>
-        <span><i class="fas fa-user" aria-hidden="true"></i> {{ $post->author?->name ?? 'Muhindo Mubaraka' }}</span>
+        <span><i class="fas fa-user" aria-hidden="true"></i> {{ $post->author?->name ?? 'Muteesa I Royal University' }}</span>
       </div>
     </div>
   </div>

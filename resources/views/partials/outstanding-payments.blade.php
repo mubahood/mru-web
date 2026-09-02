@@ -2,7 +2,7 @@
   Anything the signed-in person still owes for, shown at the top of the
   dashboard.
 
-  Someone who chose "I'll pay Muhindo directly" left the payment screen with
+  Someone who chose "I'll pay the University directly" left the payment screen with
   their course still locked. If the only record of that is a flash message they
   have already scrolled past, the next thing they do is wonder why the course
   will not open. This is the standing answer to that question, and the way back
@@ -29,7 +29,7 @@
         <b>{{ $invoice->items->first()?->description ?? 'Invoice '.$invoice->invoice_no }}</b>
         <span>
           @if($invoice->isAwaitingDirectPayment())
-            You are paying Muhindo directly. It unlocks once he confirms, or pay online now, it is instant.
+            You are paying the University directly. It unlocks once the Bursar confirms, or pay online now, it is instant.
           @else
             Waiting for payment. This unlocks the moment it clears.
           @endif

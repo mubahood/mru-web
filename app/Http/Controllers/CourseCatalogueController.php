@@ -171,7 +171,7 @@ class CourseCatalogueController extends Controller
                 'isAccessibleForFree' => $course->isFree(),
                 'provider' => [
                     '@type' => 'Person',
-                    'name' => 'Muhindo Mubaraka',
+                    'name' => 'Muteesa I Royal University',
                     'url' => route('home'),
                 ],
                 'hasCourseInstance' => array_filter([

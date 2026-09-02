@@ -26,7 +26,7 @@
     $billToSub = $invoice->billable instanceof \App\Models\Client ? $invoice->billable->company : $invoice->billable->email ?? null;
   @endphp
   <div class="head">
-    <div><div class="brand">Muhindo Mubaraka</div>
+    <div><div class="brand">Muteesa I Royal University</div>
       <div class="muted">Kampala, Uganda</div></div>
     <div style="text-align:right;"><h2>INVOICE</h2>
       <div class="muted">{{ $invoice->invoice_no }}</div>
@@ -57,7 +57,7 @@
 
   {{-- An invoice is issued by the business, so it is signed for the business.
        A receipt is deliberately NOT signed this way: it names a specific
-       "Received by" person who may not be Muhindo, and stamping his signature
+       "Received by" person who may not be the signatory, and stamping a signature
        on somebody else's act of receiving money would misstate what happened. --}}
   <table style="width:100%; margin-top:34px; border:0;">
     <tr>

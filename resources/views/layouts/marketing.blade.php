@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <x-seo
-    :title="trim($__env->yieldContent('title', 'Muhindo Mubaraka | Software Engineer & Programming Teacher'))"
-    :description="trim($__env->yieldContent('desc', 'I teach computer programming and computer-related courses, and I build software for anyone with a real problem: individuals, startups, schools, clinics, NGOs and enterprises across Uganda.'))"
+    :title="trim($__env->yieldContent('title', 'Muteesa I Royal University | Seeking Greater Horizons in Thought and Action'))"
+    :description="trim($__env->yieldContent('desc', 'Muteesa I Royal University (MRU) is an NCHE-accredited private university of the Buganda Kingdom offering career-focused certificates, diplomas, bachelors and masters programmes at its Kakeeka (Mengo, Kampala) and Kirumba (Masaka) campuses.'))"
     :image="trim($__env->yieldContent('og_image', '')) ?: null"
   >@stack('jsonld')</x-seo>
   <link rel="stylesheet" href="{{ asset('vendor/fonts/inter/inter.css') }}">
@@ -19,8 +19,8 @@
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
     :root{
       --bg:#f7f6f2; --surface:#fff; --surface-2:#f0eee7; --line:#e7e3d8; --line-2:#d8d2c0;
-      --tx:#141a26; --tx2:#5b6270; --tx3:#706f5c; --pri:#0b1f3a; --pri-d:#060f1f; --pri-soft:#eef1f6;
-      --gold:#b8933f; --gold-d:#7d6228; --gold-soft:#f7f0df;
+      --tx:#141a26; --tx2:#5b6270; --tx3:#706f5c; --pri:#05275C; --pri-d:#031B40; --pri-soft:#E9EEF6;
+      --gold:#D4A843; --gold-d:#8F6E1F; --gold-soft:#F9F2DE;
       --ok:#0f6b30; --ok-soft:#e6f4ea; --hd:52px;
       --font:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
     }
@@ -38,6 +38,12 @@
     .brand{display:flex;align-items:center;gap:8px;font-weight:600;font-size:13.5px;letter-spacing:.01em;}
     .brand .badge{width:25px;height:25px;background:var(--pri);color:var(--gold);display:flex;align-items:center;
       justify-content:center;font-size:10.5px;font-weight:700;letter-spacing:.02em;}
+    /* The university crest replaces the initials badge. Height-capped so the
+       fixed 52px header never grows; width follows the artwork. */
+    .brand img.crest{height:34px;width:auto;display:block;}
+    .brand .brand-name{line-height:1.15;}
+    .brand .brand-name small{display:block;font-size:9px;font-weight:600;letter-spacing:.12em;
+      text-transform:uppercase;color:var(--gold-d);}
     .nav{display:flex;align-items:center;gap:18px;font-size:13px;font-weight:600;}
     /* The nav is now set at the same weight and ink as the body text it sits
        above, so hover needs its own colour or it reads as dead. Active keeps
@@ -1417,6 +1423,9 @@
   $r = fn($n) => request()->routeIs($n) ? 'on' : '';
   $nav = \App\Support\SiteNav::items();
   $isOn = fn (array $item) => request()->routeIs(...($item['match'] ?? []));
+  $uniLinks = json_decode((string) \App\Support\Settings::get('university.links', '{}'), true) ?: [];
+  $eportalUrl = $uniLinks['eportal'] ?? 'https://eportal.mru.ac.ug/';
+  $applyUrl = $uniLinks['apply'] ?? 'https://eportal.mru.ac.ug/apply';
   /* Role-aware account entry point: every signed-in visitor gets a direct door to
      THEIR side of the platform, from every public page. */
   $u = auth()->user();
@@ -1431,7 +1440,10 @@
 
 <header class="site">
   <div class="wrap bar">
-    <a href="{{ route('home') }}" wire:navigate class="brand"><span class="badge">MM</span> Muhindo Mubaraka</a>
+    <a href="{{ route('home') }}" wire:navigate class="brand">
+      <img class="crest" src="{{ asset('images/logo-icon.png') }}" alt="Muteesa I Royal University crest" width="34" height="36">
+      <span class="brand-name">Muteesa I Royal University<small>Seeking Greater Horizons</small></span>
+    </a>
 
     <nav class="nav" aria-label="Main">
       @foreach($nav as $item)
@@ -1464,8 +1476,8 @@
               @if(!empty($item['blurb']))
                 <div class="mega-foot">
                   <span>{{ $item['blurb'] }}</span>
-                  <a href="{{ route('hire') }}" wire:navigate class="link" style="color:var(--pri);font-weight:600;white-space:nowrap;">
-                    Hire me <i class="fas fa-arrow-right"></i>
+                  <a href="{{ $applyUrl }}" rel="external" class="link" style="color:var(--pri);font-weight:600;white-space:nowrap;">
+                    Apply now <i class="fas fa-arrow-right"></i>
                   </a>
                 </div>
               @endif
@@ -1486,15 +1498,15 @@
         </a>
       @endif
 
-      {{-- The two calls to action are permanent. Signing in does not remove
-           them: a student can still hire, and a client can still enrol. --}}
-      <a href="{{ route('hire') }}" wire:navigate class="btn ghost desk sm cta">
-        <span class="cta-a">Hire Me</span>
-        <span class="cta-b" aria-hidden="true">Hire Muhindo <i class="fas fa-arrow-right"></i></span>
+      {{-- The two calls to action are permanent: the student portal for people
+           who already belong here, and Apply for those who are about to. --}}
+      <a href="{{ $eportalUrl }}" rel="external" class="btn ghost desk sm cta">
+        <span class="cta-a">E-Portal</span>
+        <span class="cta-b" aria-hidden="true">Student E-Portal <i class="fas fa-arrow-right"></i></span>
       </a>
-      <a href="{{ route('courses.index') }}" wire:navigate class="btn gold desk sm cta">
-        <span class="cta-a">Learn</span>
-        <span class="cta-b" aria-hidden="true">Start Learning <i class="fas fa-arrow-right"></i></span>
+      <a href="{{ $applyUrl }}" rel="external" class="btn gold desk sm cta">
+        <span class="cta-a">Apply Now</span>
+        <span class="cta-b" aria-hidden="true">Apply on the E-Portal <i class="fas fa-arrow-right"></i></span>
       </a>
 
       @auth
@@ -1550,8 +1562,8 @@
 
   <div class="mm-actions">
     {{-- Same order as the desktop header: the actions, then the account. --}}
-    <a href="{{ route('hire') }}" wire:navigate class="btn ghost"><i class="fas fa-handshake"></i> Hire Muhindo</a>
-    <a href="{{ route('courses.index') }}" wire:navigate class="btn gold"><i class="fas fa-graduation-cap"></i> Start Learning</a>
+    <a href="{{ $eportalUrl }}" rel="external" class="btn ghost"><i class="fas fa-door-open"></i> Student E-Portal</a>
+    <a href="{{ $applyUrl }}" rel="external" class="btn gold"><i class="fas fa-graduation-cap"></i> Apply Now</a>
 
     @auth
       <a href="{{ $accountUrl }}" class="btn ghost"><i class="fas {{ $accountIcon }}"></i> {{ $accountLabel }}</a>
@@ -1574,9 +1586,14 @@
   <div class="wrap">
     <div class="foot">
       <div class="foot-brand">
-        <a href="{{ route('home') }}" wire:navigate class="brand"><span class="badge">MM</span> Muhindo Mubaraka</a>
-        <p class="blurb">Software engineer and programming teacher. I build systems people depend on, and I teach the people who run them.</p>
-        <p class="foot-place"><i class="fas fa-location-dot" aria-hidden="true"></i> Kampala, Uganda</p>
+        <a href="{{ route('home') }}" wire:navigate class="brand">
+          <img class="crest" src="{{ asset('images/logo-icon.png') }}" alt="" width="34" height="36">
+          <span class="brand-name">Muteesa I Royal University<small>Seeking Greater Horizons</small></span>
+        </a>
+        <p class="blurb">An NCHE-accredited private university of the Buganda Kingdom, offering career-focused education rooted in cultural heritage — seeking greater horizons in thought and action.</p>
+        <p class="foot-place"><i class="fas fa-location-dot" aria-hidden="true"></i> Kakeeka, Mengo — Kampala &amp; Kirumba — Masaka</p>
+        <p class="foot-place"><i class="fas fa-envelope" aria-hidden="true"></i> P.O. Box 1339, Kampala · info@mru.ac.ug</p>
+        <p class="foot-place"><i class="fas fa-phone" aria-hidden="true"></i> +256 200 903 000</p>
       </div>
 
       {{-- Columns come from SiteNav, so the footer cannot drift away from the
@@ -1609,8 +1626,10 @@
       </div>
 
       <div>
-        <p class="foot-h">Work with me</p>
-        <a href="{{ route('hire') }}" wire:navigate>Hire me</a>
+        <p class="foot-h">Quick links</p>
+        <a href="{{ $applyUrl }}" rel="external">Apply Now</a>
+        <a href="{{ $eportalUrl }}" rel="external">Student E-Portal</a>
+        <a href="{{ $uniLinks['eadmin'] ?? 'https://eadmin.mru.ac.ug/' }}" rel="external">Staff Login</a>
         @auth
           <a href="{{ $accountUrl }}">{{ $accountLabel }}</a>
           <a href="{{ route('account.edit') }}" wire:navigate>Your account</a>
@@ -1624,8 +1643,8 @@
     </div>
 
     <div class="foot-bar">
-      <span>&copy; {{ date('Y') }} Muhindo Mubaraka. All rights reserved.</span>
-      <span>Built and maintained by me.</span>
+      <span>&copy; {{ date('Y') }} Muteesa I Royal University. All rights reserved.</span>
+      <span>Accredited by the National Council for Higher Education (NCHE), Uganda.</span>
     </div>
   </div>
 </footer>

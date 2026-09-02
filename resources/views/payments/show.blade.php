@@ -70,7 +70,7 @@
   <div class="pay-note">
     <i class="fas fa-circle-info" aria-hidden="true"></i>
     <span>
-      You told Muhindo you would pay him directly on
+      You told the University you would pay directly on
       <b>{{ $invoice->direct_payment_at->format('j M Y') }}</b>. This stays locked until he
       confirms the payment. You can still pay online below. It is instant.
     </span>
@@ -119,8 +119,8 @@
       {{-- The moment someone is deciding whether to hand over money is the
            moment to say plainly what happens next. --}}
       <ol class="pay-steps">
-        <li><b>You pay</b><span>Card, mobile money or bank, or arrange it with Muhindo directly.</span></li>
-        <li><b>It clears</b><span>Online payments confirm in seconds. Direct payments unlock once Muhindo confirms them.</span></li>
+        <li><b>You pay</b><span>Card, mobile money or bank, or arrange it with the University directly.</span></li>
+        <li><b>It clears</b><span>Online payments confirm in seconds. Direct payments unlock once the Bursar confirms them.</span></li>
         <li><b>{{ $destination['label'] }}</b><span>Yours from then on, with nothing further to pay.</span></li>
       </ol>
     </div>
@@ -141,17 +141,17 @@
       </form>
     </div>
 
-    {{-- 2. Pay Muhindo directly --}}
+    {{-- 2. Pay the University directly --}}
     @unless($invoice->isAwaitingDirectPayment())
       <div class="opt">
-        <h3><i class="fas fa-handshake" aria-hidden="true"></i> I will pay Mr. Muhindo Mubaraka directly</h3>
+        <h3><i class="fas fa-handshake" aria-hidden="true"></i> I will pay the University directly</h3>
         <p>
-          Arranging cash, mobile money or a bank transfer with Muhindo yourself. We will note it
+          Arranging cash, mobile money or a bank transfer with the Bursar's office yourself. We will note it
           and you can carry on, but this stays locked until he confirms your payment.
         </p>
         <form method="POST" action="{{ route('payments.direct', $invoice) }}">
           @csrf
-          <button type="submit" class="btn-tb btn-tb-ghost">I will pay Muhindo directly</button>
+          <button type="submit" class="btn-tb btn-tb-ghost">I will pay the University directly</button>
         </form>
       </div>
     @endunless

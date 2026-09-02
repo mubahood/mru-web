@@ -113,7 +113,7 @@ class StudentNavigationTest extends TestCase
         // nothing at all were shown exactly the same three words.
         $this->actingAs($student)->get(route('learn.index'))->assertOk()
             ->assertSee('Awaiting confirmation')
-            ->assertSee('paying Muhindo directly', false);
+            ->assertSee('paying the University directly', false);
     }
 
     public function test_the_card_does_not_query_an_invoice_per_row(): void

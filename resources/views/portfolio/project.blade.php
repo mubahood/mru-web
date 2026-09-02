@@ -194,7 +194,7 @@
         </a>
         <a href="{{ route('hire') }}" wire:navigate class="btn ghost cta">
           <span class="cta-a">Hire Me</span>
-          <span class="cta-b" aria-hidden="true">Hire Muhindo <i class="fas fa-arrow-right"></i></span>
+          <span class="cta-b" aria-hidden="true">Talk to us <i class="fas fa-arrow-right"></i></span>
         </a>
         @if($project->external_link)
           <a href="{{ $project->external_link }}" target="_blank" rel="noopener" class="pj-note"

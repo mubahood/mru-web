@@ -1,5 +1,5 @@
 @extends('layouts.marketing')
-@section('title', 'Verify a certificate | Muhindo Mubaraka')
+@section('title', 'Verify a certificate | Muteesa I Royal University')
 
 @push('styles')
 <style>
@@ -42,7 +42,7 @@
     <div class="sec-idx">Verification</div>
     <h1 style="font-size:30px;margin-top:8px;">Check a certificate</h1>
     <p class="muted" style="font-size:14px;line-height:1.65;margin-top:8px;">
-      Every certificate Muhindo issues carries a number and a QR code. Enter the number
+      Every certificate the University issues carries a number and a QR code. Enter the number
       to confirm it is genuine, who it belongs to and what it is for.
     </p>
 
@@ -62,7 +62,7 @@
         <i class="fas fa-circle-check" aria-hidden="true"></i>
         <div>
           <b>This certificate is genuine</b>
-          <p>Issued by Muhindo Mubaraka and recorded on this site. The details below are what was issued.</p>
+          <p>Issued by Muteesa I Royal University and recorded on this site. The details below are what was issued.</p>
         </div>
       </div>
 
@@ -103,7 +103,7 @@
           <p>
             Nothing matching <span class="mono">{{ $code }}</span> has been issued. Check for a typo.
             The number is on the certificate, next to the QR code. If it is correct as printed,
-            the document is not one of Muhindo's.
+            the document is not one of ours.
           </p>
         </div>
       </div>

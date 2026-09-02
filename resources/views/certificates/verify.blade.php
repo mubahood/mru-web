@@ -1,5 +1,5 @@
 @extends('layouts.marketing')
-@section('title', 'Verify Certificate | Muhindo Mubaraka')
+@section('title', 'Verify Certificate | Muteesa I Royal University')
 
 @section('content')
 <section class="hero" style="padding-bottom:20px;">
@@ -31,7 +31,7 @@
     </div>
 
     <p class="muted" style="text-align:center;font-size:.8rem;margin-top:20px;">
-      This page confirms the certificate above was genuinely issued by Muhindo Mubaraka.
+      This page confirms the certificate above was genuinely issued by Muteesa I Royal University.
     </p>
   </div>
 </section>

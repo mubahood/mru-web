@@ -1,13 +1,13 @@
 {
-  "name": "Muhindo Mubaraka",
-  "short_name": "Muhindo",
-  "description": "Programming courses, source code and software built for real problems across Uganda.",
+  "name": "Muteesa I Royal University",
+  "short_name": "MRU",
+  "description": "Muteesa I Royal University — an NCHE-accredited private university of the Buganda Kingdom. Programmes, admissions, news, e-learning and the MRU Scholar repository.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#f7f6f2",
-  "theme_color": "#0b1f3a",
+  "theme_color": "#05275C",
   "icons": [
     { "src": "images/logo-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
     { "src": "images/logo-square.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },

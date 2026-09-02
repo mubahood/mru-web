@@ -1,5 +1,5 @@
 @extends('layouts.marketing')
-@section('title', 'Source code for sale | Muhindo Mubaraka')
+@section('title', 'Source code | Muteesa I Royal University')
 @section('desc', 'Complete, working source code from systems I have delivered, with an install guide for each one.')
 
 @push('styles')

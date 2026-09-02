@@ -119,7 +119,7 @@ class YouTubeLinkChecker
         try {
             $page = Http::timeout(20)
                 ->withHeaders([
-                    'User-Agent' => 'Mozilla/5.0 (compatible; muhindo-app link check)',
+                    'User-Agent' => 'Mozilla/5.0 (compatible; mru-web link check)',
                     'Accept-Language' => 'en-US,en;q=0.9',
                 ])
                 ->get('https://www.youtube.com/watch', ['v' => $id]);

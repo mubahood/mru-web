@@ -148,7 +148,7 @@ class HireJourneyTest extends TestCase
         $this->actingAs($client)->get(route('portal.index'))->assertOk()
             ->assertSee('Stock system for three branches')
             ->assertSee('UGX 12,000,000')
-            ->assertSee('Muhindo reads it');
+            ->assertSee('The University reads it');
     }
 
     public function test_a_budget_is_optional_because_a_guessed_number_is_worse(): void
