@@ -231,26 +231,64 @@
 @push('styles')<style>@media(max-width:820px){.about-split{grid-template-columns:1fr !important;}}</style>@endpush
 
 @if($faculties->isNotEmpty())
+  @php
+    /* The Graduate School is a different kind of thing from the other four
+       — postgraduate, not undergraduate — so it earns a different shape
+       below rather than a 5th identical box. Matched by name rather than a
+       schema flag: this template is already this specific, not a generic
+       component (see "Kampala for the capital's energy" a few sections
+       down). The heading's count is computed, not hardcoded, so it can
+       never again claim a number the database doesn't back — that's
+       exactly the bug this section shipped with before this pass. */
+    $gradSchool = $faculties->first(fn ($f) => str_contains($f->name, 'Graduate School'));
+    $mainFaculties = $faculties->reject(fn ($f) => $gradSchool && $f->is($gradSchool))->values();
+    $countWords = ['One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten'];
+    $facultyCount = $mainFaculties->count();
+    $facultyWord = $countWords[$facultyCount - 1] ?? $facultyCount;
+  @endphp
 <section>
   <div class="wrap">
     <div class="sec-head left">
-      <h2>Five faculties, one Graduate School</h2>
+      <h2>{{ $facultyWord }} {{ \Illuminate\Support\Str::plural('faculty', $facultyCount) }}{{ $gradSchool ? ', one Graduate School' : '' }}</h2>
       <p>Every programme belongs to a faculty that teaches it, researches it, and walks you into a career with it.</p>
     </div>
-    {{-- Wide tracks on purpose: five faculties fall into 3 + 2 rather than
-         4 + 1, which leaves a single stranded card at the end. --}}
-    <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(340px,1fr));">
-      @foreach($faculties as $faculty)
-        <a href="{{ route('faculties.show', $faculty) }}" wire:navigate class="card" data-rise>
-          <span class="ic"><i class="fas {{ $faculty->icon }}" aria-hidden="true"></i></span>
+
+    <div class="faculty-grid">
+      @foreach($mainFaculties as $faculty)
+        <a href="{{ route('faculties.show', $faculty) }}" wire:navigate class="card faculty-card" data-rise>
+          <div class="faculty-card-top">
+            <span class="ic"><i class="fas {{ $faculty->icon }}" aria-hidden="true"></i></span>
+            @if($faculty->short_name)<span class="tag">{{ $faculty->short_name }}</span>@endif
+          </div>
           <h3>{{ $faculty->name }}</h3>
-          <p>{{ $faculty->tagline ?: \Illuminate\Support\Str::limit($faculty->description, 80) }}</p>
-          <p style="margin-top:8px;font-weight:600;color:var(--gold-d);font-size:12px;">
+          <p>{{ \Illuminate\Support\Str::limit($faculty->description ?: $faculty->tagline, 100) }}</p>
+          @if(!empty($faculty->careers))
+            <div class="tag-row">
+              @foreach(array_slice($faculty->careers, 0, 2) as $career)
+                <span class="pill">{{ $career }}</span>
+              @endforeach
+            </div>
+          @endif
+          <span class="link">
             {{ $faculty->programmes_count }} {{ \Illuminate\Support\Str::plural('programme', $faculty->programmes_count) }} <i class="fas fa-arrow-right" aria-hidden="true"></i>
-          </p>
+          </span>
         </a>
       @endforeach
     </div>
+
+    @if($gradSchool)
+      <a href="{{ route('faculties.show', $gradSchool) }}" wire:navigate class="proj-card grad-school-strip" data-rise>
+        <span class="ic"><i class="fas {{ $gradSchool->icon }}" aria-hidden="true"></i></span>
+        <div class="grad-school-body">
+          <span class="tag">Postgraduate</span>
+          <h3>{{ $gradSchool->name }}</h3>
+          <p>{{ \Illuminate\Support\Str::limit($gradSchool->description ?: $gradSchool->tagline, 130) }}</p>
+        </div>
+        <span class="link">
+          {{ $gradSchool->programmes_count }} {{ \Illuminate\Support\Str::plural('programme', $gradSchool->programmes_count) }} <i class="fas fa-arrow-right" aria-hidden="true"></i>
+        </span>
+      </a>
+    @endif
   </div>
 </section>
 @endif

@@ -2596,6 +2596,37 @@ a.stat-link:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
   font-size:13.5px;line-height:1.55;color:var(--tx2);}
 .credential-item i{flex:0 0 auto;margin-top:2px;color:var(--gold-d);font-size:15px;}
 
+/* Four faculties render as a deliberate 2x2, never an auto-flowing 3+1 (the
+   old 5-item grid's own comment warned about exactly this stranded-card
+   risk) — the minmax lower bound is picked so exactly two fit the wrap
+   width and one fits below it, with no width where 3 columns sneak in. */
+.faculty-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(480px,100%),1fr));gap:22px;margin-bottom:22px;}
+.faculty-card{display:flex;flex-direction:column;}
+.faculty-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:2px;}
+.faculty-card-top .ic{margin-bottom:0;}
+.faculty-card .tag-row{margin:2px 0 4px;}
+.faculty-card .tag-row .pill{font-size:12px;padding:6px 12px;}
+.faculty-card .link{margin-top:auto;padding-top:10px;font-size:13px;}
+
+/* The Graduate School's own shape: a single horizontal strip instead of a
+   fifth box identical to the other four, matching the heading's own "one
+   Graduate School" — different in kind, not just one more item in a grid. */
+a.grad-school-strip{flex-direction:row;}
+.grad-school-strip{display:flex;align-items:center;gap:22px;padding:24px 28px;}
+.grad-school-strip .ic{width:52px;height:52px;flex:0 0 auto;border-radius:var(--r);
+  background:var(--pri-soft);color:var(--pri);display:flex;align-items:center;
+  justify-content:center;font-size:20px;transition:background .2s,color .2s;}
+.grad-school-strip:hover .ic{background:var(--pri);color:var(--gold);}
+.grad-school-body{flex:1 1 auto;min-width:0;}
+.grad-school-body .tag{margin-bottom:6px;}
+.grad-school-body h3{font-size:17px;margin:0 0 4px;}
+.grad-school-body p{font-size:14.5px;margin:0;}
+.grad-school-strip .link{flex:0 0 auto;font-size:13px;}
+@media(max-width:700px){
+  a.grad-school-strip{flex-direction:column;}
+  .grad-school-strip{align-items:flex-start;}
+}
+
 /* Two campuses, two cards — a top accent rule tells them apart at a glance
    (gold for the first, navy for the second) without a second card system. */
 .campus-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:24px;}

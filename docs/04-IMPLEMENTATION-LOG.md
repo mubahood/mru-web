@@ -986,3 +986,101 @@ contract 14/14, audience-picker 14/17 (same three pre-diagnosed timing-assertion
 new regression), full suite **1134 passed, 1 skipped**, unchanged. The value-tile interaction test
 from Phase S/T was retired rather than kept failing-by-design — it tested a component that no
 longer exists on this page.
+
+## 2026-09-04 — Phase V: Faculties, and a heading that was quietly wrong
+
+Asked to give full focus to "Five faculties, one Graduate School." Before redesigning anything,
+checked what that heading actually claims against what's in the database — five faculties plus one
+Graduate School is six academic units, and `Faculty::all()` returns exactly five, total: four
+`Faculty of …` records plus the Graduate School. The heading had been overcounting by one, silently,
+since before this session touched the page. Flagged it rather than quietly rewrite a factual claim
+on my own judgment; told to fix it.
+
+### The heading fixes itself now, not just this once
+
+The count is computed, not hardcoded: `$mainFaculties = $faculties->reject(fn ($f) => $gradSchool &&
+$f->is($gradSchool))`, then a small word-form lookup (`['One','Two',...]`) turns the real count into
+the same spelled-out style the rest of the page already uses ("One university, two homes"). Add a
+fifth faculty later and the heading becomes "Five faculties, one Graduate School" again, truthfully,
+without anyone having to remember this section exists. The Graduate School itself is matched by
+name (`str_contains($f->name, 'Graduate School')`) rather than a new schema flag — this template
+already hardcodes plenty this specific to this one university (the campus copy a few sections down
+names Kampala and Masaka directly), so a name match is consistent with the file's existing level of
+specificity, not a new kind of fragility.
+
+### Why the Graduate School gets a different shape, not a fifth box
+
+The heading itself frames the Graduate School as different in kind ("four faculties, **one**
+Graduate School"), and the data backs that up: it's postgraduate, the other four aren't. The old
+section rendered all five as identical cards in one auto-flowing grid — a comment on that grid even
+warned about five items stranding a lone card on its own row, which is exactly the risk four items
+in an auto-fit grid reintroduces (three fitting per row, one left over) if left unconstrained. Fixed
+both problems together: the four real faculties render as a deliberate 2×2
+(`minmax(min(480px,100%),1fr)`, sized so exactly two fit the wrap width and one fits below it — the
+`min()` matters, see below), and the Graduate School renders as its own full-width horizontal strip
+underneath, not a fifth tile.
+
+### Two fields that existed but had never been shown anywhere on the homepage
+
+`Faculty` carries `short_name`, `departments`, and `careers` — all real, seeded, and already used
+one level down (the `/faculties` index page shows department pills; the faculty `/show` page has a
+whole "Where this faculty takes you" careers section), but none of it had ever reached the homepage
+teaser, which showed only an icon, a name, a tagline, and a programme count. Rather than copy what
+`/faculties` already does (department pills), each card now leads with two real career-outcome
+chips — "Secondary School Teacher," "Software Developer," "Business Manager" — reusing the exact
+`.pill` treatment the faculty show page already established for the same field, just fewer of them.
+This was a deliberate choice, not the only option: departments describe the university's own
+structure, careers describe the student's future, and the research this project already did
+(`docs/03-RESEARCH-TRENDS-BEST-PRACTICES.md`, citing NN/g) specifically names career-outcome
+visibility as something prospective students look for — a homepage teaser has more reason to lead
+with the second than the first. `short_name` (FE, FBM, FSSAH, FSTEAD) is now a `.tag` badge next to
+each icon, again reusing `/faculties`' own convention rather than inventing a new one. The
+card's description also switched from `tagline` to `description` as the primary line (tagline as
+fallback, same as before, just reversed) — `tagline` is written casually and inconsistently cased
+("welcome to the FSTEAD faculty"), `description` reads as complete, properly-cased sentences; this
+is a presentation choice about which existing real field to surface, not new or edited copy.
+
+### Two real bugs, both caught before calling this done
+
+**500 on first load.** A Blade `{{-- --}}` comment placed inside `@php … @endphp` broke the page —
+that comment syntax is a Blade-template-layer construct; inside a raw PHP block it isn't recognized
+at all, so PHP tried to parse the comment's own English prose as code and failed on the first
+capitalized word it hit (`syntax error, unexpected identifier "Graduate"`). Fixed by using a plain
+PHP `/* */` comment instead. A reminder that `@php` blocks are PHP, not Blade, all the way down.
+
+**The Graduate School strip rendered stacked, not horizontal — twice.** First attempt gave
+`.grad-school-strip` `display:flex` with no explicit `flex-direction`, assuming that was enough;
+screenshotted it and found the icon sitting above the text, centered, not beside it. Root cause:
+the element is `.proj-card.grad-school-strip`, and `.proj-card{flex-direction:column}` was still
+active — a rule with no competing `flex-direction` declaration doesn't get overridden by a *sibling*
+rule that also fails to set it. Added `flex-direction:row` to `.grad-school-strip` and re-checked —
+still stacked. Second root cause, found by asking the live page which CSS rules actually matched
+the element rather than guessing again: `a.card, a.proj-card{flex-direction:column}` is a
+*compound* selector (element + class), specificity 0-1-1, beating a plain `.grad-school-strip`
+class selector's 0-1-0 regardless of source order. Fixed by matching specificity —
+`a.grad-school-strip{flex-direction:row}` — and had to apply the same fix to the `max-width:700px`
+mobile override, which had the identical specificity gap. Verified with
+`getComputedStyle(...).flexDirection` directly rather than trusting a screenshot a second time:
+`row` at 1440px, `column` at 390px, both confirmed live before re-screenshotting.
+
+A third, smaller issue surfaced the same way real bugs have all session: `minmax(480px,1fr)` on the
+four-card grid is exactly right at desktop width and forces a 480px-wide card into a 350px mobile
+viewport, because `minmax()`'s lower bound doesn't shrink below the container just because the
+container is smaller — a classic, well-documented CSS Grid trap. `document.documentElement
+.scrollWidth` confirmed the overflow (501 vs 390) before fixing it, and `getBoundingClientRect()`
+on the card confirmed the exact forced width (480px) before trusting the fix. Wrapped the lower
+bound in `min(480px,100%)`, which caps it at the container's own width — same 2-column behaviour
+at desktop, no overflow at any width below it.
+
+### Verified
+
+Homepage 200. Every one of the five faculty show-page links resolved (200), including the Graduate
+School's — checked directly with `route('faculties.show', $faculty)` for all five rather than
+assumed from the URL pattern. `/faculties` (the index page) and two individual faculty show pages
+still return 200, confirming the CSS added this round — all written as `.faculty-card …` /
+`.grad-school-strip …` descendant selectors — never leaks into the `.tag-row`/`.pill`/`.link`
+elements those other pages already use with their own, different styling. CSS brace count balanced
+(1412/1412). No horizontal overflow at 1440px or 390px, confirmed both before and after each of the
+two layout fixes above, not just at the end. Menu contract 10/10, slider contract 14/14,
+audience-picker 14/17 (same three pre-diagnosed timing-assertion failures, not new), full suite
+**1134 passed, 1 skipped**, unchanged.
