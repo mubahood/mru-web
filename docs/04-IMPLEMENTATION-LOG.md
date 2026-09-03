@@ -878,3 +878,47 @@ route name (`debugbar.openhandler`, from the `barryvdh/laravel-debugbar` package
 assumed. Screenshotted at mobile width (390px): the two-column split collapses to one column, both
 credential pills wrap to full width without clipping, and an opened value tile renders its full
 description with the chevron rotated and no horizontal overflow on the document.
+
+## 2026-09-04 — Phase T: the values teaser moves in beside the crest
+
+Feedback: the full-width "What We Stand For" block Phase S added below the two-column split
+should come out, and move to "the side." Read literally rather than as a request
+to just delete it — "remove… move it to" describes a relocation, not a deletion — and confirmed
+before touching anything that this really was ambiguous enough to be worth a direct check: the
+"side" could reasonably have meant the right-hand column of the split, or the `/about` page behind
+the "Discover MRU" button (the section's actual "details" destination), and those two readings
+would have produced different work. The user's own reply was "make best decision" — taken together
+with "remove… move it to," the right-hand column reading is the one that actually matches "move,"
+since the full grid already lives on `/about` and `/who-we-are` (dropping it from the homepage
+entirely would be a delete, not a move).
+
+### What changed
+
+The six value tiles moved from a full-width block below the split into the right-hand column
+itself, stacked under the crest: crest, a divider, the "What We Stand For" label, then the six
+tiles in a single column. `.value-tiles` was `grid-template-columns:repeat(auto-fit,minmax(190px,
+1fr))` — built for a full-width row, and two columns worth of 190px tiles doesn't sit comfortably
+in a ~1fr column that's now sharing the row with a 1.4fr text column. Rather than add a modifier
+class for what is now the component's only call site, simplified `.value-tiles` directly to a
+single-column stack (`grid-template-columns:1fr`) and trimmed `.values-teaser`'s top spacing
+(`--s-7`/`--s-6` down to `--s-6`/`--s-5`) to sit naturally under a crest instead of under a
+full-width row. No new classes were introduced for a component now used in exactly one place.
+
+An unplanned but welcome side effect: the two columns now carry comparable visual weight. Before,
+the right column was just a small centered crest floating above a lot of empty space next to a
+noticeably taller text column. Now it holds crest-plus-six-tiles, and the credential-row pills on
+the left echo the value-tile pills on the right — a visual rhyme neither side was deliberately
+designed to share, but that emerged from putting them in the same column width.
+
+### Verified
+
+Re-ran the value-tile contract from Phase S unchanged (coordinates are computed fresh each click,
+so the new position needed no test edits): **18/18.** Menu contract 10/10, slider contract 14/14.
+The audience-picker contract — a different section entirely, above this one — was re-run as a
+sanity check that nothing upstream shifted: 14/17, the exact same three failures already diagnosed
+in Phase R as an impatient opacity-timing assertion, not a regression. Full suite **1134 passed, 1
+skipped**, unchanged. Screenshotted at both 1440px and 390px: no horizontal overflow at either
+width, the crest-and-values column reads as one coherent block at desktop width, and at mobile
+width everything still stacks in the same top-to-bottom order the section already had — text,
+credentials, CTA, crest, values — since the values now live inside the same right-column `<div>`
+that was already collapsing to a single column below 820px.

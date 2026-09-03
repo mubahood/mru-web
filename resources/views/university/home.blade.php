@@ -228,35 +228,37 @@
       </div>
       <div data-rise style="text-align:center;">
         <img src="{{ asset('images/logo-icon.png') }}" alt="The crest of Muteesa I Royal University"
-             loading="lazy" decoding="async" style="max-width:250px;margin:0 auto;">
+             loading="lazy" decoding="async" style="max-width:200px;margin:0 auto;">
+
+        {{-- "Our values" also already existed — the full, always-expanded version
+             lives on /who-we-are. This is deliberately not a repeat of that: six
+             compact tiles, collapsed to an icon and a name, each opening on its
+             own to reveal the one sentence behind it. Kept beside the crest as
+             this column's own content rather than a full-width block, so the
+             section reads as heritage story (left) + at-a-glance identity
+             (right) instead of story-then-a-second-unrelated-block. Same six
+             values, same icons ($valueIcons on /who-we-are), so the two pages
+             agree with each other rather than each inventing their own version. --}}
+        @if(!empty($identity['values']))
+          @php $valueIcons = ['fa-award', 'fa-scale-balanced', 'fa-drum', 'fa-hands-holding-circle', 'fa-lightbulb', 'fa-hand-holding-heart']; @endphp
+          <div class="values-teaser">
+            <p class="values-teaser-label">What we stand for</p>
+            <div class="value-tiles">
+              @foreach($identity['values'] as $i => $value)
+                <div class="value-tile">
+                  <button type="button" class="value-trigger" aria-expanded="false">
+                    <span class="ic"><i class="fas {{ $valueIcons[$i] ?? 'fa-star' }}" aria-hidden="true"></i></span>
+                    <span class="value-name">{{ $value['name'] }}</span>
+                    <i class="fas fa-chevron-down value-chevron" aria-hidden="true"></i>
+                  </button>
+                  <p class="value-desc">{{ $value['desc'] }}</p>
+                </div>
+              @endforeach
+            </div>
+          </div>
+        @endif
       </div>
     </div>
-
-    {{-- "Our values" also already existed — the full, always-expanded version
-         lives on /who-we-are. This is deliberately not a repeat of that: six
-         compact tiles, collapsed to an icon and a name, each opening on its
-         own to reveal the one sentence behind it. A teaser earns a lighter
-         treatment than the page that's actually about this. Same six values,
-         same icons ($valueIcons on /who-we-are), so the two pages agree with
-         each other rather than each inventing their own version. --}}
-    @if(!empty($identity['values']))
-      @php $valueIcons = ['fa-award', 'fa-scale-balanced', 'fa-drum', 'fa-hands-holding-circle', 'fa-lightbulb', 'fa-hand-holding-heart']; @endphp
-      <div class="values-teaser" data-rise>
-        <p class="values-teaser-label">What we stand for</p>
-        <div class="value-tiles">
-          @foreach($identity['values'] as $i => $value)
-            <div class="value-tile">
-              <button type="button" class="value-trigger" aria-expanded="false">
-                <span class="ic"><i class="fas {{ $valueIcons[$i] ?? 'fa-star' }}" aria-hidden="true"></i></span>
-                <span class="value-name">{{ $value['name'] }}</span>
-                <i class="fas fa-chevron-down value-chevron" aria-hidden="true"></i>
-              </button>
-              <p class="value-desc">{{ $value['desc'] }}</p>
-            </div>
-          @endforeach
-        </div>
-      </div>
-    @endif
   </div>
 </section>
 @push('styles')<style>@media(max-width:820px){.about-split{grid-template-columns:1fr !important;}}</style>@endpush
