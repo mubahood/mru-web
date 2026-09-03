@@ -285,6 +285,19 @@ image budget, the responsive set, degrading cleanly with zero or one slides conf
 interaction half is exercised with real pointer/keyboard/touch events over CDP, not by reading
 the DOM and assuming the handlers work.
 
+**Autoplay runs regardless of `prefers-reduced-motion` — only the decorative motion around it
+doesn't.** It briefly didn't: `play()` used to bail out entirely for a reduced-motion visitor, so
+the slide could only change if they clicked, swiped, or used arrow keys — six slides exist
+specifically to show a range of who is at this university, and a reduced-motion visitor would only
+ever have seen the first one. WCAG 2.2.2 only requires auto-moving content be pausable, which this
+already is (hover, focus), not that it never move for that preference. The dot's animated
+countdown fill, the media zoom/pan, and the spine/rule entrance still all correctly stop under
+`prefers-reduced-motion:reduce` — only the underlying `setInterval` that advances the slide no
+longer checks it. Caught because a bug report ("the first slide won't leave until clicked") and an
+earlier verification of a *different* claim ("the first slide's zoom plays correctly") sound like
+the same thing and aren't — confirming one doesn't confirm the other, and this is what it looks
+like when that gap actually matters.
+
 **The hero borrows the site's own signature, instead of ignoring it.** Every interior section on
 the site opens with `.sec-idx` — a small gold pill-rule marker plus a tracked uppercase two-digit
 label — but the homepage's own hero, the first thing anyone sees, never used it: it read like a

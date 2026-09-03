@@ -527,3 +527,39 @@ template change — only the seeder's array order and a matching live-settings w
 Re-verified: menu contract 10/10, slider contract 14/14, ghost-button contrast re-measured at the
 shifted positions (header height changes moved where the copy block sits on the photo) — worst
 case still 5.24:1, full suite **1134 passed, 1 skipped**, 45-route sweep clean.
+
+## 2026-09-03 — Phase O: autoplay was never running for reduced-motion visitors
+
+Feedback: "the first photo fails to leave the slide until clicked, and takes too long." Phase N's
+own fresh-load verification (sampling the *zoom transform*) had already shown the first slide
+correctly animating — but that check never asked whether the slide itself ever advances on its
+own, only whether its decorative motion plays. A separate, precise re-check — polling the active
+slide index every 300ms from a stone-cold load with zero interaction — showed perfectly regular
+~6.5s advances with no anomaly at all on a plain browser. The discrepancy pointed at the one
+environmental variable that check couldn't see: `prefers-reduced-motion`.
+
+`initHeroSlider()`'s `play()` had `if (still || paused) return;` — `still` being
+`window.matchMedia('(prefers-reduced-motion: reduce)').matches`. For any visitor with that
+preference set, `play()` did nothing at all, ever: the `setInterval` that drives autoplay never
+started, so the slide could only change if the visitor clicked, swiped, or used arrow keys. Six
+slides now exist specifically to show a range of who is at this university — a reduced-motion
+visitor landing on the homepage would only ever see the first one.
+
+This reads like a defensible accessibility choice in isolation, but it's stricter than what's
+actually required: WCAG 2.2.2 asks that auto-moving content be *pausable*, which this slider
+already is (hover, focus, and a visible pause state), not that it never move at all for a
+reduced-motion visitor. The fix keeps every genuinely decorative motion gated behind
+`prefers-reduced-motion` exactly as before (the dot's animated countdown fill via `.no-autoplay`,
+the media zoom/pan, the spine and rule entrance animations) and removes only the `still` check
+from `play()`, so the slides still advance — just without the flashy motion around each change.
+
+Verified by emulating `prefers-reduced-motion: reduce` over CDP end to end: `matchMedia` reports
+`true`, `.no-autoplay` is applied, `.hs-media`'s transform reads the static `none` (no zoom/pan
+plays) — and the active slide still advances from 0 to 1 within the expected window, both before
+and after the swap. Re-verified normal (non-reduced-motion) behaviour is unaffected: slider
+contract 14/14, menu contract 10/10, full suite **1134 passed, 1 skipped**, 45-route sweep clean.
+
+The lesson: a "the first slide is stuck" report and a "the first slide's zoom doesn't play" fix
+are not the same claim, and confirming one doesn't confirm the other — this phase's own earlier
+verification tested the motion, not the fact of advancing, and the two turned out to fail under
+different conditions.

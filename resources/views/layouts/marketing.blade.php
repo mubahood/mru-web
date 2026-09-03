@@ -506,6 +506,15 @@
 
     var dots  = [].slice.call(stage.querySelectorAll('[data-hs-dot]'));
     var live  = stage.querySelector('[data-hs-live]');
+    // Reduced motion suppresses the decorative stuff (the dot's animated
+    // countdown fill, the media zoom/pan, the spine/rule entrance) via CSS —
+    // see .no-autoplay and prefers-reduced-motion:reduce in mru.css. It does
+    // NOT stop the slides themselves from advancing: WCAG only requires
+    // auto-moving content be pausable (this already is, on hover/focus),
+    // not that it never move for a reduced-motion visitor. Six slides exist
+    // specifically to show a range of who is at this university — gating
+    // autoplay entirely behind `still` meant a reduced-motion visitor would
+    // only ever see the first one unless they clicked through by hand.
     var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var DURATION = 6500;
     var index = 0, timer = null;
@@ -545,7 +554,7 @@
        moving under a reader who had stopped it by hovering. */
     var paused = false;
     function tick(){ if (paused || document.hidden) return; show(index + 1); }
-    function play(){ if (still || paused) return; stop(); timer = setInterval(tick, DURATION); }
+    function play(){ if (paused) return; stop(); timer = setInterval(tick, DURATION); }
     function stop(){ if (timer) { clearInterval(timer); timer = null; } }
     function pause(on){ paused = on; stage.classList.toggle('is-paused', on); if (on) stop(); else play(); }
 
