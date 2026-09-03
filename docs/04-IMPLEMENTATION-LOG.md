@@ -563,3 +563,34 @@ The lesson: a "the first slide is stuck" report and a "the first slide's zoom do
 are not the same claim, and confirming one doesn't confirm the other — this phase's own earlier
 verification tested the motion, not the fact of advancing, and the two turned out to fail under
 different conditions.
+
+## 2026-09-03 — Phase P: the topbar goes on a diet, and onto phones
+
+Feedback: thin out the topbar's own vertical padding, and put it on mobile too — but not the whole
+thing, just whichever single link actually earns a permanent line on a small screen.
+
+`.topbar` (and its inner `.wrap`) dropped from 44px to 36px, matching height everywhere it's
+mentioned: the resting state, and the hero-page scrolled-reveal state that shares the same number.
+Below 900px the row used to be `display:none` outright; that blanket rule is gone, replaced with a
+`.tb-desktop-only` class on everything except E-Portal (e-Learning, Library, MRU Scholar, the
+phone number, Staff Login), hidden only under 900px. E-Portal was the obvious single survivor —
+the one utility link a phone visitor mid-browse is actually likely to want *now*, versus the other
+five, which are all a normal nav tap or a footer link away already.
+
+This is a global change, not homepage-only: `.topbar` renders in the shared marketing layout, so
+every public page's mobile header now carries the thin E-Portal line, not just the hero pages.
+Checked deliberately across all four combinations that matter — desktop and mobile, hero and
+non-hero, at rest and scrolled — since a hero page's topbar has its own separate hide-at-rest
+rule (Phase K) that had to keep working unchanged alongside the new mobile-visibility rule, not
+be replaced by it. On a hero page the topbar still opens at zero height on every viewport; the
+mobile-vs-desktop question only decides which links show *once revealed* by scrolling.
+
+`--hdr-total` (the hero copy's own header clearance) needed no change here — it only governs the
+gap before the topbar reveals itself, which didn't move; what happens on scroll after that point
+isn't something it has to account for.
+
+Re-verified across the full range: 360px, 390px, 820px (just under the breakpoint) and 1600px
+screenshots, menu contract 10/10, slider contract 14/14, full suite **1134 passed, 1 skipped**,
+45-route sweep clean. No PHPUnit test needed updating — every link is still server-rendered on
+every page, just carrying one new class; nothing was removed from the markup, only from what's
+visible under 900px.

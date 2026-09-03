@@ -91,8 +91,9 @@ second, hidden label.
 
 **Header** is `position: sticky` (not fixed), on a 1400px shell, in two rows:
 
-- `.topbar` — navy utility row: E-Portal, e-Learning, Library, MRU Scholar, phone, Staff Login.
-  Hidden below 900px.
+- `.topbar` — navy utility row, 36px tall: E-Portal, e-Learning, Library, MRU Scholar, phone,
+  Staff Login. Below 900px, everything but E-Portal (`.tb-desktop-only`) disappears — a phone
+  visitor gets the one link worth a permanent line of a small screen, not six.
 - `.bar` — crest + wordmark, six-section navigation, one standing **Apply Now** action.
 
 Past 40px of scroll, JS adds `.is-scrolled` to `<html>`: the utility row folds away, the bar

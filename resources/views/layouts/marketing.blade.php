@@ -54,10 +54,10 @@
   <div class="topbar">
     <div class="wrap">
       <a href="{{ $eportalUrl }}" rel="external"><i class="fas fa-right-to-bracket" aria-hidden="true"></i> E-Portal</a>
-      <a href="{{ route('courses.index') }}" wire:navigate><i class="fas fa-laptop" aria-hidden="true"></i> e-Learning</a>
-      <a href="{{ route('library') }}" wire:navigate><i class="fas fa-book" aria-hidden="true"></i> Library</a>
-      <a href="{{ route('scholar.home') }}" wire:navigate><i class="fas fa-flask" aria-hidden="true"></i> MRU Scholar</a>
-      <span class="tb-right">
+      <a href="{{ route('courses.index') }}" wire:navigate class="tb-desktop-only"><i class="fas fa-laptop" aria-hidden="true"></i> e-Learning</a>
+      <a href="{{ route('library') }}" wire:navigate class="tb-desktop-only"><i class="fas fa-book" aria-hidden="true"></i> Library</a>
+      <a href="{{ route('scholar.home') }}" wire:navigate class="tb-desktop-only"><i class="fas fa-flask" aria-hidden="true"></i> MRU Scholar</a>
+      <span class="tb-right tb-desktop-only">
         <a href="tel:+256200903000"><i class="fas fa-phone" aria-hidden="true"></i> +256 200 903 000</a>
         <a href="{{ $uniLinks['eadmin'] ?? 'https://eadmin.mru.ac.ug/' }}" rel="external"><i class="fas fa-user-shield" aria-hidden="true"></i> Staff Login</a>
       </span>

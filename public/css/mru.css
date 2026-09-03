@@ -1538,15 +1538,20 @@ main{padding-top:0;}
 
 /* Utility row: the doors people already have keys to. */
 .topbar{background:var(--pri);color:rgba(255,255,255,.9);overflow:hidden;
-  max-height:44px;transition:max-height .3s cubic-bezier(.22,.61,.36,1),opacity .2s;}
+  max-height:36px;transition:max-height .3s cubic-bezier(.22,.61,.36,1),opacity .2s;}
 html.is-scrolled .topbar{max-height:0;opacity:0;}
-.topbar .wrap{display:flex;align-items:center;gap:22px;height:44px;font-size:12.5px;font-weight:500;}
+.topbar .wrap{display:flex;align-items:center;gap:22px;height:36px;font-size:12.5px;font-weight:500;}
 .topbar a{display:inline-flex;align-items:center;gap:7px;color:rgba(255,255,255,.82);
   transition:color .15s;white-space:nowrap;}
 .topbar a:hover{color:var(--gold-l);}
 .topbar i{font-size:11px;color:var(--gold);}
 .topbar .tb-right{margin-left:auto;display:flex;align-items:center;gap:20px;}
-@media(max-width:900px){.topbar{display:none;}}
+/* Below 900px the row now shows too, but only the one link a phone visitor
+   is actually likely to want mid-browse — everything else (e-Learning,
+   Library, MRU Scholar, the phone number, Staff Login) is a tap away in the
+   main nav or the footer already, and doesn't earn a permanent line of a
+   small screen's height. */
+@media(max-width:900px){ .topbar .tb-desktop-only{display:none;} }
 
 header.site .bar{display:flex;align-items:center;gap:26px;height:var(--hd);
   transition:height .25s cubic-bezier(.22,.61,.36,1);}
@@ -2443,20 +2448,22 @@ header.site{--hdr-fg:var(--tx);--hdr-brand:var(--pri);--hdr-crest:none;}
 .brand img.crest{filter:var(--hdr-crest);}
 .nav-link{color:var(--hdr-fg);}
 
-/* Over the slider the utility row starts hidden — the photograph gets the
-   full opening moment, with just the crest and the six-section menu over it
-   — and slides in once the reader scrolls, where it earns its keep as
-   persistent navigation. Below 900px it is already hidden outright (its own
-   rule further down), so --hdr-total there was already sized for a
-   topbar-less header; only the desktop figure changes here, from
-   topbar+bar down to the bar alone plus breathing room. Both figures track
-   --hd (now 66px, was 76px) minus the same 10px, so the hero copy's own
-   clearance never drifts out of sync with the header it's clearing. */
+/* Over the slider the utility row starts hidden on every viewport — the
+   photograph gets the full opening moment, with just the crest and the
+   six-section menu over it — and slides in once the reader scrolls, where
+   it earns its keep as persistent navigation (on mobile, just the one link
+   .tb-desktop-only leaves visible). --hdr-total only has to clear the header
+   as it stands *before* that reveal, so it was already sized for a
+   topbar-less header on both breakpoints; only the desktop figure changes
+   here, from topbar+bar down to the bar alone plus breathing room. Both
+   figures track --hd (now 66px, was 76px) minus the same 10px, so the hero
+   copy's own clearance never drifts out of sync with the header it's
+   clearing. */
 body.has-hero{--hdr-total:94px;}
 @media(max-width:900px){ body.has-hero{--hdr-total:78px;} }
 
 body.has-hero .topbar{max-height:0;opacity:0;}
-html.is-scrolled body.has-hero .topbar{max-height:44px;opacity:1;}
+html.is-scrolled body.has-hero .topbar{max-height:36px;opacity:1;}
 
 /* True frosted glass, not a bare transparent bar: a blurred pane that sits on
    the photograph as an object in its own right, with an edge you can see.
