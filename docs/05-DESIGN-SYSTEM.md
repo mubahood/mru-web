@@ -72,12 +72,12 @@ rest at `--sh-1` and lift to `--sh-3` with a 4px translate on hover.
 ## 4. Rhythm and space
 
 Spacing scale `--s-1 8` … `--s-8 112`. Sections are `--s-7` (88px) tall by default, dropping
-to `--s-6` under 760px. The shell is `--wrap: 1240px` with 32px gutters. Bands alternate
+to `--s-6` under 760px. The shell is `--wrap: 1400px` with 32px gutters. Bands alternate
 white and `--surface`; whitespace separates sections rather than rules.
 
 ## 5. Chrome
 
-**Header** is `position: sticky` (not fixed), in two rows:
+**Header** is `position: sticky` (not fixed), on a 1400px shell, in two rows:
 
 - `.topbar` — navy utility row: E-Portal, e-Learning, Library, MRU Scholar, phone, Staff Login.
   Hidden below 900px.
@@ -87,13 +87,34 @@ Past 40px of scroll, JS adds `.is-scrolled` to `<html>`: the utility row folds a
 tightens 76 → 64px, the crest shrinks, and a shadow appears. A 40-down/10-up hysteresis gap
 stops the bar flickering. The class goes on `<html>` so one hook reaches every part.
 
-The mega panel is anchored to the bar, not to its trigger, so a panel opened by the last menu
-item cannot hang off the window edge. It opens on `:hover` **and** `:focus-within`, so it works
-with a mouse, a keyboard, and with JavaScript off.
+### The mega menu, and the bug it is built to avoid
 
-**Footer** is a navy gradient with an oversized crest watermark, in four zones: newsletter
-invitation → the two campus cards → five link columns (brand + three menu sections + quick
-links) → accreditation bar. `SiteNavTest` asserts every menu section stays reachable from it.
+The panel is **full-width and flush against the header's bottom edge**. Getting there matters,
+because the obvious construction is broken:
+
+> A panel anchored to the header while its `.nav-item` stays `position: static` makes that
+> item's hover-bridge resolve against the header too — so every item's bridge spans the whole
+> header width. Six full-width bridges stack, a pointer anywhere under the bar is "inside"
+> several menu items at once, panels open over each other, and moving toward one leaves the
+> item that opened it.
+
+The fix removes the gap rather than bridging it:
+
+1. every `.nav-item` stretches the **full height of the bar**, so its bottom edge *is* the
+   header's bottom edge;
+2. `.mega` is anchored to the header at `top: 100%` — that same edge, so trigger and panel touch;
+3. the panel is a DOM child of the item, so hovering the panel keeps the item hovered.
+
+No bridge, no timers, no JavaScript, and it still opens on `:focus-within` for the keyboard.
+Inside, `.mega-inner` is a `290px + 1fr` grid: a section intro (label, blurb, "Go to …") beside
+a three-column link grid, dropping to two columns at 1180px and stacking at 1000px.
+
+**Footer** is a navy gradient with a crest watermark, in three zones: a five-column link grid
+(brand + three menu sections + "More") → a slim strip carrying the newsletter and the portals →
+the accreditation bar. It was roughly twice this height before: a section-sized newsletter block
+with its own heading, two large campus cards repeating an address given directly above them, and
+a "quick links" column duplicating its neighbours. `SiteNavTest` asserts every menu section
+stays reachable from it, and that a section given a column lists all of it.
 
 ## 6. Rules worth keeping
 

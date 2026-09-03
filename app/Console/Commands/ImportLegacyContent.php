@@ -643,8 +643,18 @@ class ImportLegacyContent extends Command
 
     private function importWpNews(): void
     {
+        /* Two kinds of rubbish share one filter: the casino spam injected by
+           the compromise, and the lorem-ipsum filler posts. The filler is not
+           harmless — its posts carry the most recent dates in the archive, so
+           they were the three stories the home page led with. */
         $spam = ['casino', 'gambl', 'betting', 'bookmaker', 'jackpot', 'slot machine', 'wager',
-            'allyspin', 'betzino', 'binobet', 'bitstake', 'b7 casino', 'spins', 'sportsbook', 'kasyno', 'zaklad'];
+            'allyspin', 'betzino', 'binobet', 'bitstake', 'b7 casino', 'spins', 'sportsbook', 'kasyno', 'zaklad',
+            'lorem ipsum'];
+
+        /* Titles that are obviously a developer talking to themselves. Matched
+           on the title alone: "test" appears inside plenty of real words, so a
+           body-wide match would take genuine stories with it. */
+        $junkTitle = ['/capability test/i', '/^test\d/i', '/^hello world$/i', '/^untitled/i'];
 
         $author = User::where('role', 'super_admin')->first();
 
@@ -660,6 +670,14 @@ class ImportLegacyContent extends Command
             $haystack = mb_strtolower($row->post_title.' '.$row->post_content);
             foreach ($spam as $needle) {
                 if (str_contains($haystack, $needle)) {
+                    $skipped++;
+
+                    continue 2;
+                }
+            }
+
+            foreach ($junkTitle as $pattern) {
+                if (preg_match($pattern, trim($row->post_title))) {
                     $skipped++;
 
                     continue 2;

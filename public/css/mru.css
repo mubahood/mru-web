@@ -53,7 +53,7 @@
 
       /* Rhythm */
       --hd:76px;            /* header height, roomier than before */
-      --wrap:1240px;        /* wider shell, wider menu */
+      --wrap:1400px;        /* wide shell: six menu sections need the room */
       --s-1:8px; --s-2:16px; --s-3:24px; --s-4:32px; --s-5:48px;
       --s-6:64px; --s-7:88px; --s-8:112px;
 
@@ -1693,7 +1693,6 @@ a.pill:hover{border-color:var(--pri);color:var(--pri);background:var(--pri-soft)
 .page-hero p{color:var(--tx2);font-size:17px;line-height:1.72;max-width:640px;margin-bottom:0;}
 .page-hero .eyebrow{margin-bottom:13px;}
 .page-hero .trust-chips,.page-hero .subnav{margin-top:24px;}
-.hero-mark{font-family:var(--font-display);font-size:150px;font-weight:700;opacity:.035;right:-16px;}
 
 .stat-row{display:flex;gap:56px;justify-content:center;flex-wrap:wrap;margin-top:var(--s-6);}
 .stat-row .v{font-family:var(--font-display);font-size:40px;font-weight:700;color:var(--pri);line-height:1;}
@@ -2042,8 +2041,6 @@ html.is-scrolled .brand img.crest{height:40px;}
 /* The watermark word behind a page title is a texture, not a headline. At
    the old weight it read as a rendering fault; this keeps the depth and
    drops the noise, and it never reaches the copy on a narrow screen. */
-.hero-mark{opacity:.022;font-size:clamp(90px,11vw,168px);right:-24px;letter-spacing:-.04em;}
-@media(max-width:1100px){.hero-mark{display:none;}}
 
 /* ------------------------------------------- 14. Touch and small screens
 
@@ -2064,12 +2061,157 @@ html.is-scrolled .brand img.crest{height:40px;}
   .stat-row .l{font-size:11.5px;letter-spacing:.06em;}
 }
 
-/* The oversized ghost word behind page titles is retired. It was cropped by
-   its own section on every width, and a half-drawn letterform reads as a
+/* The oversized ghost word behind page titles is retired: it was cropped by
+   its own section at every width, and a half-drawn letterform reads as a
    mistake rather than as texture. The page headers carry themselves on
-   typography and space instead. */
+   typography and space instead. (The base rules above are left in place so
+   the markup can stay; this is the one line that decides.) */
 .hero-mark{display:none;}
 
 /* An anchored heading must clear the sticky bar, or following a link to it
    scrolls the thing you asked for underneath the navigation. */
 [id]{scroll-margin-top:calc(var(--hd) + 24px);}
+
+/* =========================================================================
+   15. The main menu, rebuilt
+   =========================================================================
+   The bug this replaces: the mega panel was anchored to the header while its
+   nav item was left `position:static`, so each item's invisible hover-bridge
+   resolved against the header too and every one of them spanned the full
+   header width. Six full-width bridges stacked on top of each other, so a
+   pointer anywhere under the bar was simultaneously "inside" several menu
+   items — panels opened over each other, and moving toward one crossed out
+   of the item that opened it and closed it.
+
+   The rebuild removes the gap instead of trying to bridge it:
+
+     · every nav item stretches the full height of the bar, so its bottom
+       edge is the header's bottom edge;
+     · the panel is anchored to the header at `top:100%`, which is that same
+       edge, so trigger and panel touch;
+     · because the panel is a DOM child of the item, hovering the panel keeps
+       the item hovered, and the menu simply cannot close underneath the
+       pointer.
+
+   No bridge, no timers, no JavaScript — and it still opens on :focus-within
+   for the keyboard.
+   -------------------------------------------------------------------- */
+
+header.site .bar{position:relative;gap:24px;}
+.nav{position:static;flex:1 1 auto;min-width:0;display:flex;align-self:stretch;
+  justify-content:center;gap:2px;}
+/* Full-bar-height items: this is what makes the panel contiguous. */
+.nav-item{position:static;display:flex;align-items:stretch;}
+.nav-item.has-menu::after{content:none;}          /* the bridge is obsolete */
+.nav-link{display:inline-flex;align-items:center;gap:7px;white-space:nowrap;
+  padding:0 15px;font-size:15px;font-weight:600;border-radius:0;background:none;}
+.nav-link:hover{background:none;color:var(--pri);}
+.nav-link.on{background:none;color:var(--pri);}
+/* The active marker sits on the bar's bottom edge, where the panel opens. */
+.nav-link.on::after{left:15px;right:15px;bottom:0;height:3px;border-radius:3px 3px 0 0;}
+.nav-item:hover .nav-link,.nav-item:focus-within .nav-link{color:var(--pri);}
+.nav-item:hover .nav-link .caret,.nav-item:focus-within .nav-link .caret{transform:rotate(180deg);}
+
+/* The panel: full width, flush to the header, opening downward. */
+.mega{position:absolute;top:100%;left:0;right:0;width:100%;
+  transform:none;transform-origin:top center;
+  background:#fff;border:none;border-top:1px solid var(--line);
+  border-radius:0 0 var(--r-lg) var(--r-lg);
+  box-shadow:0 26px 50px -22px rgba(2,52,121,.28);
+  padding:0;opacity:0;visibility:hidden;
+  transition:opacity .18s ease,visibility .18s ease;}
+.nav-item:hover > .mega,.nav-item:focus-within > .mega{opacity:1;visibility:visible;transform:none;}
+
+.mega-inner{max-width:var(--wrap);margin:0 auto;padding:32px;
+  display:grid;grid-template-columns:290px minmax(0,1fr);gap:40px;align-items:start;}
+.mega-intro{border-right:1px solid var(--line);padding-right:32px;}
+.mega-intro .eyebrow{margin-bottom:12px;}
+.mega-blurb{font-size:14.5px;line-height:1.65;color:var(--tx2);margin-bottom:20px;}
+.mega-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;}
+.mega-link{padding:13px 14px;border-radius:var(--r);}
+.mega-link .mt{font-size:14.5px;}
+.mega-link .md{font-size:12.5px;}
+
+/* Two columns of links once the panel is narrower than three will read. */
+@media(max-width:1180px){
+  .mega-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+  .mega-inner{grid-template-columns:240px minmax(0,1fr);gap:28px;padding:26px;}
+  .mega-intro{padding-right:24px;}
+  .nav-link{padding:0 11px;font-size:14px;}
+}
+@media(max-width:1000px){
+  .mega-inner{grid-template-columns:1fr;gap:20px;}
+  .mega-intro{border-right:none;border-bottom:1px solid var(--line);padding:0 0 18px;}
+}
+
+/* =========================================================================
+   16. The footer, tightened
+   =========================================================================
+   It had grown to roughly twice the height it needed: a full section-sized
+   newsletter block with its own heading, two large campus cards repeating an
+   address already given, and a "quick links" column duplicating the columns
+   beside it. What survives is one link grid, one slim strip carrying the
+   newsletter and the portals, and the legal line.
+   -------------------------------------------------------------------- */
+
+footer .wrap{max-width:var(--wrap);}
+
+.foot{grid-template-columns:1.9fr repeat(4,1fr);gap:36px 30px;padding:56px 0 36px;}
+.foot .blurb{font-size:14px;line-height:1.7;margin-top:16px;max-width:340px;}
+.foot .foot-h{margin-bottom:14px;}
+.foot a{font-size:14px;margin:9px 0;}
+
+/* Contacts: an actual list, tight, one idea per line. */
+.foot-contact{list-style:none;margin:18px 0 0;padding:0;}
+.foot-contact li{display:flex;gap:11px;align-items:flex-start;font-size:13.5px;
+  line-height:1.6;color:rgba(255,255,255,.7);margin:9px 0;}
+.foot-contact i{color:var(--gold);font-size:12.5px;margin-top:4px;flex-shrink:0;width:14px;}
+.foot-contact a{display:inline;margin:0;font-size:13.5px;color:rgba(255,255,255,.78);}
+.foot-contact a:hover{color:#fff;transform:none;}
+
+.foot-social{margin-top:18px;gap:9px;}
+.foot-social a{width:38px;height:38px;font-size:14px;margin:0;}
+
+/* The strip: newsletter on the left, the portals on the right. */
+.foot-strip{display:flex;align-items:center;justify-content:space-between;gap:32px;
+  flex-wrap:wrap;padding:22px 0;border-top:1px solid rgba(255,255,255,.13);
+  border-bottom:1px solid rgba(255,255,255,.13);}
+.foot-news{margin:0;max-width:none;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+.foot-news label{margin:0;white-space:nowrap;}
+.foot-news .row{gap:8px;}
+.foot-news input{min-width:230px;padding:11px 16px;font-size:13.5px;}
+.foot-news button{min-height:42px;padding:0 20px;font-size:13.5px;}
+.foot-news-msg{width:100%;margin:0;font-size:13px;font-weight:600;}
+.foot-news-msg.ok{color:var(--gold-l);}
+.foot-news-msg.bad{color:#FFB4B4;}
+
+.foot-portals{display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
+.foot-portals a{font-size:13.5px;font-weight:600;color:rgba(255,255,255,.72);white-space:nowrap;}
+.foot-portals a:hover{color:#fff;}
+.foot-portals .btn{color:#3D2500;}
+
+.foot-bar{padding:20px 0 26px;font-size:13px;}
+.foot-crest{width:320px;right:-60px;bottom:-60px;opacity:.045;}
+
+@media(max-width:1180px){
+  .foot{grid-template-columns:1fr 1fr 1fr;gap:32px 24px;}
+  .foot-brand{grid-column:1 / -1;}
+  .foot .blurb{max-width:520px;}
+}
+@media(max-width:820px){
+  .foot-strip{flex-direction:column;align-items:flex-start;gap:18px;}
+  .foot-news{width:100%;}
+  .foot-news .row{width:100%;}
+  .foot-news input{flex:1;min-width:0;}
+}
+@media(max-width:640px){
+  .foot{grid-template-columns:1fr 1fr;padding:44px 0 28px;}
+  .foot-crest{display:none;}
+}
+@media(max-width:420px){ .foot{grid-template-columns:1fr;} }
+
+/* The floating WhatsApp launcher parks itself over the bottom-right of the
+   viewport, which is exactly where the legal line ends. Reserve the space
+   rather than let it sit on top of "Contact". */
+@media(min-width:900px){ .foot-legal{margin-right:86px;} }
+@media(max-width:899px){ .foot-bar{padding-bottom:96px;} }

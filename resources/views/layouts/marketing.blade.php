@@ -86,26 +86,30 @@
                     aria-expanded="false" aria-controls="mega-{{ Str::slug($item['label']) }}">
               {{ $item['label'] }} <i class="fas fa-chevron-down caret" aria-hidden="true"></i>
             </button>
+            {{-- The panel spans the whole header and sits flush against its
+                 bottom edge, so the pointer never crosses dead space on its
+                 way down from the trigger. --}}
             <div class="mega" id="mega-{{ Str::slug($item['label']) }}">
-              <div class="mega-grid">
-                @foreach($item['children'] as $child)
-                  <a href="{{ $child['url'] }}" wire:navigate class="mega-link {{ $isOn($child) ? 'on' : '' }}">
-                    <span class="mi"><i class="fas {{ $child['icon'] }}" aria-hidden="true"></i></span>
-                    <span>
-                      <span class="mt">{{ $child['label'] }}</span>
-                      <span class="md">{{ $child['desc'] }}</span>
-                    </span>
-                  </a>
-                @endforeach
-              </div>
-              @if(!empty($item['blurb']))
-                <div class="mega-foot">
-                  <span>{{ $item['blurb'] }}</span>
-                  <a href="{{ $applyUrl }}" rel="external" class="link" style="color:var(--pri);font-weight:600;white-space:nowrap;">
-                    Apply now <i class="fas fa-arrow-right"></i>
+              <div class="mega-inner">
+                <div class="mega-intro">
+                  <p class="eyebrow">{{ $item['label'] }}</p>
+                  @if(!empty($item['blurb']))<p class="mega-blurb">{{ $item['blurb'] }}</p>@endif
+                  <a href="{{ $item['url'] }}" wire:navigate class="btn ghost sm">
+                    Go to {{ $item['label'] }} <i class="fas fa-arrow-right" aria-hidden="true"></i>
                   </a>
                 </div>
-              @endif
+                <div class="mega-grid">
+                  @foreach($item['children'] as $child)
+                    <a href="{{ $child['url'] }}" wire:navigate class="mega-link {{ $isOn($child) ? 'on' : '' }}">
+                      <span class="mi"><i class="fas {{ $child['icon'] }}" aria-hidden="true"></i></span>
+                      <span>
+                        <span class="mt">{{ $child['label'] }}</span>
+                        <span class="md">{{ $child['desc'] }}</span>
+                      </span>
+                    </a>
+                  @endforeach
+                </div>
+              </div>
             </div>
           </div>
         @endif
@@ -214,74 +218,27 @@
   <img class="foot-crest" src="{{ asset('images/logo-icon.png') }}" alt="" aria-hidden="true">
   <div class="wrap">
 
-    {{-- Opens with the one thing a footer can offer that a page cannot: a
-         standing invitation to keep hearing from the university. --}}
-    <div class="foot-cta">
-      <div>
-        <h2>Stay close to MRU</h2>
-        <p>Intake announcements, graduation dates, research and campus news — a few emails a term, never more.</p>
-      </div>
-      <form method="POST" action="{{ route('newsletter.store') }}" class="foot-news">
-        @csrf
-        <label for="foot-email">Get university news</label>
-        <div class="row">
-          <input id="foot-email" type="email" name="email" required placeholder="you@example.com"
-                 aria-label="Your email address" value="{{ old('email') }}">
-          <button type="submit">Subscribe</button>
-        </div>
-        {{-- Same honeypot the other public forms use. --}}
-        <div class="hp-field" aria-hidden="true">
-          <label for="foot-{{ \App\Support\Spam\FormShield::HONEYPOT }}">Leave this empty</label>
-          <input id="foot-{{ \App\Support\Spam\FormShield::HONEYPOT }}" type="text"
-                 name="{{ \App\Support\Spam\FormShield::HONEYPOT }}" tabindex="-1" autocomplete="off">
-        </div>
-        @if(session('newsletter'))
-          <p style="margin-top:10px;font-size:13.5px;color:var(--gold-l);font-weight:600;">
-            <i class="fas fa-circle-check" aria-hidden="true"></i> {{ session('newsletter') }}
-          </p>
-        @endif
-        @error('email')
-          <p style="margin-top:10px;font-size:13.5px;color:#FFB4B4;font-weight:600;">{{ $message }}</p>
-        @enderror
-      </form>
-    </div>
-
-    {{-- Where the university physically is. Two campuses is a fact people
-         actually need before they apply, and it is buried on most sites. --}}
-    @if($footCampuses)
-      <div class="foot-campuses">
-        @foreach($footCampuses as $campus)
-          <a class="foot-campus" href="{{ $campus['maps'] ?? '#' }}" target="_blank" rel="noopener">
-            <span class="ci"><i class="fas fa-location-dot" aria-hidden="true"></i></span>
-            <span>
-              <b>{{ $campus['name'] }}</b>
-              <span>{{ $campus['location'] }}</span>
-              <em>View on map <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></em>
-            </span>
-          </a>
-        @endforeach
-      </div>
-    @endif
-
     <div class="foot">
       <div class="foot-brand">
         <a href="{{ route('home') }}" wire:navigate class="brand">
-          <img class="crest" src="{{ asset('images/logo-icon.png') }}" alt="" width="56" height="60">
+          <img class="crest" src="{{ asset('images/logo-icon.png') }}" alt="" width="52" height="56">
           <span class="brand-name">Muteesa I Royal University<small>Seeking Greater Horizons</small></span>
         </a>
         <p class="blurb">An NCHE-accredited private university of the Buganda Kingdom, offering career-focused education rooted in cultural heritage.</p>
-        <p class="foot-place"><i class="fas fa-envelope" aria-hidden="true"></i>
-          <span>{{ $footContacts['pobox'] ?? 'P.O. Box 1339, Kampala, Uganda' }}<br>
-          <a href="mailto:{{ $footContacts['email'] ?? 'info@mru.ac.ug' }}">{{ $footContacts['email'] ?? 'info@mru.ac.ug' }}</a></span>
-        </p>
-        <p class="foot-place"><i class="fas fa-phone" aria-hidden="true"></i>
-          <span><a href="tel:{{ preg_replace('/\s+/', '', $footContacts['phone'] ?? '+256200903000') }}">{{ $footContacts['phone'] ?? '+256 200 903 000' }}</a></span>
-        </p>
-        @if(!empty($footContacts['whatsapp_link']))
-          <p class="foot-place"><i class="fab fa-whatsapp" aria-hidden="true"></i>
-            <span><a href="{{ $footContacts['whatsapp_link'] }}" target="_blank" rel="noopener">{{ $footContacts['whatsapp'] ?? 'WhatsApp' }}</a></span>
-          </p>
-        @endif
+
+        {{-- Contacts as one compact block rather than a stack of rows. --}}
+        <ul class="foot-contact">
+          <li><i class="fas fa-location-dot" aria-hidden="true"></i>
+            <span>Kakeeka, Mengo — Kampala &middot; Kirumba — Masaka</span></li>
+          <li><i class="fas fa-envelope" aria-hidden="true"></i>
+            <a href="mailto:{{ $footContacts['email'] ?? 'info@mru.ac.ug' }}">{{ $footContacts['email'] ?? 'info@mru.ac.ug' }}</a></li>
+          <li><i class="fas fa-phone" aria-hidden="true"></i>
+            <a href="tel:{{ preg_replace('/\s+/', '', $footContacts['phone'] ?? '+256200903000') }}">{{ $footContacts['phone'] ?? '+256 200 903 000' }}</a>
+            @if(!empty($footContacts['whatsapp_link']))
+              &middot; <a href="{{ $footContacts['whatsapp_link'] }}" target="_blank" rel="noopener">WhatsApp</a>
+            @endif
+          </li>
+        </ul>
 
         @if($footSocial)
           <div class="foot-social">
@@ -296,8 +253,8 @@
       </div>
 
       {{-- Columns come from SiteNav, so the footer cannot drift away from the
-           menu. Only the first three sections are listed in full; the rest is
-           covered by the quick links column. --}}
+           menu. Three sections get a column each; the rest are reached from
+           "More", so no part of the navigation is unreachable from here. --}}
       @foreach(collect($nav)->filter(fn ($i) => !empty($i['children']))->take(3) as $item)
         <div>
           <p class="foot-h">{{ $item['label'] }}</p>
@@ -308,13 +265,7 @@
       @endforeach
 
       <div>
-        <p class="foot-h">Quick links</p>
-        <a href="{{ $applyUrl }}" rel="external">Apply Now</a>
-        <a href="{{ $eportalUrl }}" rel="external">Student E-Portal</a>
-        <a href="{{ route('courses.index') }}" wire:navigate>e-Learning</a>
-        {{-- The three menu sections that do not get a column of their own are
-             reachable here, so no part of the navigation is unreachable from
-             the footer. --}}
+        <p class="foot-h">More</p>
         <a href="{{ route('scholar.home') }}" wire:navigate>MRU Scholar</a>
         <a href="{{ route('campus-life') }}" wire:navigate>Campus Life</a>
         <a href="{{ route('insights.index') }}" wire:navigate>News</a>
@@ -325,6 +276,36 @@
              guess the URL; the address is printed on the document, but this is
              where somebody looks for it. --}}
         <a href="{{ route('certificates.lookup') }}" wire:navigate>Verify a certificate</a>
+      </div>
+    </div>
+
+    {{-- One slim strip carrying the two things a footer can offer that a page
+         cannot: a way to keep hearing from the university, and the doors for
+         people who already belong to it. --}}
+    <div class="foot-strip">
+      <form method="POST" action="{{ route('newsletter.store') }}" class="foot-news">
+        @csrf
+        <label for="foot-email">Get university news</label>
+        <div class="row">
+          <input id="foot-email" type="email" name="email" required placeholder="you@example.com"
+                 aria-label="Your email address" value="{{ old('email') }}">
+          <button type="submit">Subscribe</button>
+        </div>
+        <div class="hp-field" aria-hidden="true">
+          <label for="foot-{{ \App\Support\Spam\FormShield::HONEYPOT }}">Leave this empty</label>
+          <input id="foot-{{ \App\Support\Spam\FormShield::HONEYPOT }}" type="text"
+                 name="{{ \App\Support\Spam\FormShield::HONEYPOT }}" tabindex="-1" autocomplete="off">
+        </div>
+        @if(session('newsletter'))
+          <p class="foot-news-msg ok"><i class="fas fa-circle-check" aria-hidden="true"></i> {{ session('newsletter') }}</p>
+        @endif
+        @error('email')<p class="foot-news-msg bad">{{ $message }}</p>@enderror
+      </form>
+
+      <div class="foot-portals">
+        <a href="{{ $applyUrl }}" rel="external" class="btn gold sm">Apply Now <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+        <a href="{{ $eportalUrl }}" rel="external">Student E-Portal</a>
+        <a href="{{ route('courses.index') }}" wire:navigate>e-Learning</a>
         <a href="{{ $uniLinks['eadmin'] ?? 'https://eadmin.mru.ac.ug/' }}" rel="external">Staff Login</a>
       </div>
     </div>
@@ -332,7 +313,7 @@
     <div class="foot-bar">
       <span>&copy; {{ date('Y') }} Muteesa I Royal University. All rights reserved.</span>
       <span class="accred"><i class="fas fa-certificate" aria-hidden="true"></i>
-        Accredited by the National Council for Higher Education (NCHE), Uganda</span>
+        Accredited by the NCHE, Uganda</span>
       <span class="foot-legal">
         <a href="{{ route('privacy') }}" wire:navigate>Privacy</a>
         <a href="{{ route('terms') }}" wire:navigate>Terms</a>

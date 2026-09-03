@@ -70,3 +70,44 @@ Full design pass against the brand brief. Documented in [05-DESIGN-SYSTEM.md](05
 - **Removed:** the oversized ghost word behind page titles (cropped by its own section at every width) and the hard offset "plate" shadows on cards (a square motif fighting rounded geometry).
 - Test suite green — **1117 passed** — after updating the tests the redesign legitimately invalidated: header CTA assertions, footer coverage (now: every menu *section* must stay reachable, and a section given a column must list all of it), and the CSS-inspecting tests, which now read `public/css/mru.css` instead of grepping page HTML.
 - Page weight (Debugbar off): 63–84 KB HTML per page, plus 128 KB CSS and 93 KB fonts, both cached across the site.
+
+## 2026-09-03 — Phase G: menu rebuild, footer diet, content clean-up
+
+- **The hover bug, found and fixed.** The mega panel was anchored to the header while its
+  `.nav-item` was left `position:static`, so each item's invisible hover-bridge resolved against
+  the header too and spanned the full header width. Six stacked full-width bridges meant a
+  pointer under the bar was simultaneously inside several menu items — panels opened over one
+  another, and travelling toward one left the item that opened it. Rebuilt to remove the gap
+  instead of bridging it: nav items stretch the full bar height, the panel is anchored at
+  `top:100%` (that same edge), and because the panel is a DOM child of the item, hovering it
+  keeps the item hovered. Verified by dispatching real pointer moves over CDP: exactly **one**
+  panel stays visible when the pointer travels from trigger into panel.
+- **A genuinely wide menu.** Shell widened 1240 → 1400px; the panel is now full-bleed with a
+  `290px + 1fr` inner grid — section intro beside a three-column link grid (two at 1180px,
+  stacked at 1000px). Header fit re-measured at 1600/1440/1280/1100/960px: no overflow, nav
+  never wraps.
+- **Footer cut from ~1000px to 597px.** Removed the section-sized newsletter block with its own
+  heading, the two large campus cards (repeating an address printed directly above them), and
+  the "quick links" column that duplicated its neighbours. What remains: one five-column link
+  grid, a slim strip carrying the newsletter and the portals, and the legal bar. Also reserved
+  space so the floating WhatsApp button stops covering the "Contact" link.
+- **Content bugs found while investigating the home page** (all were visible on it):
+  - **38 lorem-ipsum filler posts** imported from the old WordPress site carried the newest
+    dates in the archive, so they were the three stories the home page led with. Deleted, and
+    the importer's spam filter now catches them.
+  - **3 developer test posts** ("Publication capability test…", "test123123") likewise. The
+    importer now has a title-only junk-title filter — title-only because "test" appears inside
+    plenty of real words and a body-wide match would take genuine stories with it.
+  - **The testimonials were the model author's own contacts** — real, named people (a professor,
+    a vice chancellor) carried over with *empty* quotes, presented on MRU's home page as if they
+    endorsed the university. Cleared; the band auto-hides until MRU adds real ones via the admin.
+  - News now leads with genuine stories: the 2026 Pepsi University Football League title, the UFL
+    final, the Buganda Leaders' Retreat. 70 real articles remain.
+- **Not bugs, verified:** the blank sections and missing partner logos in full-page screenshots
+  were capture artifacts — the first from screenshotting mid-reveal-transition, the second from
+  `loading="lazy"` images never entering view during `captureBeyondViewport`. Probing the live
+  DOM confirmed the reveal observer leaves nothing hidden in the viewport, and the partner logos
+  load at 233×52 when scrolled to.
+- CSS tidied: the shell width has one home in the token block, and the retired watermark's four
+  tuning rules collapsed to the single line that decides. Braces balanced, 2,217 lines.
+- Suite green: **1117 passed**.
