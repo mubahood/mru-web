@@ -105,9 +105,39 @@ The fix removes the gap rather than bridging it:
 2. `.mega` is anchored to the header at `top: 100%` — that same edge, so trigger and panel touch;
 3. the panel is a DOM child of the item, so hovering the panel keeps the item hovered.
 
-No bridge, no timers, no JavaScript, and it still opens on `:focus-within` for the keyboard.
 Inside, `.mega-inner` is a `290px + 1fr` grid: a section intro (label, blurb, "Go to …") beside
 a three-column link grid, dropping to two columns at 1180px and stacking at 1000px.
+
+### Hover *and* click, without them fighting
+
+The menu answers to four people at once: a mouse user who expects hover, someone who expects a
+click to toggle, a touch user who has no hover at all, and a keyboard user. **CSS alone cannot
+do that** — a click cannot dismiss a `:hover` state, and clicking the trigger focuses it, so
+`:focus-within` pinned the panel open and the second click appeared to do nothing. That is why
+the menu felt click-only once it had been clicked.
+
+So the open state is a class the script owns:
+
+- `html.js-nav` is added when the script runs; the stylesheet's `:hover` / `:focus-within` rules
+  are scoped to `html:not(.js-nav)` and remain the **no-JS fallback**.
+- `.nav-item.is-open > .mega` is what actually opens the panel.
+- Hover (only under `(hover: hover) and (pointer: fine)`) opens after a 70ms intent delay —
+  or **instantly** if a panel is already open, so moving along the bar feels like one menu — and
+  closes after a 180ms grace period.
+- A click always toggles and always beats a pending hover timer. A `pointerdown` flag stops the
+  focus the click itself causes from re-opening what the click just closed; keyboard focus is
+  told apart by `:focus-visible`.
+- Escape closes and returns focus to the trigger; a click outside closes; following a link
+  closes (nothing else would, since `wire:navigate` swaps the page without a reload).
+- An open panel dims the page with a `pointer-events: none` scrim on `html.menu-open`.
+
+`SiteNavTest` pins both halves of that contract: the class-driven rule must exist, the CSS-only
+rule must stay scoped, and no unscoped `.nav-item:hover > .mega` may reappear.
+
+> **A cascade trap worth remembering.** A media query adds no specificity, so a plain
+> `.nav { display: flex }` written *later* than `@media(max-width:900px){ .nav{display:none} }`
+> wins at every width — which is how restyling the navigation put the desktop menu back on top
+> of the phone header. §17 keeps the small-screen collapse last in the sheet for that reason.
 
 **Footer** is a navy gradient with a crest watermark, in three zones: a five-column link grid
 (brand + three menu sections + "More") → a slim strip carrying the newsletter and the portals →

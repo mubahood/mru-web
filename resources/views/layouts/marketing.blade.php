@@ -83,7 +83,8 @@
         @else
           <div class="nav-item has-menu">
             <button type="button" class="nav-link {{ $on ? 'on' : '' }}"
-                    aria-expanded="false" aria-controls="mega-{{ Str::slug($item['label']) }}">
+                    aria-haspopup="true" aria-expanded="false"
+                    aria-controls="mega-{{ Str::slug($item['label']) }}">
               {{ $item['label'] }} <i class="fas fa-chevron-down caret" aria-hidden="true"></i>
             </button>
             {{-- The panel spans the whole header and sits flush against its
@@ -362,26 +363,127 @@
      covers mouse, keyboard and no-JS. Script adds only what CSS cannot say:
      Escape closes, and aria-expanded tells the truth about the panel's state
      for anyone listening rather than looking. */
+  /*
+     The main menu.
+
+     It has to answer to four different people at once: someone with a mouse
+     who expects it to open on hover, someone who expects a click to toggle
+     it, someone on a touch screen who has no hover at all, and someone on a
+     keyboard. CSS alone cannot do that — a click cannot dismiss a :hover
+     state, and clicking the trigger focuses it, so :focus-within pinned the
+     panel open and the second click appeared to do nothing. That is why the
+     menu felt click-only once it had been clicked.
+
+     So the open state is a class, set here, and the stylesheet only reacts to
+     it (see "html.js-nav" in mru.css). Without script the CSS falls back to
+     :hover and :focus-within on its own.
+  */
+  function mruMenuState(item, open){
+    item.classList.toggle('is-open', open);
+    var trigger = item.querySelector('.nav-link');
+    if (trigger) trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    // Queried fresh rather than remembered: wire:navigate replaces the nodes.
+    document.documentElement.classList.toggle('menu-open',
+      !!document.querySelector('.nav-item.has-menu.is-open'));
+  }
+
+  function mruCloseMenus(except){
+    document.querySelectorAll('.nav-item.has-menu.is-open').forEach(function(i){
+      if (i !== except) mruMenuState(i, false);
+    });
+  }
+
   function initMegaMenus(){
-    document.querySelectorAll('.nav-item.has-menu').forEach(function(item){
+    var items = [].slice.call(document.querySelectorAll('.nav-item.has-menu'));
+    if (!items.length) return;
+
+    document.documentElement.classList.add('js-nav');   // hands control to the class
+
+    // Touch screens report no hover; they get the click toggle only.
+    var canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    var openTimer = null, closeTimer = null, viaPointer = false;
+
+    function openMenu(item, now){
+      clearTimeout(openTimer); clearTimeout(closeTimer);
+      var go = function(){ mruCloseMenus(item); mruMenuState(item, true); };
+      // Instant when a panel is already open (moving along the bar should
+      // feel like one menu), a beat's hesitation otherwise so sweeping the
+      // bar on the way somewhere else does not flash every section.
+      if (now) { go(); } else { openTimer = setTimeout(go, 70); }
+    }
+
+    function closeSoon(item){
+      clearTimeout(openTimer); clearTimeout(closeTimer);
+      // A grace period, so clipping a corner on the way into the panel or
+      // back to the trigger does not dismiss it.
+      closeTimer = setTimeout(function(){ mruMenuState(item, false); }, 180);
+    }
+
+    items.forEach(function(item){
       if (item.dataset.wired) return;
       item.dataset.wired = '1';
       var trigger = item.querySelector('.nav-link');
-      var sync = function(open){ if (trigger) trigger.setAttribute('aria-expanded', open ? 'true' : 'false'); };
 
-      item.addEventListener('mouseenter', function(){ sync(true); });
-      item.addEventListener('mouseleave', function(){ sync(false); });
-      item.addEventListener('focusin',   function(){ sync(true); });
-      item.addEventListener('focusout',  function(){
-        // focusout fires before focus lands; check on the next tick.
-        setTimeout(function(){ if (!item.contains(document.activeElement)) sync(false); }, 0);
+      if (canHover) {
+        item.addEventListener('mouseenter', function(){
+          openMenu(item, !!document.querySelector('.nav-item.has-menu.is-open'));
+        });
+        item.addEventListener('mouseleave', function(){ closeSoon(item); });
+      }
+
+      if (trigger) {
+        /* A click always toggles, and always beats a pending hover timer, so
+           the panel can be dismissed without moving the pointer away. The
+           flag stops the focus that the click itself causes from re-opening
+           what the click just closed. */
+        trigger.addEventListener('pointerdown', function(){ viaPointer = true; });
+        trigger.addEventListener('click', function(e){
+          e.preventDefault();
+          clearTimeout(openTimer); clearTimeout(closeTimer);
+          var isOpen = item.classList.contains('is-open');
+          mruCloseMenus(item);
+          mruMenuState(item, !isOpen);
+          setTimeout(function(){ viaPointer = false; }, 0);
+        });
+      }
+
+      /* Keyboard only. A mouse click focuses the trigger too, and that must
+         not re-open the panel the click just closed, so this defers to
+         :focus-visible — true when focus arrived by keyboard, false after a
+         click. */
+      item.addEventListener('focusin', function(e){
+        if (viaPointer) return;
+        var byKeyboard = true;
+        try { byKeyboard = e.target.matches(':focus-visible'); } catch (err) { byKeyboard = true; }
+        if (byKeyboard) openMenu(item, true);
       });
-      item.addEventListener('keydown', function(e){
-        if (e.key !== 'Escape') return;
-        sync(false);
-        if (trigger) trigger.blur();
+      item.addEventListener('focusout', function(e){
+        if (!item.contains(e.relatedTarget)) mruMenuState(item, false);
+      });
+
+      // Following a link closes the menu behind it: wire:navigate swaps the
+      // page without a reload, so nothing else would.
+      item.addEventListener('click', function(e){
+        if (e.target.closest('.mega a')) mruCloseMenus(null);
       });
     });
+
+    if (!window.__mruMenuGlobals) {
+      window.__mruMenuGlobals = true;
+
+      document.addEventListener('keydown', function(e){
+        if (e.key !== 'Escape') return;
+        var open = document.querySelector('.nav-item.has-menu.is-open');
+        if (!open) return;
+        mruMenuState(open, false);
+        var trigger = open.querySelector('.nav-link');
+        if (trigger) trigger.focus();
+      });
+
+      document.addEventListener('click', function(e){
+        if (!e.target.closest('.nav-item.has-menu')) mruCloseMenus(null);
+      });
+    }
   }
   initMegaMenus();
 

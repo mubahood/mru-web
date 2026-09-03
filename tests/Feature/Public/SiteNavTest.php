@@ -221,6 +221,59 @@ class SiteNavTest extends TestCase
             (strpos($html, '</header>') ?: strlen($html)) - (strpos($html, '<div class="hd-r">') ?: 0));
     }
 
+    public function test_a_menu_trigger_announces_itself_as_a_disclosure(): void
+    {
+        $html = (string) $this->get(route('home'))->assertOk()->getContent();
+
+        foreach (SiteNav::items() as $item) {
+            if (empty($item['children'])) {
+                continue;
+            }
+
+            $id = 'mega-'.\Illuminate\Support\Str::slug($item['label']);
+            $this->assertStringContainsString('aria-controls="'.$id.'"', $html);
+            $this->assertStringContainsString('id="'.$id.'"', $html,
+                "the panel {$id} its trigger points at must exist");
+        }
+
+        $this->assertStringContainsString('aria-haspopup="true"', $html);
+        $this->assertStringContainsString('aria-expanded="false"', $html);
+    }
+
+    /**
+     * The menu has to open on hover AND toggle on click, and those two cannot
+     * both live in CSS: a click cannot dismiss a :hover state, and the click
+     * focuses the trigger, so :focus-within pinned the panel open and the
+     * second click appeared to do nothing.
+     *
+     * So the open state is a class the script owns, and the pure-CSS
+     * behaviour is kept only for a page whose script has not run. This pins
+     * both halves of that contract.
+     */
+    public function test_the_menu_supports_hover_and_click_without_them_fighting(): void
+    {
+        $css = (string) file_get_contents(public_path('css/mru.css'));
+
+        // The script-driven state.
+        $this->assertStringContainsString('.nav-item.is-open > .mega{', $css,
+            'the open state must be a class the script can toggle');
+
+        // The no-JS fallback, scoped so it cannot override the class.
+        $this->assertStringContainsString('html:not(.js-nav) .nav-item:hover > .mega', $css,
+            'the CSS-only fallback must be scoped to pages without script');
+        // Matched anywhere in a selector list: a superseded rule hiding behind
+        // a comma is still a rule that fights the class.
+        $this->assertDoesNotMatchRegularExpression(
+            '/(?:^|[,}])\s*\.nav-item:hover > \.mega\s*[,{]/m',
+            $css,
+            'an unscoped :hover rule would re-open a panel the click just closed'
+        );
+
+        $js = (string) file_get_contents(resource_path('views/layouts/marketing.blade.php'));
+        $this->assertStringContainsString("classList.add('js-nav')", $js);
+        $this->assertStringContainsString('mruMenuState', $js);
+    }
+
     public function test_the_mega_panel_is_operable_without_a_mouse(): void
     {
         $html = (string) $this->get(route('home'))->assertOk()->getContent();

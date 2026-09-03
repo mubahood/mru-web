@@ -407,7 +407,14 @@
       background:var(--surface);border:1px solid var(--line);box-shadow:0 22px 48px -20px rgba(11,31,58,.28);
       padding:10px;opacity:0;visibility:hidden;transform:translateY(-6px);
       transition:opacity .18s,transform .18s,visibility .18s;}
-    .nav-item:hover > .mega,.nav-item:focus-within > .mega{opacity:1;visibility:visible;transform:none;}
+    /* Without script the menu still works on hover and on keyboard focus.
+   With script (html.js-nav) a single class decides, so hover-to-open and
+   click-to-toggle can share one menu without fighting each other: a click
+   cannot dismiss a :hover state, which is why the panel used to feel
+   click-only once it had been clicked. */
+html:not(.js-nav) .nav-item:hover > .mega,
+html:not(.js-nav) .nav-item:focus-within > .mega{opacity:1;visibility:visible;transform:none;}
+.nav-item.is-open > .mega{opacity:1;visibility:visible;transform:none;}
     /* Bridges the 10px gap so the pointer can travel from trigger to panel
        without passing over dead space and closing it. */
     .nav-item.has-menu::after{content:'';position:absolute;top:100%;left:0;right:0;height:12px;}
@@ -1584,7 +1591,14 @@ html.is-scrolled .brand img.crest{height:38px;}
   background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--sh-4);
   padding:14px;opacity:0;visibility:hidden;transform:translateY(-8px) scale(.985);
   transition:opacity .2s,transform .2s,visibility .2s;transform-origin:top left;}
-.nav-item:hover > .mega,.nav-item:focus-within > .mega{opacity:1;visibility:visible;transform:none;}
+/* Without script the menu still works on hover and on keyboard focus.
+   With script (html.js-nav) a single class decides, so hover-to-open and
+   click-to-toggle can share one menu without fighting each other: a click
+   cannot dismiss a :hover state, which is why the panel used to feel
+   click-only once it had been clicked. */
+html:not(.js-nav) .nav-item:hover > .mega,
+html:not(.js-nav) .nav-item:focus-within > .mega{opacity:1;visibility:visible;transform:none;}
+.nav-item.is-open > .mega{opacity:1;visibility:visible;transform:none;}
 .nav-item.has-menu::after{height:16px;}
 .mega-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;}
 .mega-link{display:flex;gap:13px;padding:12px 13px;align-items:flex-start;border-radius:var(--r);
@@ -1990,12 +2004,10 @@ footer .wrap{position:relative;z-index:1;}
    shrink, the navigation is the only elastic element, and no label is
    allowed to break across lines. */
 
-header.site .bar{gap:20px;flex-wrap:nowrap;}
+header.site .bar{flex-wrap:nowrap;}
 .brand{flex-shrink:0;min-width:0;}
 .brand .brand-name{white-space:nowrap;font-size:15.5px;}
 .brand .brand-name small{white-space:nowrap;}
-.nav{flex:1 1 auto;min-width:0;justify-content:center;gap:2px;}
-.nav-link{white-space:nowrap;padding:10px 12px;font-size:14.5px;}
 .hd-r{flex-shrink:0;gap:14px;}
 
 /* Between 900 and 1300 the full wordmark is the first thing to go: the crest
@@ -2004,16 +2016,13 @@ header.site .bar{gap:20px;flex-wrap:nowrap;}
   .brand .brand-name{font-size:0;}
   .brand .brand-name::after{content:'MRU';font-size:20px;font-weight:800;letter-spacing:-.02em;color:var(--pri);}
   .brand .brand-name small{display:none;}
-  .nav-link{padding:10px 10px;font-size:14px;}
 }
-@media(max-width:1080px){ .nav-link{font-size:13.5px;padding:9px 8px;} header.site .bar{gap:14px;} }
+@media(max-width:1080px){ header.site .bar{gap:14px;} }
 
-/* The mega panel is anchored to the bar, not to its trigger, so a panel
-   opened by the last menu item cannot hang off the side of the window. */
-.nav{position:static;}
-.nav-item.has-menu{position:static;}
-.mega{left:50%;transform:translateX(-50%) translateY(-8px) scale(.985);transform-origin:top center;}
-.nav-item:hover > .mega,.nav-item:focus-within > .mega{transform:translateX(-50%);}
+/* (The navigation's own sizing and the panel's anchoring live in §15, which
+   replaced an earlier attempt that centred the panel on the header and left
+   the nav items `position:static` — the arrangement that produced the
+   full-width hover bridges. Nothing about it survives here.) */
 
 /* The footer wordmark has room, so it keeps its full name at every width. */
 footer .brand .brand-name{font-size:16px;white-space:normal;}
@@ -2022,9 +2031,9 @@ footer .brand .brand-name small{display:block;}
 
 /* --------------------------------------------- 13. Footer column fit
 
-   Five columns: the brand block plus the first three menu sections plus the
-   quick links. The brand column is widest because it carries the crest, the
-   address block and the social row. */
+   Five columns: the brand block, the first three menu sections, and "More".
+   The brand column is widest because it carries the crest, the address block
+   and the social row. */
 .foot{grid-template-columns:1.7fr repeat(4,1fr);gap:44px 28px;}
 @media(max-width:1180px){
   .foot{grid-template-columns:1fr 1fr 1fr;}
@@ -2109,18 +2118,31 @@ header.site .bar{position:relative;gap:24px;}
 .nav-link.on{background:none;color:var(--pri);}
 /* The active marker sits on the bar's bottom edge, where the panel opens. */
 .nav-link.on::after{left:15px;right:15px;bottom:0;height:3px;border-radius:3px 3px 0 0;}
-.nav-item:hover .nav-link,.nav-item:focus-within .nav-link{color:var(--pri);}
-.nav-item:hover .nav-link .caret,.nav-item:focus-within .nav-link .caret{transform:rotate(180deg);}
+.nav-item:hover .nav-link,.nav-item.is-open .nav-link{color:var(--pri);}
+html:not(.js-nav) .nav-item:focus-within .nav-link{color:var(--pri);}
+html:not(.js-nav) .nav-item:hover .nav-link .caret,
+html:not(.js-nav) .nav-item:focus-within .nav-link .caret,
+.nav-item.is-open .nav-link .caret{transform:rotate(180deg);}
+/* The open section keeps a marker even when it is not the current page. */
+.nav-item.is-open .nav-link::after{content:'';position:absolute;left:15px;right:15px;bottom:0;
+  height:3px;border-radius:3px 3px 0 0;background:var(--gold);}
 
 /* The panel: full width, flush to the header, opening downward. */
 .mega{position:absolute;top:100%;left:0;right:0;width:100%;
-  transform:none;transform-origin:top center;
+  transform:translateY(-10px);transform-origin:top center;
   background:#fff;border:none;border-top:1px solid var(--line);
   border-radius:0 0 var(--r-lg) var(--r-lg);
   box-shadow:0 26px 50px -22px rgba(2,52,121,.28);
   padding:0;opacity:0;visibility:hidden;
-  transition:opacity .18s ease,visibility .18s ease;}
-.nav-item:hover > .mega,.nav-item:focus-within > .mega{opacity:1;visibility:visible;transform:none;}
+  transition:opacity .2s ease,transform .2s cubic-bezier(.22,.61,.36,1),visibility .2s;}
+/* Without script the menu still works on hover and on keyboard focus.
+   With script (html.js-nav) a single class decides, so hover-to-open and
+   click-to-toggle can share one menu without fighting each other: a click
+   cannot dismiss a :hover state, which is why the panel used to feel
+   click-only once it had been clicked. */
+html:not(.js-nav) .nav-item:hover > .mega,
+html:not(.js-nav) .nav-item:focus-within > .mega{opacity:1;visibility:visible;transform:none;}
+.nav-item.is-open > .mega{opacity:1;visibility:visible;transform:none;}
 
 .mega-inner{max-width:var(--wrap);margin:0 auto;padding:32px;
   display:grid;grid-template-columns:290px minmax(0,1fr);gap:40px;align-items:start;}
@@ -2215,3 +2237,29 @@ footer .wrap{max-width:var(--wrap);}
    rather than let it sit on top of "Contact". */
 @media(min-width:900px){ .foot-legal{margin-right:86px;} }
 @media(max-width:899px){ .foot-bar{padding-bottom:96px;} }
+
+/* An open panel dims the page behind it, so the menu reads as a layer rather
+   than as content that appeared. Never interactive — it must not swallow the
+   click that closes it — and it sits below the header (60) and the mobile
+   action bar (50) but above the floating launcher (45). */
+html.menu-open::after{content:'';position:fixed;inset:0;z-index:48;
+  background:rgba(2,52,121,.16);pointer-events:none;animation:mru-scrim .2s ease both;}
+@keyframes mru-scrim{from{opacity:0} to{opacity:1}}
+@media(prefers-reduced-motion:reduce){ html.menu-open::after{animation:none;} }
+
+/* =========================================================================
+   17. Small screens have the last word
+   =========================================================================
+   This block is deliberately the final one in the sheet. A media query adds
+   no specificity, so a plain `.nav{display:flex}` written later than
+   `@media(max-width:900px){.nav{display:none}}` silently wins at every
+   width — which is exactly what happened when §15 restyled the navigation
+   and put the desktop menu back on top of the phone header. Keeping the
+   collapse last means no later component rule can undo it.
+   -------------------------------------------------------------------- */
+@media(max-width:900px){
+  .nav{display:none;}
+  .burger{display:inline-flex;}
+  .hd-r .btn.desk,.hd-r .acct.desk,.hd-r .signin.desk{display:none;}
+  html.menu-open::after{display:none;}   /* no panel, so no scrim */
+}

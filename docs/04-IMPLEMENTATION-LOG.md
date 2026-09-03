@@ -111,3 +111,33 @@ Full design pass against the brand brief. Documented in [05-DESIGN-SYSTEM.md](05
 - CSS tidied: the shell width has one home in the token block, and the retired watermark's four
   tuning rules collapsed to the single line that decides. Braces balanced, 2,217 lines.
 - Suite green: **1117 passed**.
+
+## 2026-09-03 — Phase H: the menu answers to hover, click, touch and keyboard
+
+- **Why it felt click-only.** The panel was opened purely by CSS `:hover` / `:focus-within`.
+  Clicking a trigger focuses it, so `:focus-within` pinned the panel open and a second click
+  could not close it — CSS has no way to let a click dismiss a hover state. The open state is
+  now a class the script owns (`.nav-item.is-open`), with the CSS-only behaviour scoped to
+  `html:not(.js-nav)` as the no-JS fallback.
+- Interaction model: hover opens after a 70ms intent delay (instantly if a panel is already
+  open, so moving along the bar feels like one menu) and closes after a 180ms grace period;
+  click always toggles and beats any pending hover timer; a `pointerdown` flag stops the focus
+  the click causes from re-opening what it just closed, and keyboard focus is told apart with
+  `:focus-visible`; Escape closes and restores focus to the trigger; click-outside closes;
+  following a link closes (nothing else would under `wire:navigate`). Touch screens report no
+  hover and get the click toggle alone.
+- Polish: `aria-haspopup`/`aria-expanded` kept truthful, a 10px slide-in on the panel, an amber
+  marker under the open section, and a `pointer-events:none` scrim dimming the page behind.
+- **Verified with real browser input**, not assumptions: pointer moves, clicks and key events
+  dispatched over CDP — 10/10 checks including *click again closes*, *switching sections never
+  leaves two panels open*, and *Escape refocuses the trigger*.
+- **A cascade trap, found and fixed.** §15's `.nav{display:flex}` was written after
+  `@media(max-width:900px){.nav{display:none}}`, and since a media query adds no specificity it
+  won at every width — the desktop menu was sitting on top of the phone header. The
+  small-screen collapse is now the last block in the sheet (§17) so no later component rule can
+  undo it.
+- Dead CSS removed: §12 still carried the *original* broken anchoring (`.nav-item.has-menu
+  {position:static}` plus a centred `.mega` and an unscoped `:hover` transform) that §15 had
+  superseded. `SiteNavTest` now also fails on the comma-separated form of that selector, which
+  the first regex let through.
+- Suite green: **1119 passed**.
