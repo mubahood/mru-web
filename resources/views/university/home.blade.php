@@ -29,10 +29,6 @@
 @section('content')
 
 @php
-  /* Section numbers are assigned as sections render, so an omitted band never
-     leaves a hole in the numbering. */
-  $n = 0;
-  $idx = function () use (&$n) { return str_pad((string) ++$n, 2, '0', STR_PAD_LEFT); };
   $applyUrl = \App\Support\University::applyUrl();
   $eportalUrl = \App\Support\University::links()['eportal'] ?? 'https://eportal.mru.ac.ug/';
 @endphp
@@ -193,7 +189,6 @@
     <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:40px;align-items:center;" class="about-split">
       <div>
         <div class="sec-head left" style="margin-bottom:18px;">
-          <div class="sec-idx">{{ $idx() }} <span>About MRU</span></div>
           <h2>A royal university with a modern mission</h2>
         </div>
         @foreach(array_slice($identity['history'] ?? [], 0, 2) as $paragraph)
@@ -228,35 +223,7 @@
       </div>
       <div data-rise style="text-align:center;">
         <img src="{{ asset('images/logo-icon.png') }}" alt="The crest of Muteesa I Royal University"
-             loading="lazy" decoding="async" style="max-width:200px;margin:0 auto;">
-
-        {{-- "Our values" also already existed — the full, always-expanded version
-             lives on /who-we-are. This is deliberately not a repeat of that: six
-             compact tiles, collapsed to an icon and a name, each opening on its
-             own to reveal the one sentence behind it. Kept beside the crest as
-             this column's own content rather than a full-width block, so the
-             section reads as heritage story (left) + at-a-glance identity
-             (right) instead of story-then-a-second-unrelated-block. Same six
-             values, same icons ($valueIcons on /who-we-are), so the two pages
-             agree with each other rather than each inventing their own version. --}}
-        @if(!empty($identity['values']))
-          @php $valueIcons = ['fa-award', 'fa-scale-balanced', 'fa-drum', 'fa-hands-holding-circle', 'fa-lightbulb', 'fa-hand-holding-heart']; @endphp
-          <div class="values-teaser">
-            <p class="values-teaser-label">What we stand for</p>
-            <div class="value-tiles">
-              @foreach($identity['values'] as $i => $value)
-                <div class="value-tile">
-                  <button type="button" class="value-trigger" aria-expanded="false">
-                    <span class="ic"><i class="fas {{ $valueIcons[$i] ?? 'fa-star' }}" aria-hidden="true"></i></span>
-                    <span class="value-name">{{ $value['name'] }}</span>
-                    <i class="fas fa-chevron-down value-chevron" aria-hidden="true"></i>
-                  </button>
-                  <p class="value-desc">{{ $value['desc'] }}</p>
-                </div>
-              @endforeach
-            </div>
-          </div>
-        @endif
+             loading="lazy" decoding="async" style="max-width:260px;margin:0 auto;">
       </div>
     </div>
   </div>
@@ -267,7 +234,6 @@
 <section>
   <div class="wrap">
     <div class="sec-head left">
-      <div class="sec-idx">{{ $idx() }} <span>Faculties</span></div>
       <h2>Five faculties, one Graduate School</h2>
       <p>Every programme belongs to a faculty that teaches it, researches it, and walks you into a career with it.</p>
     </div>
@@ -293,7 +259,6 @@
 <section class="band-surface">
   <div class="wrap">
     <div class="sec-head left">
-      <div class="sec-idx">{{ $idx() }} <span>Two Campuses</span></div>
       <h2>One university, two homes</h2>
       <p>Kampala for the capital's energy, Masaka for a quieter pace — the same MRU education at both.</p>
     </div>
@@ -315,7 +280,6 @@
 <section class="band-surface tex-grid">
   <div class="wrap">
     <div class="sec-head left">
-      <div class="sec-idx">{{ $idx() }} <span>Programmes</span></div>
       <h2>Find the programme that fits you</h2>
       <p>From one-year certificates to masters degrees — filter the full directory by level, faculty or name.</p>
     </div>
@@ -337,7 +301,6 @@
 <section>
   <div class="wrap">
     <div class="sec-head left">
-      <div class="sec-idx">{{ $idx() }} <span>Campus Life</span></div>
       <h2>A closer look at who we are</h2>
       <p>Moments from across the university — its people, its ceremonies, its everyday work.</p>
     </div>
@@ -363,7 +326,6 @@
 <section>
   <div class="wrap">
     <div class="sec-head left">
-      <div class="sec-idx">{{ $idx() }} <span>News &amp; Events</span></div>
       <h2>Life at the university, this week</h2>
     </div>
     <div style="display:grid;grid-template-columns:2fr 1fr;gap:24px;" class="news-split">
@@ -414,7 +376,6 @@
 <section class="band-deep">
   <div class="wrap">
     <div class="sec-head left">
-      <div class="sec-idx">{{ $idx() }} <span>MRU Scholar</span></div>
       <h2>Research that leaves the library</h2>
       <p>MRU Scholar is the university's open repository — publications by our academics, free to read and verify.</p>
     </div>
@@ -444,7 +405,6 @@
 <section class="band-surface tex-glow">
   <div class="wrap">
     <div class="sec-head left">
-      <div class="sec-idx">{{ $idx() }} <span>Student Voices</span></div>
       <h2>What our students say</h2>
     </div>
     <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr));">
@@ -474,7 +434,6 @@
 <section>
   <div class="wrap">
     <div class="sec-head">
-      <div class="sec-idx">{{ $idx() }} <span>Partners</span></div>
       <h2>Recognised and connected</h2>
     </div>
     <div class="clients-strip" data-rise style="align-items:center;">

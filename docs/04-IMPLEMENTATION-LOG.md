@@ -922,3 +922,67 @@ width, the crest-and-values column reads as one coherent block at desktop width,
 width everything still stacks in the same top-to-bottom order the section already had — text,
 credentials, CTA, crest, values — since the values now live inside the same right-column `<div>`
 that was already collapsing to a single column below 820px.
+
+## 2026-09-04 — Phase U: no more numbers, and the values teaser is gone from home
+
+Two instructions: drop the "02 Faculties"-style numbering from the homepage, and remove "What We
+Stand For" — Phase T's relocation, not just Phase S's original full-width version — from the
+homepage entirely.
+
+### Scoping the numbering removal to home, not the design system
+
+`.sec-idx` (the small gold-line-plus-number eyebrow) is not a homepage invention — `grep -rln
+"sec-idx" resources/views/` found it live on roughly 30 templates: `/about`, `/who-we-are`, every
+admissions page, faculty and programme detail pages, the scholar section, vacancies, the shared
+CTA-band partial, and more. The request named one homepage example ("02 Faculties") and, in the
+same message, referred to "the page" — singular, matching a conversation that has been about the
+homepage exclusively for the length of this log. Reworking a motif used on 30 templates neither
+one of us has looked at this session would be a far bigger and riskier change than what was asked,
+so the fix is scoped to `home.blade.php`'s 9 call sites only. The `.sec-idx` CSS rule itself, and
+every other page that uses it, is untouched — confirmed after the edit by curling `/about` and
+checking its section labels still render (`01 Our History`, `02 Vision & Mission`, `03
+Leadership`, all present, all numbered, exactly as before).
+
+Removed along with the 9 markup lines: the `$idx` closure and the `$n` counter it read from
+(`home.blade.php`'s own top-of-file `@php` block), since nothing calls `$idx()` anymore. Left in
+place: `$applyUrl` and `$eportalUrl`, which several sections still use. No CSS change was needed
+to make the headings sit correctly without their eyebrow — `.sec-idx` carried its own
+`margin-bottom`, so removing the element removes that spacing along with it rather than leaving a
+gap.
+
+### The values teaser comes back out
+
+"What we stand for" — the six collapsible tiles Phase S added and Phase T moved beside the crest —
+is now gone from the homepage completely, on a direct, unambiguous instruction (unlike Phase T's
+"move it to the side," which was ambiguous enough to be worth asking about, this one had only one
+reading). The full, always-expanded version already lives on `/about` and `/who-we-are`, so nothing
+about the values themselves disappeared site-wide — only the homepage's third copy of them.
+
+Confirmed the removal was total before calling it done, not just deleting the visible block:
+`initValueTiles()` (definition and both call sites — initial load and `livewire:navigated`) came
+out of `marketing.blade.php`, since it wired click handlers for an element that no longer exists;
+and `.values-teaser`, `.values-teaser-label`, `.value-tiles`, `.value-tile`, `.value-trigger`,
+`.value-name`, `.value-chevron`, `.value-desc`, and their `prefers-reduced-motion` override came
+out of `mru.css` — a repeat `grep` for all of those class names across `resources/views/` and
+`public/css/mru.css` afterward returned nothing, confirming no orphaned rule or dangling handler
+was left behind. `.credential-row`/`.credential-item` (the namesake and accreditation pills — a
+separate piece of Phase S, never in question here) stayed exactly as they were.
+
+The right-hand column of the About MRU split is back to just the crest, as it was before Phase S
+ever touched this section — sized up from the 200px Phase T had shrunk it to (to leave room for
+the tiles that no longer exist) to 260px, since a lone image no longer needs to make room for
+anything underneath it.
+
+### Verified
+
+Homepage returns 200; CSS brace count balanced (1393/1393) before screenshotting anything. Screenshotted
+every section of the page — not just the ones edited — at both 1440px and 390px, since removing a
+label from 9 sections touches more surface area than any single-section change this log has made
+before: every heading now sits directly at the top of its `.sec-head` block with no orphaned
+spacing, the About MRU columns read as balanced with the larger crest, and the shared CTA-band
+partial's own "— JOIN US" eyebrow (a static label, never wired to `$idx()`, safe by construction)
+rendered exactly as before. No horizontal overflow at either width. Menu contract 10/10, slider
+contract 14/14, audience-picker 14/17 (same three pre-diagnosed timing-assertion failures, not a
+new regression), full suite **1134 passed, 1 skipped**, unchanged. The value-tile interaction test
+from Phase S/T was retired rather than kept failing-by-design — it tested a component that no
+longer exists on this page.
