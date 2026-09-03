@@ -83,11 +83,12 @@ class UniversityContentSeeder extends Seeder
         /* The home page slider.
          *
          * Three real photographs of this university, each paired with copy
-         * that describes what is actually in it — a graduation, a visit from
-         * international partners, and the Buganda Leaders' Retreat MRU
-         * hosted. `image` is a base name; the view appends -700/-1100/-1600
-         * for the responsive set. Editable here rather than hard-coded in the
-         * template so the slider is content, not markup.
+         * that describes what is actually in it — a graduation, the 2025
+         * Ommanyi inter-institutional games held under the Kingdom of
+         * Buganda, and a visit from international partners. `image` is a
+         * base name; the view appends -700/-1100/-1600 for the responsive
+         * set. Editable here rather than hard-coded in the template so the
+         * slider is content, not markup.
          */
         Settings::set('university.hero_slides', json_encode([
             [
@@ -101,7 +102,7 @@ class UniversityContentSeeder extends Seeder
             ],
             [
                 'image' => 'university/hero/hero-heritage',
-                'alt' => 'Delegates seated in a hall at the Buganda Leaders\' Retreat hosted at Muteesa I Royal University',
+                'alt' => 'University and Kingdom of Buganda officials holding trophies at the 2025 Ommanyi inter-institutional games, with the Buganda Kingdom and MRU crests on the backdrop',
                 'eyebrow' => 'Rooted in heritage',
                 'title' => 'A royal university of the Buganda Kingdom',
                 'text' => 'Named in honour of Kabaka Muteesa I, and a meeting place for the Kingdom it belongs to.',

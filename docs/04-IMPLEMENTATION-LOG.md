@@ -349,11 +349,35 @@ Blade change confined to `hero-slider.blade.php` (the eyebrow numeral); everythi
 Re-verified over CDP: menu contract 10/10, slider contract 14/14. `HeroSliderTest` unaffected (10
 passed). Full suite: **1134 passed, 1 skipped**. 45-route sweep clean.
 
-### Source photography: flagged, not changed
+### Source photography: one swap, one left alone
 
 Two of the three slides' source photos read as generic snapshots rather than vivid hero
-photography — the heritage slide is an indoor conference room with no visible tie to Buganda
-heritage, and the international slide is a static posed lineup. Chrome and contrast are this
-phase's fix; which photographs represent the university is a content call, not a styling one, so
-candidate replacements were researched but not applied — see the round's conversation record
-rather than this log for the specific file paths, since swapping them is still pending a decision.
+photography — the heritage slide was an indoor conference room with no visible tie to Buganda
+heritage, and the international slide is a static posed lineup. Which photographs represent the
+university is a content call, not a styling one, so this was surfaced rather than changed
+unilaterally: a survey of the imported media library (`storage/app/public/news`, cross-referenced
+against the `posts` table) turned up candidate replacements for both, each viewed directly rather
+than judged by filename.
+
+The heritage candidate was a clear upgrade on every axis — a photo of the 2025 Ommanyi
+inter-institutional games: outdoor, vivid, the Kingdom of Buganda's own branding and the MRU crest
+visible on the backdrop it was taken in front of. Approved and applied:
+`MakeHeroImages::SOURCES['hero-heritage']` now points at
+`news/WhatsApp-Image-2025-11-26-at-11.48.59.jpeg`; the derived 700/1100/1600px set was
+regenerated with `--force`; the seeder's `alt` text and doc-comment were corrected to describe
+what the new photo actually shows; the live `university.hero_slides` setting was patched in place
+(reading the current array and replacing only the heritage entry's `alt`, rather than re-running
+the whole seeder and risking any admin edits made to the other two slides or unrelated settings
+since the initial seed). `MakeHeroImagesTest`'s two hardcoded references to the old filename were
+updated to match — a reminder that a source-file rename has to chase its own test fixtures, not
+just the command that reads them.
+
+The international candidate was a genuine tradeoff rather than a clean win — more candid and
+elegant as a photograph, but with no visible connection to MRU, Uganda, or even Africa, where the
+current (weaker) photo at least self-evidently shows a diverse group together. Left unchanged.
+
+Re-verified after the swap: `MakeHeroImagesTest` (4 passed), ghost-button contrast re-measured
+against the *new* photo specifically rather than assumed to inherit the earlier fix (worst case
+7.94:1 — the previous fix wasn't photo-specific, but the claim that it holds here still needed its
+own measurement), slider contract 14/14, full suite **1134 passed, 1 skipped**, 45-route sweep
+clean.

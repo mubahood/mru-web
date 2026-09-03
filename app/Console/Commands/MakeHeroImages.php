@@ -32,7 +32,7 @@ class MakeHeroImages extends Command
     private const SOURCES = [
         'hero-graduation' => 'university/hero/slide_1783846485_3a6e5459.jpg',
         'hero-international' => 'university/hero/slide_1784646836_c86c18c2.jpg',
-        'hero-heritage' => 'news/buganda_retreat_26-9.jpeg',
+        'hero-heritage' => 'news/WhatsApp-Image-2025-11-26-at-11.48.59.jpeg',
     ];
 
     /** width => JPEG quality. Lower at every step down: a smaller frame hides compression the eye would catch at full size. */

@@ -171,6 +171,15 @@ text, and up to two calls to action. `UniversityContentSeeder` seeds the three c
 the legacy importer writes to `university.hero_slides_legacy` instead, specifically so re-running
 it can never silently overwrite the curated slider with raw import rows.
 
+**Which photograph earns a slide is itself a decision, not just which one happens to exist.** The
+heritage slide originally pointed at a fluorescent-lit conference room — a real photograph, but one
+with no visible connection to "heritage" or the Kingdom of Buganda the slide's own copy names. It
+was replaced with a photograph of the 2025 Ommanyi inter-institutional games: outdoor, vivid,
+carrying the Kingdom of Buganda's own branding and the MRU crest on the backdrop banner it was
+actually taken in front of — the same institutional link the copy already claimed, now visible in
+the frame rather than asserted over an unrelated photo. `MakeHeroImages::SOURCES` names the file;
+`mru:make-hero-images --force` re-derives the responsive set from it.
+
 **The photograph carries almost no wash.** A first pass covered the entire frame in a navy tint at
 up to 95% opacity — legible, but the result read as "a dark navy-tinted photo," not photography.
 The scrim is now one tight, fast-fading gradient behind the text column only (74% at the left edge,

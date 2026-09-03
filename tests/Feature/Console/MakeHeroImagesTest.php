@@ -26,7 +26,7 @@ class MakeHeroImagesTest extends TestCase
         // Any decodable image stands in for the real photographs; the command
         // does not care what is in the frame, only that it can scale it.
         $pixel = base64_decode('/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAMCAgICAgMCAgIDAwMDBAYEBAQEBAgGBgUGCQgKCgkICQkKDA8MCgsOCwkJDRENDg8QEBEQCgwSExIQEw8QEBD/2wBDAQMDAwQDBAgEBAgQCwkLEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBD/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAj/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k=');
-        foreach (['university/hero/slide_1783846485_3a6e5459.jpg', 'university/hero/slide_1784646836_c86c18c2.jpg', 'news/buganda_retreat_26-9.jpeg'] as $source) {
+        foreach (['university/hero/slide_1783846485_3a6e5459.jpg', 'university/hero/slide_1784646836_c86c18c2.jpg', 'news/WhatsApp-Image-2025-11-26-at-11.48.59.jpeg'] as $source) {
             Storage::disk('public')->put($source, $pixel);
         }
     }
@@ -66,7 +66,7 @@ class MakeHeroImagesTest extends TestCase
 
     public function test_a_missing_source_is_reported_and_does_not_abort_the_others(): void
     {
-        Storage::disk('public')->delete('news/buganda_retreat_26-9.jpeg');
+        Storage::disk('public')->delete('news/WhatsApp-Image-2025-11-26-at-11.48.59.jpeg');
 
         $this->artisan('mru:make-hero-images')
             ->expectsOutputToContain('Missing source photograph')
