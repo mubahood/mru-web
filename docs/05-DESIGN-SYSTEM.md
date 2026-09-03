@@ -161,8 +161,9 @@ stays reachable from it, and that a section given a column lists all of it.
 ### The home slider
 
 A full-height (`100svh`, not `100vh` — a phone's `vh` is the tallest the viewport ever gets, so a
-`vh` hero sits partly under the browser's own toolbar on load) stage of real photographs, with the
-header floating transparently on top of it until the reader scrolls.
+`vh` hero sits partly under the browser's own toolbar on load) stage of real photographs, shown
+**vivid** — full colour, minimal wash — under a frosted-glass header that floats on top of it
+until the reader scrolls.
 
 **Content is data, not markup.** `university.partials.hero-slider` renders from the
 `university.hero_slides` setting — each slide names an image base path, an eyebrow, a title, body
@@ -170,12 +171,36 @@ text, and up to two calls to action. `UniversityContentSeeder` seeds the three c
 the legacy importer writes to `university.hero_slides_legacy` instead, specifically so re-running
 it can never silently overwrite the curated slider with raw import rows.
 
-**The floating header** reads its colours from three variables — `--hdr-fg`, `--hdr-brand`,
-`--hdr-crest` — rather than carrying a second copy of every header rule for the transparent state.
-`body.has-hero` sets them to light values (and inverts the crest); scrolling past 40px or opening
-the mega menu (a white panel needs a white bar under it) restores the solid-header values on top.
-The body class is derived from the DOM (`syncHeroFlag()`) rather than hand-set per view, so it
-survives `wire:navigate` without every page having to remember to declare it.
+**The photograph carries almost no wash.** A first pass covered the entire frame in a navy tint at
+up to 95% opacity — legible, but the result read as "a dark navy-tinted photo," not photography.
+The scrim is now one tight, fast-fading gradient behind the text column only (74% at the left edge,
+clear by 60% of the width) and a shallow one at the floor, just enough for the control bar — the
+majority of every frame, including whatever it is actually a photograph of, is left alone. Legibility
+moved to where it belongs: `.hs-media` gets a deliberate `saturate(1.14) contrast(1.05)` lift so
+colour reads as vivid rather than apologised-for, and the text itself carries a soft, wide
+text-shadow (blur with almost no offset, so it reads as a lift off the photo, not a hard drop
+shadow) to stay crisp wherever it happens to sit.
+
+**The floating header is genuine frosted glass, not a bare transparent bar** — and specifically a
+*dark*-tinted glass (`rgba(1,15,38,.58)` + `blur(22px) saturate(160%)`), not a light one. A light
+tint was the first attempt and it was wrong: white nav text over a translucent white pane has
+contrast that depends entirely on what photograph is blurred behind it, and over a bright patch
+(sky, a pale shirt, cream tent fabric) the two would nearly disappear into each other. A dark tint
+composites the same white text against something close to navy however bright the photo
+underneath is — the wash a photograph needs dialled back for vividness and the wash behind
+functional chrome text are different jobs, and conflating them was the mistake.
+
+*Verified, not assumed.* Contrast here was checked by taking a real screenshot of all three
+slides, locating each nav-link's rendered position, and sampling actual composited pixels
+(post-blur, post-tint, post-photograph) from the backdrop directly behind where the glyphs sit —
+not the CSS values, the final pixels a reader's screen would actually show. Worst case across all
+three photographs: **5.0:1** (against a WCAG AA floor of 4.5:1 for body text; typical/median
+across all three sits at 10–18:1). The header reads its colours from three variables — `--hdr-fg`,
+`--hdr-brand`, `--hdr-crest` — rather than carrying a second copy of every header rule for the
+glass state. `body.has-hero` sets them to light values (and inverts the crest); scrolling past
+40px or opening the mega menu (a white panel needs a white bar under it) restores the solid-header
+values on top. The body class is derived from the DOM (`syncHeroFlag()`) rather than hand-set per
+view, so it survives `wire:navigate` without every page having to remember to declare it.
 
 **First paint pays for one image, not four.** Only the active-on-load slide's `<img>` is
 `loading="eager" fetchpriority="high" decoding="sync"`; the rest are `lazy`. Every slide ships a

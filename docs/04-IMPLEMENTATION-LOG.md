@@ -227,3 +227,57 @@ call, which costs an array lookup against an already-cached blob, not a query. A
 
 Full suite: **1134 passed**. Menu contract (10/10 interaction checks) and slider contract
 (14/14) re-verified over CDP after every change in this phase, not just at the end.
+
+## 2026-09-03 — Phase J: vivid photography, and a real glass header
+
+Feedback on Phase I's slider: too much overlay on the photos, and the header needed to read as
+genuine "glass" at the top of the slider rather than a bare transparent bar. Both addressed, and
+the second one went through a wrong first attempt that's worth recording.
+
+### The scrim, cut down to almost nothing
+
+The original wash covered the whole frame at up to 95% navy opacity — legible, but the effect was
+"a dark navy-tinted photo," which is the opposite of vivid. Replaced with one tight gradient behind
+the text column (74% opacity at the left edge, fully clear by 60% of the width) and a shallow one
+at the floor for the control bar; everywhere else in every slide is now essentially untouched.
+`.hs-media` got a deliberate `saturate(1.14) contrast(1.05)` lift so colour reads as vivid on
+purpose, not left to the raw JPEG. Legibility that the scrim used to provide moved to a soft,
+wide text-shadow on the copy instead (blur with almost no offset — a lift off the photo, not a
+hard drop shadow) and the title's weight went from 600 to 700 for the "bold" ask.
+
+### The glass header: a wrong first attempt, caught by measuring pixels instead of trusting CSS
+
+First pass: a **light** frosted pane — `rgba(255,255,255,.14)` + blur — under the existing white
+nav text (`rgba(255,255,255,.95)`). It looked plausible in one screenshot. A computed-style probe
+confirmed the values were applied exactly as written; the mistake wasn't in the CSS; it was in
+the choice. White text over a translucent *white* pane has contrast that depends entirely on
+what's blurred behind it — reliable over a dark patch of photo, unreliable over a bright one (sky,
+a pale shirt, the cream tent fabric on the graduation slide), and this header sits over three
+different photographs with three different tonal ranges.
+
+Caught this by measuring real rendered pixels rather than trusting the CSS or a single
+screenshot: located each `.nav-link`'s rendered rectangle via the DOM, took a screenshot at 1:1
+device-pixel scale so the coordinates lined up exactly, and sampled the backdrop pixels directly
+behind where the glyphs sit (deliberately above the text's own vertical band, inside the `.bar`
+row and below the separate `.topbar` row above it — the first sampling pass caught the edges of
+*topbar* glyphs by mistake and reported false failures around 1.4:1, which is itself a reminder to
+scope a measurement to the exact region a claim is about). Computed WCAG contrast from the actual
+composited colour. The light-glass version's worst case, correctly measured, would have failed
+badly wherever a slide's photo was bright.
+
+Fix: tint the glass **dark** instead — `rgba(1,15,38,.58)` + `blur(22px) saturate(160%)` — so
+white text composites against something close to navy regardless of what photograph is behind it.
+Re-measured the same way against all three real slides: worst case **5.0:1** (heritage slide, the
+brightest — a room with cream walls and window light), typical case 10–18:1 (graduation and
+international slides). All comfortably clear the WCAG AA floor of 4.5:1 for normal text, not just
+the 3:1 floor for large UI text. The principle that falls out of this: the wash a *photograph*
+needs dialled back for vividness, and the wash behind *functional chrome text* that has to stay
+legible against three different unpredictable backgrounds, are different jobs — conflating them
+into one "glass" treatment was the actual mistake, not any single CSS value.
+
+Verified after: menu interaction contract 10/10, slider interaction contract 14/14 (one assertion
+in the scratch verification script itself had to be fixed along the way — a nested-escaping bug
+silently turned `\d` into `d` inside a regex built through several layers of string interpolation,
+which is its own small lesson: prefer `split()`/`indexOf()` over a regex when a value is being
+built through more than one layer of templating). Full suite unaffected (**1134 passed** — this
+phase touched only `public/css/mru.css`).

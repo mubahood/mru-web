@@ -2273,26 +2273,37 @@ html.menu-open::after{content:'';position:fixed;inset:0;z-index:48;
 .hs-slide.is-active{opacity:1;visibility:visible;}
 
 .hs-media{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
-  object-position:center 32%;transform:scale(1.07);transition:transform 9s linear;}
+  object-position:center 32%;transform:scale(1.07);transition:transform 9s linear;
+  /* The photograph is the point. A small, deliberate lift — not a filter that
+     apologises for it — so real colour reads as vivid rather than washed. */
+  filter:saturate(1.14) contrast(1.05);}
 .hs-slide.is-active .hs-media{transform:scale(1);}
 
-/* Two gradients: one across, to hold the copy; one up from the floor, to keep
-   the controls legible over a bright photograph. */
+/* One tight, fast-fading wash behind the text column, and a low, shallow one
+   at the floor for the control bar. Everywhere else — most of the frame,
+   including whatever the photograph is actually of — stays clear.
+   This replaces a wash that covered the entire slide at up to 95% opacity:
+   legible, but it read as "a dark navy-tinted photo" rather than a
+   photograph, which is the opposite of vivid. */
 .hs-scrim{position:absolute;inset:0;background:
-  linear-gradient(96deg,rgba(1,25,60,.95) 0%,rgba(1,25,60,.88) 38%,rgba(1,25,60,.62) 68%,rgba(1,25,60,.45) 100%),
-  linear-gradient(to top,rgba(1,25,60,.78) 0%,rgba(1,25,60,.10) 46%,transparent 70%);}
+  linear-gradient(100deg,rgba(1,12,30,.74) 0%,rgba(1,12,30,.50) 24%,rgba(1,12,30,.18) 44%,transparent 60%),
+  linear-gradient(to top,rgba(1,12,30,.48) 0%,transparent 24%);}
 
 .hs-copy{position:relative;height:100%;display:flex;align-items:center;
   padding-top:var(--hdr-total,120px);padding-bottom:120px;}
 .hs-copy .wrap{width:100%;}
+/* The scrim now does less of the legibility work — most of the frame is
+   deliberately clear — so a soft, wide text-shadow picks up the rest. Blur
+   with almost no offset reads as a lift off the photo, not a hard drop
+   shadow, which is what keeps this elegant rather than heavy-handed. */
 .hs-eyebrow{font-size:12px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;
-  color:var(--gold);margin-bottom:20px;}
+  color:var(--gold);margin-bottom:20px;text-shadow:0 2px 14px rgba(0,0,0,.6);}
 .hs-title{font-family:var(--font-display);font-variation-settings:'opsz' 144;
   font-size:clamp(38px,5.6vw,76px);line-height:1.03;letter-spacing:-.025em;
-  font-weight:600;color:#fff;max-width:19ch;margin-bottom:22px;
-  text-wrap:balance;}
-.hs-text{font-size:clamp(16px,1.35vw,19.5px);line-height:1.65;color:rgba(255,255,255,.86);
-  max-width:56ch;margin-bottom:34px;}
+  font-weight:700;color:#fff;max-width:19ch;margin-bottom:22px;
+  text-wrap:balance;text-shadow:0 4px 28px rgba(0,0,0,.55),0 1px 4px rgba(0,0,0,.4);}
+.hs-text{font-size:clamp(16px,1.35vw,19.5px);line-height:1.65;color:rgba(255,255,255,.92);
+  max-width:56ch;margin-bottom:34px;text-shadow:0 2px 16px rgba(0,0,0,.5);}
 .hs-actions{display:flex;gap:14px;flex-wrap:wrap;}
 /* Matched at .btn.ghost's own weight, or the navy from the base button wins
    and the label disappears into the photograph. */
@@ -2371,12 +2382,30 @@ header.site{--hdr-fg:var(--tx);--hdr-brand:var(--pri);--hdr-crest:none;}
 body.has-hero{--hdr-total:120px;}
 @media(max-width:900px){ body.has-hero{--hdr-total:88px;} }
 
+/* True frosted glass, not a bare transparent bar: a blurred pane that sits on
+   the photograph as an object in its own right, with an edge you can see.
+   The two rows inside it (.topbar, .bar) are transparent to this shared
+   surface — one pane, not two different tints stacked — and a hairline
+   between them keeps the utility row legible as its own row.
+
+   Tinted dark, not light. The header is a control surface the reader has to
+   read reliably against three different photographs, not a decorative part
+   of the image — a light tint measured out at rgba(255,255,255,.95) white
+   nav text against it, over a bright patch of any photo (sky, a pale shirt,
+   the cream tent fabric on the graduation slide) the two would nearly
+   disappear into each other. A dark tint composites the same white text
+   against something close to navy however bright the photo underneath is,
+   which is what makes the contrast promise hold regardless of which slide is
+   showing — the wash the photograph itself needed dialling back; the wash
+   behind functional text is a different job. */
 body.has-hero header.site{position:fixed;top:0;left:0;right:0;
-  background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none;
-  border-bottom-color:transparent;box-shadow:none;
-  --hdr-fg:rgba(255,255,255,.94);--hdr-brand:#fff;--hdr-crest:brightness(0) invert(1);}
+  background:rgba(1,15,38,.58);
+  -webkit-backdrop-filter:blur(22px) saturate(160%);backdrop-filter:blur(22px) saturate(160%);
+  border-bottom:1px solid rgba(255,255,255,.16);
+  box-shadow:0 8px 32px -16px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.14);
+  --hdr-fg:rgba(255,255,255,.95);--hdr-brand:#fff;--hdr-crest:brightness(0) invert(1);}
 body.has-hero .brand .brand-name small{color:var(--gold-l);}
-body.has-hero .topbar{background:rgba(1,25,60,.42);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);}
+body.has-hero .topbar{background:transparent;border-bottom:1px solid rgba(255,255,255,.14);}
 body.has-hero .nav-link:hover{color:#fff;}
 body.has-hero .nav-link.on{color:#fff;}
 body.has-hero .signin{color:rgba(255,255,255,.88);}
@@ -2390,6 +2419,7 @@ html.is-scrolled body.has-hero header.site,
 html.menu-open body.has-hero header.site{
   background:rgba(255,255,255,.94);-webkit-backdrop-filter:saturate(180%) blur(14px);
   backdrop-filter:saturate(180%) blur(14px);
+  border-bottom-color:transparent;box-shadow:none;
   --hdr-fg:var(--tx);--hdr-brand:var(--pri);--hdr-crest:none;}
 html.is-scrolled body.has-hero header.site{box-shadow:var(--sh-2);}
 html.is-scrolled body.has-hero .brand .brand-name small,
