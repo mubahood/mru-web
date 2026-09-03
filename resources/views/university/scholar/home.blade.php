@@ -88,9 +88,8 @@
       @endforeach
     </div>
     <div style="margin-top:24px;" data-rise>
-      <a href="{{ route('scholar.publications') }}" wire:navigate class="btn ghost cta">
-        <span class="cta-a">All publications</span>
-        <span class="cta-b" aria-hidden="true">Browse the repository <i class="fas fa-arrow-right"></i></span>
+      <a href="{{ route('scholar.publications') }}" wire:navigate class="btn ghost">
+        All publications <i class="fas fa-arrow-right" aria-hidden="true"></i>
       </a>
     </div>
   </div>

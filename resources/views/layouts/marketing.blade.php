@@ -204,7 +204,7 @@
   </div>
 </div>
 
-<main>
+<main id="main-content">
   @yield('content')
 </main>
 
@@ -487,6 +487,119 @@
   }
   initMegaMenus();
 
+  /*
+     The home slider.
+
+     Autoplay is a courtesy, so it yields to anything that suggests the reader
+     is busy: a pointer over the stage, keyboard focus inside it, a hidden
+     tab, or a system asking for reduced motion. The active dot doubles as the
+     clock — it is a CSS animation, which is why pausing is one class rather
+     than arithmetic on a timer.
+  */
+  function initHeroSlider(){
+    var stage = document.querySelector('[data-hero-slider]');
+    if (!stage || stage.dataset.wired) return;
+    stage.dataset.wired = '1';
+
+    var slides = [].slice.call(stage.querySelectorAll('[data-hs-slide]'));
+    if (slides.length < 2) return;
+
+    var dots  = [].slice.call(stage.querySelectorAll('[data-hs-dot]'));
+    var live  = stage.querySelector('[data-hs-live]');
+    var still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var DURATION = 6500;
+    var index = 0, timer = null;
+
+    stage.style.setProperty('--hs-dur', DURATION + 'ms');
+    if (still) stage.classList.add('no-autoplay');
+
+    function show(next){
+      next = (next + slides.length) % slides.length;
+      if (next === index) return;
+
+      slides.forEach(function(slide, i){
+        var on = i === next;
+        slide.classList.toggle('is-active', on);
+        slide.toggleAttribute('inert', !on);
+        if (on) { slide.removeAttribute('aria-hidden'); }
+        else { slide.setAttribute('aria-hidden', 'true'); }
+      });
+
+      dots.forEach(function(dot, i){
+        // Restarting the fill needs the element replaced, not just the class
+        // removed: the same animation re-added in one frame does not replay.
+        var fill = dot.firstElementChild;
+        if (fill) fill.replaceWith(fill.cloneNode(false));
+        dot.classList.toggle('is-active', i === next);
+        dot.setAttribute('aria-selected', i === next ? 'true' : 'false');
+      });
+
+      index = next;
+      if (live) live.textContent = 'Slide ' + (next + 1) + ' of ' + slides.length;
+    }
+
+    /* The paused flag is checked inside the tick as well as used to clear the
+       timer. Clearing alone is not enough: any stray play() — a second
+       mouseenter, a visibility change landing mid-transition — would start a
+       fresh interval that outlives the pause, and the slider would carry on
+       moving under a reader who had stopped it by hovering. */
+    var paused = false;
+    function tick(){ if (paused || document.hidden) return; show(index + 1); }
+    function play(){ if (still || paused) return; stop(); timer = setInterval(tick, DURATION); }
+    function stop(){ if (timer) { clearInterval(timer); timer = null; } }
+    function pause(on){ paused = on; stage.classList.toggle('is-paused', on); if (on) stop(); else play(); }
+
+    function goto(next){ show(next); play(); }   // a manual move restarts the clock
+
+    var prev = stage.querySelector('[data-hs-prev]');
+    var next = stage.querySelector('[data-hs-next]');
+    if (prev) prev.addEventListener('click', function(){ goto(index - 1); });
+    if (next) next.addEventListener('click', function(){ goto(index + 1); });
+    dots.forEach(function(dot, i){ dot.addEventListener('click', function(){ goto(i); }); });
+
+    stage.addEventListener('mouseenter', function(){ pause(true); });
+    stage.addEventListener('mouseleave', function(){ pause(false); });
+    stage.addEventListener('focusin',    function(){ pause(true); });
+    stage.addEventListener('focusout',   function(e){
+      if (!stage.contains(e.relatedTarget)) pause(false);
+    });
+
+    stage.addEventListener('keydown', function(e){
+      if (e.key === 'ArrowLeft')  { e.preventDefault(); goto(index - 1); }
+      if (e.key === 'ArrowRight') { e.preventDefault(); goto(index + 1); }
+    });
+
+    // A tab nobody is looking at should not burn through the slides.
+    document.addEventListener('visibilitychange', function(){
+      if (document.hidden) stop(); else if (!stage.classList.contains('is-paused')) play();
+    });
+
+    // Swipe, with a threshold that ignores a vertical scroll that drifted.
+    var x0 = null, y0 = null;
+    stage.addEventListener('touchstart', function(e){
+      x0 = e.changedTouches[0].clientX; y0 = e.changedTouches[0].clientY;
+    }, { passive: true });
+    stage.addEventListener('touchend', function(e){
+      if (x0 === null) return;
+      var dx = e.changedTouches[0].clientX - x0;
+      var dy = e.changedTouches[0].clientY - y0;
+      if (Math.abs(dx) > 48 && Math.abs(dx) > Math.abs(dy)) goto(index + (dx < 0 ? 1 : -1));
+      x0 = y0 = null;
+    }, { passive: true });
+
+    play();
+  }
+
+  /* The header floats over the slider, so the body has to say whether this
+     page has one. Derived from the DOM rather than set per page, so it stays
+     correct across wire:navigate. */
+  function syncHeroFlag(){
+    document.body.classList.toggle('has-hero', !!document.querySelector('[data-hero-slider]'));
+  }
+
+  syncHeroFlag();
+  initHeroSlider();
+
   /* Reserves room under the fixed chapter bar so it never covers the last
      line of the page. Paired with a :has() rule for anyone whose script does
      not run; the class is what keeps it correct across wire:navigate, where a
@@ -505,6 +618,8 @@
   document.addEventListener('livewire:navigated', function(){
     initBurgerMenu();
     initMegaMenus();
+    syncHeroFlag();
+    initHeroSlider();
     syncPageChrome();
     var m=document.getElementById('mmenu'), b=document.getElementById('burger');
     if(m && m.classList.contains('open')){ m.classList.remove('open'); document.body.style.overflow=''; if(b){ b.setAttribute('aria-expanded','false'); b.querySelector('i').className='fas fa-bars'; } }

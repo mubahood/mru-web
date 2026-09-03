@@ -500,7 +500,11 @@ class ImportLegacyContent extends Command
                 'image' => $this->copyAsset($row->bg_image, 'university/hero'),
             ])->values()->all();
 
-        Settings::set('university.hero_slides', json_encode($slides, JSON_UNESCAPED_UNICODE));
+        /* Kept under its own key. The slider the site actually renders is
+           curated in UniversityContentSeeder (cleaned copy, responsive image
+           set, real calls to action); re-running the import must not throw
+           that away and put the raw legacy rows back on the home page. */
+        Settings::set('university.hero_slides_legacy', json_encode($slides, JSON_UNESCAPED_UNICODE));
 
         $this->line('Sports: '.count($sports).', hero slides: '.count($slides));
     }

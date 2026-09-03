@@ -73,9 +73,8 @@
       </div>
     </div>
     <div data-rise style="margin-top:20px;">
-      <a href="{{ route('who-we-are') }}" wire:navigate class="btn ghost cta">
-        <span class="cta-a">Who we are</span>
-        <span class="cta-b" aria-hidden="true">Values, story &amp; identity <i class="fas fa-arrow-right"></i></span>
+      <a href="{{ route('who-we-are') }}" wire:navigate class="btn ghost">
+        Who we are <i class="fas fa-arrow-right" aria-hidden="true"></i>
       </a>
     </div>
   </div>
@@ -95,9 +94,8 @@
       @endforeach
     </div>
     <div style="text-align:center;margin-top:26px;" data-rise>
-      <a href="{{ route('governance') }}" wire:navigate class="btn ghost cta">
-        <span class="cta-a">University governance</span>
-        <span class="cta-b" aria-hidden="true">Officers, Council &amp; committees <i class="fas fa-arrow-right"></i></span>
+      <a href="{{ route('governance') }}" wire:navigate class="btn ghost">
+        University governance <i class="fas fa-arrow-right" aria-hidden="true"></i>
       </a>
     </div>
   </div>

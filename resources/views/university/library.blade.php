@@ -57,9 +57,8 @@
         <a href="mailto:librarian@mru.ac.ug" class="link" style="color:var(--pri);font-weight:600;">librarian@mru.ac.ug</a>.
       </p>
       @if($libraryUrl)
-        <a href="{{ $libraryUrl }}" target="_blank" rel="noopener" class="btn cta">
-          <span class="cta-a">Open the library portal</span>
-          <span class="cta-b" aria-hidden="true">Search the catalogue <i class="fas fa-arrow-up-right-from-square"></i></span>
+        <a href="{{ $libraryUrl }}" target="_blank" rel="noopener" class="btn">
+          Open the library portal <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i>
         </a>
       @endif
       <p style="margin:16px 0 0;font-size:12.5px;color:var(--tx3);">

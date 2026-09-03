@@ -80,13 +80,11 @@
       </ul>
     </div>
     <div class="ctas" data-rise style="margin-top:26px;">
-      <a href="{{ route('admissions.apply') }}" wire:navigate class="btn cta">
-        <span class="cta-a">How to Apply</span>
-        <span class="cta-b" aria-hidden="true">The 7 steps <i class="fas fa-arrow-right"></i></span>
+      <a href="{{ route('admissions.apply') }}" wire:navigate class="btn">
+        How to Apply <i class="fas fa-arrow-right" aria-hidden="true"></i>
       </a>
-      <a href="{{ route('admissions.requirements') }}" wire:navigate class="btn ghost cta">
-        <span class="cta-a">Entry Requirements</span>
-        <span class="cta-b" aria-hidden="true">Check your level <i class="fas fa-arrow-right"></i></span>
+      <a href="{{ route('admissions.requirements') }}" wire:navigate class="btn ghost">
+        Entry Requirements <i class="fas fa-arrow-right" aria-hidden="true"></i>
       </a>
     </div>
   </div>

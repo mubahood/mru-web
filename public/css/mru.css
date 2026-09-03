@@ -431,22 +431,12 @@ html:not(.js-nav) .nav-item:focus-within > .mega{opacity:1;visibility:visible;tr
       padding:9px 11px;background:var(--bg);border-top:1px solid var(--line);font-size:11.5px;
       font-weight:500;color:var(--tx2);}
 
-    /* Calls to action that say what they do
-       The resting label is short enough to scan; the hover label names the
-       actual outcome. Both live in the same grid cell so the button is sized
-       by the longer of the two and never changes width mid-interaction.
-       A button that resizes under the pointer is a button people miss. */
-    .cta{display:inline-grid;align-items:center;justify-items:center;overflow:hidden;}
-    .cta > span{grid-area:1/1;display:inline-flex;align-items:center;gap:7px;white-space:nowrap;
-      transition:transform .3s cubic-bezier(.22,.61,.36,1),opacity .22s;}
-    .cta .cta-b{transform:translateY(115%);opacity:0;}
-    .cta:hover .cta-a,.cta:focus-visible .cta-a{transform:translateY(-115%);opacity:0;}
-    .cta:hover .cta-b,.cta:focus-visible .cta-b{transform:none;opacity:1;}
-    @media(prefers-reduced-motion:reduce){
-      .cta > span{transition:none;}
-      .cta .cta-b{display:none;}
-      .cta:hover .cta-a{transform:none;opacity:1;}
-    }
+    /* The two-label button is gone.
+       It stacked a short resting label and a longer hover label in one grid
+       cell, which meant the button was always sized by the text nobody could
+       see: "Apply Now" rendered 341px wide because "Apply on the E-Portal"
+       was hiding underneath it, while a genuinely longer visible label sat at
+       258px. Buttons now size to the words they actually show. */
 
     /* Account control
        Signing in used to displace the two calls to action with account links.
@@ -2014,7 +2004,8 @@ header.site .bar{flex-wrap:nowrap;}
    still identifies the university, and the menu needs the room more. */
 @media(max-width:1300px){
   .brand .brand-name{font-size:0;}
-  .brand .brand-name::after{content:'MRU';font-size:20px;font-weight:800;letter-spacing:-.02em;color:var(--pri);}
+  /* Follows the header's ink so it stays legible on a photograph. */
+  .brand .brand-name::after{content:'MRU';font-size:20px;font-weight:800;letter-spacing:-.02em;color:var(--hdr-brand);}
   .brand .brand-name small{display:none;}
 }
 @media(max-width:1080px){ header.site .bar{gap:14px;} }
@@ -2059,8 +2050,6 @@ html.is-scrolled .brand img.crest{height:40px;}
    label out past its own padding. Below the pointer breakpoint the button
    goes back to being one label wide. */
 @media (hover:none),(max-width:760px){
-  .cta .cta-b{display:none;}
-  .cta .cta-a{transform:none !important;opacity:1 !important;}
   .ctas .btn{width:100%;}
 }
 
@@ -2263,3 +2252,170 @@ html.menu-open::after{content:'';position:fixed;inset:0;z-index:48;
   .hd-r .btn.desk,.hd-r .acct.desk,.hd-r .signin.desk{display:none;}
   html.menu-open::after{display:none;}   /* no panel, so no scrim */
 }
+
+/* =========================================================================
+   18. The home slider, and the header that floats over it
+   =========================================================================
+   A full-height stage: three photographs of this university, one message at
+   a time, with the header transparent on top of it until the reader scrolls.
+   -------------------------------------------------------------------- */
+
+.hero-slider{position:relative;overflow:hidden;isolation:isolate;
+  /* svh, not vh: on a phone, vh is the tallest the viewport ever gets, so a
+     100vh hero sits partly under the browser's own toolbar on load. */
+  height:100svh;min-height:600px;max-height:1080px;
+  background:var(--pri-dd);color:#fff;}
+/* Older engines without svh still get a sensible full screen. */
+@supports not (height:100svh){ .hero-slider{height:100vh;} }
+
+.hs-slide{position:absolute;inset:0;opacity:0;visibility:hidden;
+  transition:opacity .9s ease,visibility .9s;}
+.hs-slide.is-active{opacity:1;visibility:visible;}
+
+.hs-media{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  object-position:center 32%;transform:scale(1.07);transition:transform 9s linear;}
+.hs-slide.is-active .hs-media{transform:scale(1);}
+
+/* Two gradients: one across, to hold the copy; one up from the floor, to keep
+   the controls legible over a bright photograph. */
+.hs-scrim{position:absolute;inset:0;background:
+  linear-gradient(96deg,rgba(1,25,60,.95) 0%,rgba(1,25,60,.88) 38%,rgba(1,25,60,.62) 68%,rgba(1,25,60,.45) 100%),
+  linear-gradient(to top,rgba(1,25,60,.78) 0%,rgba(1,25,60,.10) 46%,transparent 70%);}
+
+.hs-copy{position:relative;height:100%;display:flex;align-items:center;
+  padding-top:var(--hdr-total,120px);padding-bottom:120px;}
+.hs-copy .wrap{width:100%;}
+.hs-eyebrow{font-size:12px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:20px;}
+.hs-title{font-family:var(--font-display);font-variation-settings:'opsz' 144;
+  font-size:clamp(38px,5.6vw,76px);line-height:1.03;letter-spacing:-.025em;
+  font-weight:600;color:#fff;max-width:19ch;margin-bottom:22px;
+  text-wrap:balance;}
+.hs-text{font-size:clamp(16px,1.35vw,19.5px);line-height:1.65;color:rgba(255,255,255,.86);
+  max-width:56ch;margin-bottom:34px;}
+.hs-actions{display:flex;gap:14px;flex-wrap:wrap;}
+/* Matched at .btn.ghost's own weight, or the navy from the base button wins
+   and the label disappears into the photograph. */
+.btn.ghost.hs-ghost{color:#fff;border-color:rgba(255,255,255,.55);background:rgba(255,255,255,.10);
+  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);}
+.btn.ghost.hs-ghost:hover{background:rgba(255,255,255,.2);border-color:#fff;color:#fff;
+  box-shadow:0 12px 28px -14px rgba(0,0,0,.6);}
+
+/* Each slide's copy arrives a beat after the image. */
+.hs-slide.is-active .hs-eyebrow,
+.hs-slide.is-active .hs-title,
+.hs-slide.is-active .hs-text,
+.hs-slide.is-active .hs-actions{animation:hs-rise .8s cubic-bezier(.22,.61,.36,1) both;}
+.hs-slide.is-active .hs-title{animation-delay:.08s;}
+.hs-slide.is-active .hs-text{animation-delay:.16s;}
+.hs-slide.is-active .hs-actions{animation-delay:.24s;}
+@keyframes hs-rise{from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:none}}
+
+.hs-arrows{display:flex;gap:10px;}
+.hs-arrow{width:52px;height:52px;border-radius:var(--r-pill);cursor:pointer;
+  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.34);color:#fff;
+  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);font-size:15px;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .2s,border-color .2s,transform .2s;}
+.hs-arrow:hover{background:rgba(255,255,255,.26);border-color:#fff;transform:translateY(-2px);}
+.hs-arrow:focus-visible{outline:3px solid var(--gold);outline-offset:3px;}
+
+.hs-bar{position:absolute;left:0;right:0;bottom:40px;z-index:3;}
+.hs-bar-inner{display:flex;align-items:center;justify-content:space-between;gap:24px;}
+.hs-dots{display:flex;gap:12px;}
+.hs-dot{width:58px;height:4px;padding:0;border:0;border-radius:var(--r-pill);cursor:pointer;
+  background:rgba(255,255,255,.3);overflow:hidden;transition:background .2s;}
+.hs-dot:hover{background:rgba(255,255,255,.5);}
+.hs-dot:focus-visible{outline:2px solid var(--gold);outline-offset:4px;}
+.hs-dot span{display:block;height:100%;width:0;background:var(--gold);border-radius:inherit;}
+/* The active dot doubles as the autoplay clock, so the wait is visible. */
+.hs-dot.is-active span{animation:hs-fill var(--hs-dur,6500ms) linear forwards;}
+.hero-slider.is-paused .hs-dot.is-active span{animation-play-state:paused;}
+.hero-slider.no-autoplay .hs-dot.is-active span{width:100%;animation:none;}
+@keyframes hs-fill{from{width:0} to{width:100%}}
+
+.hs-scroll{position:absolute;left:50%;transform:translateX(-50%);bottom:14px;z-index:3;
+  width:40px;height:40px;display:flex;align-items:center;justify-content:center;
+  color:rgba(255,255,255,.7);font-size:14px;animation:hs-bob 2.4s ease-in-out infinite;}
+.hs-scroll:hover{color:#fff;}
+@keyframes hs-bob{0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(6px)}}
+
+@media(max-width:900px){
+  .hero-slider{min-height:560px;}
+  .hs-copy{padding-top:var(--hdr-total,88px);padding-bottom:150px;}
+  .hs-arrows{display:none;}                /* dots and swipe carry it */
+  .hs-title{max-width:none;}
+  .hs-bar{bottom:78px;}
+  .hs-dot{width:44px;}
+}
+@media(prefers-reduced-motion:reduce){
+  .hs-media,.hs-slide{transition:none;}
+  .hs-slide.is-active .hs-media{transform:none;}
+  .hs-slide.is-active .hs-eyebrow,.hs-slide.is-active .hs-title,
+  .hs-slide.is-active .hs-text,.hs-slide.is-active .hs-actions{animation:none;}
+  .hs-scroll{animation:none;}
+  .hs-dot.is-active span{width:100%;animation:none;}
+}
+
+/* --------------------------------------------------- The floating header
+
+   On a page that opens with the slider the header has no background of its
+   own — it sits on the photograph. Colours come from three variables so the
+   solid and transparent states differ by their values, not by a second copy
+   of every rule. */
+header.site{--hdr-fg:var(--tx);--hdr-brand:var(--pri);--hdr-crest:none;}
+.brand .brand-name{color:var(--hdr-brand);}
+.brand img.crest{filter:var(--hdr-crest);}
+.nav-link{color:var(--hdr-fg);}
+
+body.has-hero{--hdr-total:120px;}
+@media(max-width:900px){ body.has-hero{--hdr-total:88px;} }
+
+body.has-hero header.site{position:fixed;top:0;left:0;right:0;
+  background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none;
+  border-bottom-color:transparent;box-shadow:none;
+  --hdr-fg:rgba(255,255,255,.94);--hdr-brand:#fff;--hdr-crest:brightness(0) invert(1);}
+body.has-hero .brand .brand-name small{color:var(--gold-l);}
+body.has-hero .topbar{background:rgba(1,25,60,.42);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);}
+body.has-hero .nav-link:hover{color:#fff;}
+body.has-hero .nav-link.on{color:#fff;}
+body.has-hero .signin{color:rgba(255,255,255,.88);}
+body.has-hero .signin:hover{color:#fff;}
+body.has-hero .burger{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.4);color:#fff;}
+body.has-hero .acct-av{border:1px solid rgba(255,255,255,.4);}
+
+/* Scrolled, or with a menu panel open, it becomes the ordinary solid bar —
+   the panel is white and needs a white bar to sit under. */
+html.is-scrolled body.has-hero header.site,
+html.menu-open body.has-hero header.site{
+  background:rgba(255,255,255,.94);-webkit-backdrop-filter:saturate(180%) blur(14px);
+  backdrop-filter:saturate(180%) blur(14px);
+  --hdr-fg:var(--tx);--hdr-brand:var(--pri);--hdr-crest:none;}
+html.is-scrolled body.has-hero header.site{box-shadow:var(--sh-2);}
+html.is-scrolled body.has-hero .brand .brand-name small,
+html.menu-open body.has-hero .brand .brand-name small{color:var(--gold-d);}
+html.is-scrolled body.has-hero .topbar,
+html.menu-open body.has-hero .topbar{background:var(--pri);}
+html.is-scrolled body.has-hero .signin,
+html.menu-open body.has-hero .signin{color:var(--tx2);}
+html.is-scrolled body.has-hero .burger,
+html.menu-open body.has-hero .burger{background:#fff;border-color:var(--line-2);color:var(--pri);}
+
+/* The slider is the page's own top edge, so the section after it does not
+   need the standing top padding. */
+body.has-hero main > section:first-of-type{padding-top:0;}
+
+/* The band under the slider: stats sit close to the fold, the quick actions
+   below them, so the first scroll lands on something useful. */
+.home-intro{padding:var(--s-6) 0 var(--s-7);}
+.home-intro .stat-row{margin:0 0 var(--s-6);}
+
+/* The floating WhatsApp launcher owns the bottom-right corner, which is
+   where the slider's next-arrow would otherwise land. Reserve the space
+   rather than stack two round buttons on top of each other. */
+@media(min-width:901px){ .hs-bar-inner{padding-right:82px;} }
+
+/* The institutional statement that opens the intro band, right under the
+   slider. Tighter bottom margin than a normal .sec-head: the stats sit close
+   beneath it, not a full section-gap away. */
+.home-intro .sec-head{margin-bottom:var(--s-5);}

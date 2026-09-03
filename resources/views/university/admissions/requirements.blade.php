@@ -59,13 +59,11 @@
       </p>
     </div>
     <div class="ctas" data-rise style="margin-top:28px;">
-      <a href="{{ route('admissions.apply') }}" wire:navigate class="btn cta">
-        <span class="cta-a">How to Apply</span>
-        <span class="cta-b" aria-hidden="true">The 7 steps <i class="fas fa-arrow-right"></i></span>
+      <a href="{{ route('admissions.apply') }}" wire:navigate class="btn">
+        How to Apply <i class="fas fa-arrow-right" aria-hidden="true"></i>
       </a>
-      <a href="{{ route('programmes.index') }}" wire:navigate class="btn ghost cta">
-        <span class="cta-a">Browse Programmes</span>
-        <span class="cta-b" aria-hidden="true">Find your programme <i class="fas fa-arrow-right"></i></span>
+      <a href="{{ route('programmes.index') }}" wire:navigate class="btn ghost">
+        Browse Programmes <i class="fas fa-arrow-right" aria-hidden="true"></i>
       </a>
     </div>
   </div>

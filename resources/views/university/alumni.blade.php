@@ -72,9 +72,8 @@
         <h3>Alumni documents</h3>
         <p>Official university documents — including alumni resources such as the Alumni Constitution —
            are published on the Downloads page as they become available.</p>
-        <a href="{{ route('downloads') }}" wire:navigate class="btn ghost cta">
-          <span class="cta-a">Downloads</span>
-          <span class="cta-b" aria-hidden="true">Plans, policies &amp; forms <i class="fas fa-arrow-right"></i></span>
+        <a href="{{ route('downloads') }}" wire:navigate class="btn ghost">
+          Downloads <i class="fas fa-arrow-right" aria-hidden="true"></i>
         </a>
       </div>
     </div>

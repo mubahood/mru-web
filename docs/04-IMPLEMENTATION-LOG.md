@@ -141,3 +141,89 @@ Full design pass against the brand brief. Documented in [05-DESIGN-SYSTEM.md](05
   superseded. `SiteNavTest` now also fails on the comma-separated form of that selector, which
   the first regex let through.
 - Suite green: **1119 passed**.
+
+## 2026-09-03 — Phase I: buttons that size to their own words, and a real slider
+
+### Buttons sized by text nobody could see
+
+Every "hover reveals a longer label" button (24 of them, across 13 views) stacked two spans in
+one grid cell — a short resting label and a longer hover label — so the button was always sized
+by whichever was wider, even though only one was ever visible at a time. Measured before the
+fix: "Apply Now" rendered at **341px** because "Apply on the E-Portal" was hiding underneath it,
+while "WhatsApp Admissions" — a genuinely longer, fully visible label — sat at 258px. Buttons of
+unrelated width, set by invisible strings.
+
+Fixed by collapsing every `<span class="cta-a">…</span><span class="cta-b" aria-hidden>…</span>`
+pair to the single label actually worth keeping (the hover label's icon, the resting label's
+words), and deleting the `.cta` grid-stack rule and its touch-only override from the stylesheet
+entirely. Re-measured after: `Apply Now` 170px, `Explore Programmes` 246px, `WhatsApp Admissions`
+258px — every button now the width of its own words.
+`CallToActionConsistencyTest` was rewritten from "the hover label matches across pages" (the
+mechanism that caused the bug) to "no button may carry a hidden second label, in the markup or
+the stylesheet, ever again."
+
+### A full-height, modern home slider
+
+Three real photographs of the university — a graduation, the Buganda Leaders' Retreat MRU
+hosted, a visit from international partners — replaced the flat hero. Built from scratch:
+
+- **Markup/data split.** `university.partials.hero-slider` renders from the
+  `university.hero_slides` setting (title, text, two CTAs, an image base name), so the slides are
+  content, not markup. `UniversityContentSeeder` carries the curated three; the legacy importer
+  was repointed to write `university.hero_slides_legacy` instead, so re-running it can never
+  silently put the raw, uncurated import rows back on the home page.
+- **`100svh`, transparent header.** The stage fills the viewport (`svh`, not `vh` — on a phone
+  `vh` is the tallest the viewport ever gets, so a `100vh` hero sits partly under the browser's
+  own toolbar on load). The header has no background of its own while a hero is present
+  (`body.has-hero`) and reads its colours from three CSS variables (`--hdr-fg`, `--hdr-brand`,
+  `--hdr-crest`) so the transparent and solid states differ by *value*, not by a second copy of
+  every rule; it turns solid on scroll or whenever the mega menu is open (a white panel needs a
+  white bar under it).
+- **First-paint discipline.** Only the first slide's image loads eager/high-priority/sync; the
+  rest are lazy. Each slide ships a real `srcset` (700/1100/1600w).
+- **Interaction, built and verified with real browser input, not assumptions.** Autoplay (6.5s,
+  the active dot doubles as the countdown via a CSS fill animation), arrows, dots, swipe,
+  Escape-equivalent (arrow keys), and pause-on-hover/focus/hidden-tab. 14 checks dispatched over
+  CDP (real `Input.dispatchMouseEvent`/keyboard/touch events, not just reading the DOM): fills the
+  viewport, header floats and reads light on the photo, arrows/dots navigate, exactly one slide is
+  ever exposed to assistive tech, autoplay genuinely advances unattended, hover genuinely holds it
+  still. One of those checks caught a real bug before it shipped: pausing only *cleared* the
+  timer, so a stray `play()` call (a second `mouseenter`, a visibility change landing mid-
+  transition) could start a fresh interval that outlived the pause — the slider would keep moving
+  under a reader who had stopped it by hovering. Fixed by having the tick itself check a `paused`
+  flag, not just relying on the timer being cleared.
+- **Three visual bugs found in the first screenshot, not left in:** the secondary button's label
+  was unreadable (`.hs-ghost` was one class competing with `.btn.ghost`'s two, and the navy from
+  the base button won); the headline broke as "…future at / MRU", stranding three letters alone
+  on their own line (`text-wrap:balance` plus a wider measure); the previous-arrow sat at
+  mid-height directly on top of the headline it was meant to help navigate away from (both arrows
+  moved into the control bar at the foot of the stage, alongside the dots).
+- **Reproducibility.** The original three responsive image tiers were made by hand with `sips` —
+  a step nobody else could repeat. Replaced with `php artisan mru:make-hero-images`, an idempotent
+  Intervention-Image command (matching the project's existing `AvatarService` pattern) that
+  derives the 700/1100/1600px JPEG set from the source photographs already on disk, `--force` to
+  regenerate. Its own output is smaller than the manual pass (187 KB vs 301 KB at the top tier, same
+  quality) simply because GD's encoder is more efficient than `sips` at an equivalent setting.
+- **A promise the code didn't keep, caught by the tests I wrote to guard it.** The intro band's
+  own comment said "the strapline lives here now"; it never actually did — "Rooted in Heritage.
+  Focused on the Future." had nowhere left to appear once the text hero was replaced. Restored it
+  as the institutional statement opening the band under the slider, in the display serif, rather
+  than weakening the test that caught the gap.
+
+### A real caching bug, found while chasing a flaky test
+
+Two of the new slider tests failed in a way that only made sense if settings written *during* a
+test were invisible to code that had already read them once in the same test run. They were:
+`App\Support\University::get()` kept its own bare `private static array $cache`, entirely
+separate from `Settings`' own cache (which already covers the whole table via Laravel's cache
+store and is correctly invalidated on every write via `Settings::flush()`). The first call to
+`University::get('hero_slides')` in a process pinned it there for the rest of that process — a
+write afterwards was invisible to it. Harmless in the common case (a fresh PHP-FPM process per
+web request), but a real bug in every longer-lived process this codebase already has: an artisan
+command that seeds then reads, a queue worker taking more than one job, the test suite itself.
+Removed the redundant layer; `University::get()` now reads through to `Settings::get()` on every
+call, which costs an array lookup against an already-cached blob, not a query. A regression test
+(`test_settings_written_after_the_first_read_are_not_stale`) pins the fix.
+
+Full suite: **1134 passed**. Menu contract (10/10 interaction checks) and slider contract
+(14/14) re-verified over CDP after every change in this phase, not just at the end.

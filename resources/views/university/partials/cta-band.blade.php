@@ -15,9 +15,8 @@
          or talk to the admissions team first — whichever helps you more.</p>
     </div>
     <div class="ctas">
-      <a href="{{ $applyUrl }}" rel="external" class="btn gold lg cta">
-        <span class="cta-a">Apply Now</span>
-        <span class="cta-b" aria-hidden="true">Apply on the E-Portal <i class="fas fa-arrow-right"></i></span>
+      <a href="{{ $applyUrl }}" rel="external" class="btn gold lg">
+        Apply Now <i class="fas fa-arrow-right" aria-hidden="true"></i>
       </a>
       <a href="{{ $wa }}" target="_blank" rel="noopener" class="btn ghost lg" style="color:#fff;border-color:rgba(255,255,255,.4);">
         <i class="fab fa-whatsapp" aria-hidden="true"></i> WhatsApp Admissions

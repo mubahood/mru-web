@@ -6,92 +6,65 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 /**
- * A call to action's hover label names where it goes, so the same destination
- * must be described the same way everywhere. Three different labels had already
- * grown for the course catalogue alone ("Start Learning", "Browse the courses",
- * "See the full catalogue"), which teaches a visitor that they are three
- * different places.
+ * A button must be the size of the words on it.
+ *
+ * The site used to stack two labels in one grid cell — a short resting one and
+ * a longer one shown on hover — so every button was sized by the text nobody
+ * could see. "Apply Now" measured 341px because "Apply on the E-Portal" was
+ * hiding underneath it, while "WhatsApp Admissions", a genuinely longer label,
+ * sat at 258px. Buttons of unrelated width, set by invisible strings.
+ *
+ * This pins the removal: no hidden second label in the markup, and no rule in
+ * the stylesheet that could reintroduce one.
  */
 class CallToActionConsistencyTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** The one label each destination is allowed to use. */
-    private const CANONICAL = [
-        'hire' => 'Talk to us',
-        // 'contact' has no call to action of its own any more. The buttons
-        // that used to say "Get in touch" now say "Hire Me" and land on the
-        // brief form, because a label promising hiring should not open a
-        // generic contact box.
-
-    ];
-
-    public function test_each_destination_uses_a_single_hover_label_across_the_site(): void
+    public function test_no_button_carries_a_hidden_second_label(): void
     {
-        $found = [];
-
         foreach ($this->bladeFiles() as $file) {
             $source = (string) file_get_contents($file);
-            if (! str_contains($source, 'cta-b')) {
-                continue;
-            }
 
-            // Each anchor is matched whole first. Scanning for a route and then
-            // for the next cta-b lets the match run past </a> and pair one
-            // link's destination with a different link's label, which is
-            // exactly the false positive this replaced.
-            preg_match_all('/<a\s+(?:(?!<\/a>).)*?<\/a>/s', $source, $anchors);
-
-            foreach ($anchors[0] as $anchor) {
-                if (! str_contains($anchor, 'cta-b')) {
-                    continue;
-                }
-                if (! preg_match('/route\(\'([a-z.\-]+)\'/', $anchor, $r)) {
-                    continue;
-                }
-                if (! isset(self::CANONICAL[$r[1]])) {
-                    continue;
-                }
-                if (preg_match('/<span class="cta-b"[^>]*>(.*?)<\/span>/s', $anchor, $l)) {
-                    $found[$r[1]][trim(strip_tags($l[1]))] = basename($file);
-                }
-            }
-        }
-
-        foreach (self::CANONICAL as $route => $expected) {
-            $this->assertArrayHasKey($route, $found, "no call to action points at {$route}");
-            $this->assertSame(
-                [$expected],
-                array_keys($found[$route]),
-                "{$route} must use exactly one hover label everywhere; found: "
-                    .json_encode($found[$route])
-            );
+            $this->assertStringNotContainsString('class="cta-a"', $source,
+                basename($file).' still stacks a hidden label inside a button');
+            $this->assertStringNotContainsString('class="cta-b"', $source,
+                basename($file).' still stacks a hidden label inside a button');
         }
     }
 
-    public function test_the_hover_label_is_hidden_from_screen_readers(): void
+    public function test_the_stylesheet_cannot_reintroduce_one(): void
     {
-        // Both labels are in the DOM at once. Without aria-hidden a screen
-        // reader announces two names for one control.
+        $css = (string) file_get_contents(public_path('css/mru.css'));
+
+        $this->assertDoesNotMatchRegularExpression('/(?:^|[,}])\s*\.cta\s*[,{]/m', $css,
+            'the two-label button rule is gone and must stay gone');
+        $this->assertStringNotContainsString('.cta-b', $css);
+    }
+
+    /**
+     * Every button on a rendered page is as wide as its own label allows,
+     * which is only true once nothing invisible is sizing it.
+     */
+    public function test_a_short_label_does_not_render_a_long_button(): void
+    {
         $html = (string) $this->get(route('home'))->assertOk()->getContent();
 
-        preg_match_all('/<span class="cta-b"([^>]*)>/', $html, $matches);
-
-        $this->assertNotEmpty($matches[1]);
-        foreach ($matches[1] as $attributes) {
-            $this->assertStringContainsString('aria-hidden="true"', $attributes);
-        }
+        // The hidden labels were emitted as sibling spans; if any survived,
+        // the markup would still carry aria-hidden text inside a button.
+        $this->assertDoesNotMatchRegularExpression(
+            '/<a[^>]*class="[^"]*\bbtn\b[^"]*"[^>]*>\s*<span[^>]*>[^<]*<\/span>\s*<span[^>]*aria-hidden/i',
+            $html,
+            'a button is still carrying a hidden label span'
+        );
     }
 
     /** @return list<string> */
     private function bladeFiles(): array
     {
         $files = [];
-        $iterator = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator(resource_path('views'), \FilesystemIterator::SKIP_DOTS)
-        );
-
-        foreach ($iterator as $file) {
+        $it = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator(resource_path('views')));
+        foreach ($it as $file) {
             if ($file->isFile() && str_ends_with($file->getFilename(), '.blade.php')) {
                 $files[] = $file->getPathname();
             }

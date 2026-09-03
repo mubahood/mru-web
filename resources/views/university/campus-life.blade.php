@@ -61,9 +61,8 @@
       @endforeach
     </div>
     <div style="text-align:center;margin-top:26px;" data-rise>
-      <a href="{{ route('sports') }}" wire:navigate class="btn ghost cta">
-        <span class="cta-a">All sports</span>
-        <span class="cta-b" aria-hidden="true">Six disciplines, one spirit <i class="fas fa-arrow-right"></i></span>
+      <a href="{{ route('sports') }}" wire:navigate class="btn ghost">
+        All sports <i class="fas fa-arrow-right" aria-hidden="true"></i>
       </a>
     </div>
   </div>
@@ -130,9 +129,8 @@
       @endforeach
     </div>
     <div style="text-align:center;margin-top:26px;" data-rise>
-      <a href="{{ route('gallery.index') }}" wire:navigate class="btn ghost cta">
-        <span class="cta-a">Full gallery</span>
-        <span class="cta-b" aria-hidden="true">See campus life in pictures <i class="fas fa-arrow-right"></i></span>
+      <a href="{{ route('gallery.index') }}" wire:navigate class="btn ghost">
+        Full gallery <i class="fas fa-arrow-right" aria-hidden="true"></i>
       </a>
     </div>
   </div>

@@ -62,9 +62,8 @@
       </div>
     @endif
     <div style="margin-top:24px;" data-rise>
-      <a href="{{ route('events.index') }}" wire:navigate class="btn gold cta">
-        <span class="cta-a">Fixtures &amp; events</span>
-        <span class="cta-b" aria-hidden="true">See what's on <i class="fas fa-arrow-right"></i></span>
+      <a href="{{ route('events.index') }}" wire:navigate class="btn gold">
+        Fixtures &amp; events <i class="fas fa-arrow-right" aria-hidden="true"></i>
       </a>
     </div>
   </div>

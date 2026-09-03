@@ -4,23 +4,27 @@ namespace App\Support;
 
 /**
  * Typed access to the university.* settings JSON blobs seeded by
- * UniversityContentSeeder and the legacy importer. One decode per request per
- * key; a missing or corrupt blob degrades to [] so a page never fatals over
- * copy.
+ * UniversityContentSeeder and the legacy importer. A missing or corrupt blob
+ * degrades to [] so a page never fatals over copy.
+ *
+ * Deliberately uncached at this layer: `Settings::all()` already caches the
+ * whole table behind Laravel's cache store and invalidates it on every write
+ * (`Settings::flush()`). An earlier version kept a second, bare static-array
+ * cache here with no invalidation of its own — harmless for a one-shot web
+ * request, but it meant the first call in any longer-lived PHP process (an
+ * artisan command, a queue worker taking more than one job, the test suite)
+ * pinned that process to whatever the settings were at that first call,
+ * forever. A save made in between was invisible to it. Reading through to
+ * `Settings::get()` every time costs an array lookup against an
+ * already-cached blob, not a query.
  */
 class University
 {
-    /** @var array<string,array> */
-    private static array $cache = [];
-
     public static function get(string $section): array
     {
-        if (! array_key_exists($section, self::$cache)) {
-            $decoded = json_decode((string) Settings::get("university.$section", '[]'), true);
-            self::$cache[$section] = is_array($decoded) ? $decoded : [];
-        }
+        $decoded = json_decode((string) Settings::get("university.$section", '[]'), true);
 
-        return self::$cache[$section];
+        return is_array($decoded) ? $decoded : [];
     }
 
     public static function identity(): array

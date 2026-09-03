@@ -50,6 +50,12 @@ npm run build                       # or `npm run dev` while developing
 php artisan serve
 ```
 
+The home slider's three photographs come from the legacy import below; without them the seeded
+slide settings still render the slider (its filter is on each slide having a title, which every
+seeded slide does), but every image tag points at a file that doesn't exist yet — the stage falls
+back to its solid navy background, so you get a plain navy hero with the real headline and
+buttons on it rather than a broken page. The next section produces those photographs.
+
 ### Migrating the legacy content (one-time)
 
 With the legacy dumps loaded into scratch databases `mru_legacy` (custom CMS, `mru_mru2.sql`)
@@ -58,6 +64,7 @@ path in `App\Console\Commands\ImportLegacyContent::BACKUP_ROOT`:
 
 ```bash
 php artisan mru:import-legacy       # idempotent; add --skip-wp to skip news/scholar
+php artisan mru:make-hero-images    # derives the slider's 700/1100/1600px set from it; --force to redo
 ```
 
 This imports faculties, programmes (with the university's published fee bands), the staff/

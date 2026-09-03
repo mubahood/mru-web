@@ -85,9 +85,8 @@
       <h2>Ready? The portal is open</h2>
     </div>
     <div class="ctas" data-rise style="justify-content:center;">
-      <a href="{{ $applyUrl }}" rel="external" class="btn gold lg cta">
-        <span class="cta-a">Apply on the E-Portal</span>
-        <span class="cta-b" aria-hidden="true">Start your application <i class="fas fa-arrow-right"></i></span>
+      <a href="{{ $applyUrl }}" rel="external" class="btn gold lg">
+        Apply on the E-Portal <i class="fas fa-arrow-right" aria-hidden="true"></i>
       </a>
       <a href="{{ $wa }}" target="_blank" rel="noopener" class="btn ghost lg">
         <i class="fab fa-whatsapp" aria-hidden="true"></i> Ask on WhatsApp

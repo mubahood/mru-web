@@ -45,24 +45,18 @@
     how do I get in          → the closing CTA band
 --}}
 
-<section class="hero tex-grid tex-glow">
+@include('university.partials.hero-slider')
+
+{{-- The slider carries the photography and the moment; this band carries the
+     institutional statement, the facts, and the four things a prospective
+     student came to do. --}}
+<section class="home-intro">
   <div class="wrap">
-    <div class="eyebrow" data-rise>Muteesa I Royal University · Buganda Kingdom · Est. by Royal Charter</div>
-    <h1 data-rise>Rooted in <b>Heritage</b>.<br>Focused on the <b>Future</b>.</h1>
-    <p class="lead" data-rise style="max-width:640px;margin:0 auto 24px;">
-      {{ $identity['motto'] ?? 'Seeking Greater Horizons in Thought and Action' }} — career-focused
-      certificates, diplomas, degrees and postgraduate study on two campuses, in Kampala and Masaka.
-    </p>
-    <div class="ctas" data-rise>
-      <a href="{{ $applyUrl }}" rel="external" class="btn gold lg cta">
-        <span class="cta-a">Apply Now</span>
-        <span class="cta-b" aria-hidden="true">Apply on the E-Portal <i class="fas fa-arrow-right"></i></span>
-      </a>
-      <a href="{{ route('programmes.index') }}" wire:navigate class="btn ghost lg cta">
-        <span class="cta-a">Explore Programmes</span>
-        <span class="cta-b" aria-hidden="true">Find your programme <i class="fas fa-arrow-right"></i></span>
-      </a>
+    <div class="sec-head" data-rise>
+      <p class="eyebrow">{{ $identity['motto'] ?? 'Seeking Greater Horizons in Thought and Action' }}</p>
+      <h2>{{ $identity['strapline'] ?? 'Rooted in Heritage. Focused on the Future.' }}</h2>
     </div>
+
     @if($stats)
       <div class="stat-row" data-rise>
         @foreach($stats as $stat)
@@ -70,12 +64,7 @@
         @endforeach
       </div>
     @endif
-  </div>
-</section>
 
-{{-- The four things a prospective student came to do. --}}
-<section style="padding-top:28px;">
-  <div class="wrap">
     <div class="icon-row">
       <a href="{{ route('programmes.index') }}" wire:navigate data-rise>
         <span class="ic"><i class="fas fa-magnifying-glass" aria-hidden="true"></i></span>
@@ -109,9 +98,8 @@
           <p class="lead" data-rise style="margin-bottom:14px;">{{ $paragraph }}</p>
         @endforeach
         <div data-rise style="margin-top:20px;">
-          <a href="{{ route('about') }}" wire:navigate class="btn ghost cta">
-            <span class="cta-a">Discover MRU</span>
-            <span class="cta-b" aria-hidden="true">Our story <i class="fas fa-arrow-right"></i></span>
+          <a href="{{ route('about') }}" wire:navigate class="btn ghost">
+            Discover MRU <i class="fas fa-arrow-right" aria-hidden="true"></i>
           </a>
         </div>
       </div>
@@ -162,9 +150,8 @@
       @endforeach
     </div>
     <div style="text-align:center;margin-top:30px;" data-rise>
-      <a href="{{ route('programmes.index') }}" wire:navigate class="btn ghost cta">
-        <span class="cta-a">All programmes</span>
-        <span class="cta-b" aria-hidden="true">Find your programme <i class="fas fa-arrow-right"></i></span>
+      <a href="{{ route('programmes.index') }}" wire:navigate class="btn ghost">
+        All programmes <i class="fas fa-arrow-right" aria-hidden="true"></i>
       </a>
     </div>
   </div>
@@ -213,9 +200,8 @@
       </div>
     </div>
     <div style="text-align:center;margin-top:26px;" data-rise>
-      <a href="{{ route('insights.index') }}" wire:navigate class="btn ghost cta">
-        <span class="cta-a">All news</span>
-        <span class="cta-b" aria-hidden="true">Read the news <i class="fas fa-arrow-right"></i></span>
+      <a href="{{ route('insights.index') }}" wire:navigate class="btn ghost">
+        All news <i class="fas fa-arrow-right" aria-hidden="true"></i>
       </a>
     </div>
   </div>
@@ -243,9 +229,8 @@
       @endforelse
     </div>
     <div style="text-align:center;margin-top:28px;" data-rise>
-      <a href="{{ route('scholar.home') }}" wire:navigate class="btn gold cta">
-        <span class="cta-a">Visit MRU Scholar</span>
-        <span class="cta-b" aria-hidden="true">Browse the repository <i class="fas fa-arrow-right"></i></span>
+      <a href="{{ route('scholar.home') }}" wire:navigate class="btn gold">
+        Visit MRU Scholar <i class="fas fa-arrow-right" aria-hidden="true"></i>
       </a>
     </div>
   </div>

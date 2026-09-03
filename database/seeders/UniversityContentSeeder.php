@@ -80,6 +80,45 @@ class UniversityContentSeeder extends Seeder
             'library' => 'https://mru.ac.ug/library/',
         ], JSON_UNESCAPED_UNICODE));
 
+        /* The home page slider.
+         *
+         * Three real photographs of this university, each paired with copy
+         * that describes what is actually in it — a graduation, a visit from
+         * international partners, and the Buganda Leaders' Retreat MRU
+         * hosted. `image` is a base name; the view appends -700/-1100/-1600
+         * for the responsive set. Editable here rather than hard-coded in the
+         * template so the slider is content, not markup.
+         */
+        Settings::set('university.hero_slides', json_encode([
+            [
+                'image' => 'university/hero/hero-graduation',
+                'alt' => 'Graduands in cap and gown seated at a Muteesa I Royal University graduation ceremony',
+                'eyebrow' => 'Muteesa I Royal University',
+                'title' => 'Shape your future at MRU',
+                'text' => 'Career-focused certificates, diplomas, degrees and postgraduate study — on two campuses, in Kampala and Masaka.',
+                'primary' => ['label' => 'Apply Now', 'url' => 'https://eportal.mru.ac.ug/apply', 'external' => true],
+                'secondary' => ['label' => 'Explore Programmes', 'route' => 'programmes.index'],
+            ],
+            [
+                'image' => 'university/hero/hero-heritage',
+                'alt' => 'Delegates seated in a hall at the Buganda Leaders\' Retreat hosted at Muteesa I Royal University',
+                'eyebrow' => 'Rooted in heritage',
+                'title' => 'A royal university of the Buganda Kingdom',
+                'text' => 'Named in honour of Kabaka Muteesa I, and a meeting place for the Kingdom it belongs to.',
+                'primary' => ['label' => 'Our story', 'route' => 'about'],
+                'secondary' => ['label' => 'Who we are', 'route' => 'who-we-are'],
+            ],
+            [
+                'image' => 'university/hero/hero-international',
+                'alt' => 'International visitors standing with Muteesa I Royal University staff outside a campus building',
+                'eyebrow' => 'International',
+                'title' => 'A university that looks outward',
+                'text' => 'Partners and applicants from across East Africa and beyond, with guidance at every step of the journey here.',
+                'primary' => ['label' => 'International students', 'route' => 'admissions.international'],
+                'secondary' => ['label' => 'How to apply', 'route' => 'admissions.apply'],
+            ],
+        ], JSON_UNESCAPED_UNICODE));
+
         Settings::set('university.stats', json_encode([
             ['value' => '5', 'label' => 'Faculties & Graduate School'],
             ['value' => '46+', 'label' => 'Academic Programmes'],

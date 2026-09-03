@@ -119,17 +119,14 @@
       <h2>The full guides behind these answers</h2>
     </div>
     <div class="ctas" data-rise style="justify-content:center;">
-      <a href="{{ route('admissions.apply') }}" wire:navigate class="btn cta">
-        <span class="cta-a">How to Apply</span>
-        <span class="cta-b" aria-hidden="true">The 7 steps <i class="fas fa-arrow-right"></i></span>
+      <a href="{{ route('admissions.apply') }}" wire:navigate class="btn">
+        How to Apply <i class="fas fa-arrow-right" aria-hidden="true"></i>
       </a>
-      <a href="{{ route('admissions.requirements') }}" wire:navigate class="btn ghost cta">
-        <span class="cta-a">Entry Requirements</span>
-        <span class="cta-b" aria-hidden="true">Check your level <i class="fas fa-arrow-right"></i></span>
+      <a href="{{ route('admissions.requirements') }}" wire:navigate class="btn ghost">
+        Entry Requirements <i class="fas fa-arrow-right" aria-hidden="true"></i>
       </a>
-      <a href="{{ route('admissions.international') }}" wire:navigate class="btn ghost cta">
-        <span class="cta-a">International Students</span>
-        <span class="cta-b" aria-hidden="true">Coming from abroad <i class="fas fa-arrow-right"></i></span>
+      <a href="{{ route('admissions.international') }}" wire:navigate class="btn ghost">
+        International Students <i class="fas fa-arrow-right" aria-hidden="true"></i>
       </a>
     </div>
   </div>
