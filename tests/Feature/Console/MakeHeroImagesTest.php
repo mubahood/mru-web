@@ -26,7 +26,14 @@ class MakeHeroImagesTest extends TestCase
         // Any decodable image stands in for the real photographs; the command
         // does not care what is in the frame, only that it can scale it.
         $pixel = base64_decode('/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAMCAgICAgMCAgIDAwMDBAYEBAQEBAgGBgUGCQgKCgkICQkKDA8MCgsOCwkJDRENDg8QEBEQCgwSExIQEw8QEBD/2wBDAQMDAwQDBAgEBAgQCwkLEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBD/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAj/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k=');
-        foreach (['university/hero/slide_1783846485_3a6e5459.jpg', 'university/hero/slide_1784646836_c86c18c2.jpg', 'news/WhatsApp-Image-2025-11-26-at-11.48.59.jpeg'] as $source) {
+        foreach ([
+            'university/hero/slide_1783846485_3a6e5459.jpg',
+            'university/hero/slide_1784646836_c86c18c2.jpg',
+            'news/WhatsApp-Image-2025-11-26-at-11.48.59.jpeg',
+            'news/18B9190E-57D9-459A-AA2F-949CBE6AC5F0-1-scaled.jpeg',
+            'news/DSC_0945-scaled.jpg',
+            'news/DSC_9769-scaled.jpg',
+        ] as $source) {
             Storage::disk('public')->put($source, $pixel);
         }
     }
@@ -35,7 +42,7 @@ class MakeHeroImagesTest extends TestCase
     {
         $this->artisan('mru:make-hero-images')->assertExitCode(0);
 
-        foreach (['hero-graduation', 'hero-international', 'hero-heritage'] as $name) {
+        foreach (['hero-graduation', 'hero-international', 'hero-heritage', 'hero-scholarship', 'hero-student-voice', 'hero-classroom'] as $name) {
             foreach ([700, 1100, 1600] as $width) {
                 Storage::disk('public')->assertExists("university/hero/{$name}-{$width}.jpg");
             }
@@ -49,7 +56,7 @@ class MakeHeroImagesTest extends TestCase
         $originalMtime = Storage::disk('public')->lastModified('university/hero/hero-graduation-1600.jpg');
 
         sleep(1);
-        $this->artisan('mru:make-hero-images')->expectsOutputToContain('9 already present');
+        $this->artisan('mru:make-hero-images')->expectsOutputToContain('18 already present');
 
         $this->assertSame($originalSize, Storage::disk('public')->size('university/hero/hero-graduation-1600.jpg'));
         $this->assertSame($originalMtime, Storage::disk('public')->lastModified('university/hero/hero-graduation-1600.jpg'),
@@ -61,7 +68,7 @@ class MakeHeroImagesTest extends TestCase
         $this->artisan('mru:make-hero-images');
 
         $this->artisan('mru:make-hero-images', ['--force' => true])
-            ->expectsOutputToContain('9 written, 0 already present');
+            ->expectsOutputToContain('18 written, 0 already present');
     }
 
     public function test_a_missing_source_is_reported_and_does_not_abort_the_others(): void

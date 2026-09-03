@@ -82,13 +82,17 @@ class UniversityContentSeeder extends Seeder
 
         /* The home page slider.
          *
-         * Three real photographs of this university, each paired with copy
-         * that describes what is actually in it — a graduation, the 2025
-         * Ommanyi inter-institutional games held under the Kingdom of
-         * Buganda, and a visit from international partners. `image` is a
-         * base name; the view appends -700/-1100/-1600 for the responsive
-         * set. Editable here rather than hard-coded in the template so the
-         * slider is content, not markup.
+         * Six real photographs of this university, each paired with copy that
+         * describes what is actually in it and, taken together, meant to show
+         * the range of who is actually here — a graduation, a visiting
+         * scholar, the 2025 Ommanyi inter-institutional games held under the
+         * Kingdom of Buganda, student guild elections, a packed lecture hall,
+         * and a visit from international partners. `image` is a base name;
+         * the view appends -700/-1100/-1600 for the responsive set. Editable
+         * here rather than hard-coded in the template so the slider is
+         * content, not markup. Order is deliberate, not alphabetical or
+         * import-order: the strongest photographs lead, since the first is
+         * also the only one paying the first-paint cost.
          */
         Settings::set('university.hero_slides', json_encode([
             [
@@ -101,6 +105,15 @@ class UniversityContentSeeder extends Seeder
                 'secondary' => ['label' => 'Explore Programmes', 'route' => 'programmes.index'],
             ],
             [
+                'image' => 'university/hero/hero-scholarship',
+                'alt' => 'Dr Liezel Williams of Nelson Mandela University speaking during a visit to Muteesa I Royal University',
+                'eyebrow' => 'Scholarship & Exchange',
+                'title' => 'A conversation that crosses borders',
+                'text' => 'Scholars and partner universities from across Africa and beyond visit, teach and learn alongside our own — proof that good ideas rarely stay in one place.',
+                'primary' => ['label' => 'Explore MRU Scholar', 'route' => 'scholar.home'],
+                'secondary' => ['label' => 'Our Faculties', 'route' => 'faculties.index'],
+            ],
+            [
                 'image' => 'university/hero/hero-heritage',
                 'alt' => 'University and Kingdom of Buganda officials holding trophies at the 2025 Ommanyi inter-institutional games, with the Buganda Kingdom and MRU crests on the backdrop',
                 'eyebrow' => 'Rooted in heritage',
@@ -108,6 +121,24 @@ class UniversityContentSeeder extends Seeder
                 'text' => 'Named in honour of Kabaka Muteesa I, and a meeting place for the Kingdom it belongs to.',
                 'primary' => ['label' => 'Our story', 'route' => 'about'],
                 'secondary' => ['label' => 'Who we are', 'route' => 'who-we-are'],
+            ],
+            [
+                'image' => 'university/hero/hero-student-voice',
+                'alt' => 'Muteesa I Royal University students at an outdoor registration table during Student Guild Elections',
+                'eyebrow' => 'Student Voice',
+                'title' => 'Your voice shapes this campus',
+                'text' => 'From guild elections to everyday debate outside class, MRU students don\'t just attend — they help decide what this university becomes.',
+                'primary' => ['label' => 'Meet the Guild', 'route' => 'guild'],
+                'secondary' => ['label' => 'Campus Life', 'route' => 'campus-life'],
+            ],
+            [
+                'image' => 'university/hero/hero-classroom',
+                'alt' => 'Students seated in a packed Muteesa I Royal University lecture hall during orientation',
+                'eyebrow' => 'In the Classroom',
+                'title' => 'Different journeys, one lecture hall',
+                'text' => 'Every seat holds a different story — different districts, different backgrounds, different dreams — all working toward the same degree.',
+                'primary' => ['label' => 'Explore Programmes', 'route' => 'programmes.index'],
+                'secondary' => ['label' => 'How to Apply', 'route' => 'admissions.apply'],
             ],
             [
                 'image' => 'university/hero/hero-international',

@@ -381,3 +381,97 @@ against the *new* photo specifically rather than assumed to inherit the earlier 
 7.94:1 — the previous fix wasn't photo-specific, but the claim that it holds here still needed its
 own measurement), slider contract 14/14, full suite **1134 passed, 1 skipped**, 45-route sweep
 clean.
+
+## 2026-09-03 — Phase M: three more slides, and motion that actually moves
+
+The brief this time: find genuinely elegant, meaningful photographs already sitting in the
+imported media library — not more of the same three themes — and use them to show more of who is
+actually at this university. Add roughly three. Give the whole slider more motion. Don't let
+quality slip to hit the number.
+
+### Sourcing, the same way as the heritage swap: survey, view, judge honestly
+
+A broader survey (this time across the whole `public` disk, cross-referenced against the `posts`,
+`staff_members` and `gallery_photos` tables, not just `news/`) turned up six real candidates and
+was explicit about what it *couldn't* find: no hero-quality photograph of the Masaka campus exists
+anywhere in the imported library — the only Masaka-tagged photos at usable resolution show a
+beige conference room that doesn't read as "Masaka" without its caption, and the only genuinely
+Masaka-*looking* candidate fails the resolution bar outright. Rather than force a weak photo in to
+check a box, that gap was left open and reported rather than papered over — the same call made for
+the international slide's alternate candidate in the previous phase.
+
+Of the five real candidates, six were personally viewed at full resolution (not judged by
+filename or the survey's own description) before choosing three:
+
+- **Dr Liezel Williams** (Nelson Mandela University, visiting) — genuinely excellent: sharp,
+  candid mid-gesture, vivid African-print jacket against a plain backdrop. The obvious best single
+  find, and landscape-native (2560×1704), so it needed no special cropping.
+- **Student Guild Elections** — outdoor, colourful, real candid energy, an actual campus building
+  and mural visible behind the registration table. The only candidate that shows campus *grounds*
+  at all; every other photo in the slider (old and new) is either a crowd, a portrait, or an
+  interior.
+- **A packed lecture hall during orientation** — genuine classroom life, visible diversity
+  (hijab-wearing students among a mixed crowd), busier and less polished than the other two but
+  the only photo anywhere in the slider showing what a normal academic day actually looks like.
+
+**Deliberately set aside:**
+
+- A portrait of Prof. Maria Musoke (University Council) was, if anything, more visually striking
+  than the Williams photo — but it's a vertical source (1709×2560) against a slider built for
+  full-bleed landscape frames, and it serves almost the same theme Williams already covers
+  (a distinguished woman in academia, mid-conversation, vivid dress). Using both would have been
+  thematically redundant; the vertical one was the one with the crop risk, so it lost.
+- A curriculum review workshop photo (staff diversity) was sharp and genuine but read as another
+  generic seated-meeting room — exactly the composition already ruled out once this session for
+  the old heritage photo. Passing on it was the same lesson applied a second time, not a new one.
+
+### The slider learns to move
+
+The Ken Burns zoom already in `.hs-media` (`scale(1.07) → scale(1)` over 9s) settled every slide
+identically. Odd and even slides now drift from opposite sides as they settle
+(`translate3d(1.4%,0,0) → 0` vs `translate3d(-1.4%,0,0) → 0`, alternating by `:nth-child`), so a
+run of six slides doesn't repeat one mechanical zoom six times. Verified over CDP by sampling the
+actual computed `transform` mid-transition on a real slide change (not just the settled state) —
+at 400ms into slide 2's activation the matrix showed `scale(1.086) translateX(-23.3px)`, correctly
+almost-unmoved from its 1.09/-1.4% starting point and correctly signed for an even slide; sampling
+again after autoplay had advanced to slide 3 showed `scale(1.059) translateX(+15.6px)`, matching
+the maths for ~34% into an odd slide's *own* transition. The very first slide on first paint
+intentionally shows no zoom at all — it ships already `.is-active` in the server-rendered HTML, so
+there is no prior state for the transition to animate from, which is the correct behaviour (no
+jarring zoom on the very first thing a visitor sees), not a gap.
+
+Two more entrances were choreographed rather than left instant: the vertical gold spine now
+unfurls top-to-bottom (`scaleY(0)→1`, 0.7s) the instant a slide activates, and the eyebrow's own
+gold marker draws left-to-right a beat later (`scaleX(0)→1`, 0.5s, 0.12s delay) — both feed into
+`prefers-reduced-motion:reduce`, which now also has to name the two new `:nth-child` transform
+rules explicitly (their extra specificity would otherwise have beaten the old blanket
+`.hs-slide.is-active .hs-media{transform:none}` override inside that same media query).
+
+### Six dots, still one design
+
+`.hs-dots`' chip now needs to hold up to twice as many dots as it was built for. Shrunk from 58px
+to 36px per dot at the point they first got their glass chip (Phase L), with a further mobile-only
+reduction to 22px/8px-gap here — measured directly rather than assumed: the six-dot chip's real
+`getBoundingClientRect()` on a 375px viewport comes to 202px, comfortably inside frame.
+
+Every new glass surface was measured against the new photographs specifically, the same discipline
+as every prior phase: ghost-button contrast worst case across all **six** slides is 5.31:1 (the
+Williams photo's plain, bright backdrop — the least forgiving background tested yet — still
+clears WCAG AA's 4.5:1 floor with margin); arrow icons 5.59:1+; inactive dot bars 4.33:1+ against
+their own chip (floor is 3:1 for non-text UI).
+
+### What had to move to fit six
+
+`MakeHeroImages::SOURCES` gained three entries; `mru:make-hero-images` (no `--force` needed, since
+the existing three were untouched) derived the new responsive sets.
+`UniversityContentSeeder`'s hero-slide array grew from three entries to six, in a deliberately
+chosen order — the graduation photo still opens (it alone pays the first-paint cost and was
+already the strongest image in the set) — and the live `university.hero_slides` setting was
+replaced with the complete six-slide array directly, the same targeted-write approach as the
+heritage swap, rather than re-running the whole seeder and risking any settings changed since.
+`MakeHeroImagesTest`'s fixture and count assertions moved from three sources / 9 tiers to six
+sources / 18 tiers.
+
+Re-verified: `MakeHeroImagesTest` (4 passed), slider contract 14/14, menu contract 10/10, full
+suite **1134 passed, 1 skipped** (assertion count up by exactly 9 — the new test's 6×3 existence
+checks replacing 3×3), 45-route sweep clean.

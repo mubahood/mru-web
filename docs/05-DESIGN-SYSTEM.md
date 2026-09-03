@@ -167,9 +167,22 @@ until the reader scrolls.
 
 **Content is data, not markup.** `university.partials.hero-slider` renders from the
 `university.hero_slides` setting — each slide names an image base path, an eyebrow, a title, body
-text, and up to two calls to action. `UniversityContentSeeder` seeds the three currently in use;
+text, and up to two calls to action. `UniversityContentSeeder` seeds the six currently in use;
 the legacy importer writes to `university.hero_slides_legacy` instead, specifically so re-running
 it can never silently overwrite the curated slider with raw import rows.
+
+**Six slides, chosen to show a range, not padded to hit a number.** The set grew from three to six
+by surveying the whole imported media library for photographs that actually add something —
+a visiting scholar in mid-conversation, student guild elections on real campus grounds, a packed
+lecture hall — each viewed at full resolution before being chosen, not judged by filename. Two
+strong candidates were deliberately left out and documented rather than quietly dropped: a second
+striking woman-in-academia portrait was vertical (a crop risk against this slider's landscape
+frames) and thematically close enough to the scholar photo that using both would have been
+redundant; a curriculum-workshop photo was genuine but read as another generic seated-meeting
+room, the same composition already ruled out once for the old heritage photo. A real gap was also
+surfaced rather than papered over: no hero-quality photograph of the Masaka campus exists anywhere
+in the imported library yet. Order is deliberate — the graduation photo still opens, since it
+alone pays the first-paint cost and was already the strongest image in the set.
 
 **Which photograph earns a slide is itself a decision, not just which one happens to exist.** The
 heritage slide originally pointed at a fluorescent-lit conference room — a real photograph, but one
@@ -189,6 +202,21 @@ moved to where it belongs: `.hs-media` gets a deliberate `saturate(1.14) contras
 colour reads as vivid rather than apologised-for, and the text itself carries a soft, wide
 text-shadow (blur with almost no offset, so it reads as a lift off the photo, not a hard drop
 shadow) to stay crisp wherever it happens to sit.
+
+**Motion has direction, not just duration.** `.hs-media` already carried a slow zoom
+(`scale(1.07)→scale(1)` over 9s); it now alternates a small pan with it — odd slides settle in
+from the right, even ones from the left (`:nth-child` driven, ±1.4% translate) — so a run of six
+slides doesn't repeat one mechanical zoom six times. The vertical gold spine beside the text
+column unfurls top-to-bottom the instant a slide activates, and the eyebrow's own gold marker
+draws itself left-to-right a beat later, so the frame reads as being assembled rather than simply
+appearing. All of it (the pan, the spine, the rule) is named explicitly inside
+`prefers-reduced-motion:reduce`, not just the original zoom — an alternating `:nth-child` rule is
+*more* specific than the blanket override it's meant to be covered by, so the override has to name
+it directly or reduced-motion silently stops working for exactly the rule added on top of it.
+Verified over CDP by sampling the actual computed `transform` mid-transition on a real slide
+change, not just trusting the settled screenshot — a sample partway into an even slide's own
+transition and another partway into an odd slide's both matched the expected numbers for their
+respective pan direction and elapsed fraction.
 
 **The floating header is genuine frosted glass, not a bare transparent bar** — and specifically a
 *dark*-tinted glass (`rgba(1,15,38,.58)` + `blur(22px) saturate(160%)`), not a light one. A light

@@ -2278,6 +2278,14 @@ html.menu-open::after{content:'';position:fixed;inset:0;z-index:48;
      apologises for it — so real colour reads as vivid rather than washed. */
   filter:saturate(1.14) contrast(1.05);}
 .hs-slide.is-active .hs-media{transform:scale(1);}
+/* Alternating drift so a run of several slides doesn't repeat the identical
+   zoom — odd slides settle in from the right, even ones from the left. Small
+   enough (1.4%) to read as a living photograph, not a pan anyone consciously
+   follows. */
+.hs-slide:nth-child(odd) .hs-media{transform:scale(1.09) translate3d(1.4%,0,0);}
+.hs-slide:nth-child(odd).is-active .hs-media{transform:scale(1) translate3d(0,0,0);}
+.hs-slide:nth-child(even) .hs-media{transform:scale(1.09) translate3d(-1.4%,0,0);}
+.hs-slide:nth-child(even).is-active .hs-media{transform:scale(1) translate3d(0,0,0);}
 
 /* One tight, fast-fading wash behind the text column, and a low, shallow one
    at the floor for the control bar. Everywhere else — most of the frame,
@@ -2297,8 +2305,13 @@ html.menu-open::after{content:'';position:fixed;inset:0;z-index:48;
    edge to edge, so it reads as a deliberate accent, not a ruled-off margin. */
 .hs-copy .wrap{width:100%;position:relative;padding-left:58px;}
 .hs-copy .wrap::before{content:'';position:absolute;left:32px;top:6px;bottom:6px;width:3px;
-  border-radius:var(--r-pill);
+  border-radius:var(--r-pill);transform-origin:top;transform:scaleY(0);opacity:0;
   background:linear-gradient(to bottom,transparent,var(--gold) 14%,var(--gold) 86%,transparent);}
+/* The spine unfurls top-to-bottom the instant a slide takes over, before the
+   text starts its own rise — a beat of "the frame is being drawn", not just
+   text arriving on top of an already-finished composition. */
+.hs-slide.is-active .hs-copy .wrap::before{animation:hs-spine .7s cubic-bezier(.22,.61,.36,1) both;}
+@keyframes hs-spine{from{transform:scaleY(0);opacity:0} to{transform:scaleY(1);opacity:1}}
 /* The scrim now does less of the legibility work — most of the frame is
    deliberately clear — so a soft, wide text-shadow picks up the rest. Blur
    with almost no offset reads as a lift off the photo, not a hard drop
@@ -2311,7 +2324,10 @@ html.menu-open::after{content:'';position:fixed;inset:0;z-index:48;
    speaks it too, instead of reading like a generic template hero bolted on
    the front of a site that has its own visual signature everywhere else. */
 .hs-eyebrow::before{content:'';flex:0 0 28px;height:3px;border-radius:var(--r-pill);
+  transform-origin:left;transform:scaleX(0);
   background:var(--gold);box-shadow:0 1px 8px rgba(0,0,0,.45);}
+.hs-slide.is-active .hs-eyebrow::before{animation:hs-rule .5s .12s cubic-bezier(.22,.61,.36,1) both;}
+@keyframes hs-rule{from{transform:scaleX(0)} to{transform:scaleX(1)}}
 .hs-title{font-family:var(--font-display);font-variation-settings:'opsz' 144;
   font-size:clamp(38px,5.6vw,76px);line-height:1.03;letter-spacing:-.025em;
   font-weight:700;color:#fff;max-width:19ch;margin-bottom:22px;
@@ -2391,12 +2407,18 @@ html.menu-open::after{content:'';position:fixed;inset:0;z-index:48;
   .hs-arrows{display:none;}                /* dots and swipe carry it */
   .hs-title{max-width:none;}
   .hs-bar{bottom:78px;}
+  .hs-dots{gap:8px;padding:10px 14px;}     /* a run of five or six dots still has to fit a phone's width */
+  .hs-dot{width:22px;}
 }
 @media(prefers-reduced-motion:reduce){
   .hs-media,.hs-slide{transition:none;}
-  .hs-slide.is-active .hs-media{transform:none;}
+  .hs-slide.is-active .hs-media,
+  .hs-slide:nth-child(odd).is-active .hs-media,
+  .hs-slide:nth-child(even).is-active .hs-media{transform:none;}
   .hs-slide.is-active .hs-eyebrow,.hs-slide.is-active .hs-title,
   .hs-slide.is-active .hs-text,.hs-slide.is-active .hs-actions{animation:none;}
+  .hs-slide.is-active .hs-copy .wrap::before{animation:none;transform:scaleY(1);opacity:1;}
+  .hs-slide.is-active .hs-eyebrow::before{animation:none;transform:scaleX(1);}
   .hs-scroll{animation:none;}
   .hs-dot.is-active span{width:100%;animation:none;}
 }

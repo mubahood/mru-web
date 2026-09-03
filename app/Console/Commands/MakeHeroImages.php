@@ -33,6 +33,9 @@ class MakeHeroImages extends Command
         'hero-graduation' => 'university/hero/slide_1783846485_3a6e5459.jpg',
         'hero-international' => 'university/hero/slide_1784646836_c86c18c2.jpg',
         'hero-heritage' => 'news/WhatsApp-Image-2025-11-26-at-11.48.59.jpeg',
+        'hero-scholarship' => 'news/18B9190E-57D9-459A-AA2F-949CBE6AC5F0-1-scaled.jpeg',
+        'hero-student-voice' => 'news/DSC_0945-scaled.jpg',
+        'hero-classroom' => 'news/DSC_9769-scaled.jpg',
     ];
 
     /** width => JPEG quality. Lower at every step down: a smaller frame hides compression the eye would catch at full size. */
