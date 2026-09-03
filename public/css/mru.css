@@ -2379,8 +2379,18 @@ header.site{--hdr-fg:var(--tx);--hdr-brand:var(--pri);--hdr-crest:none;}
 .brand img.crest{filter:var(--hdr-crest);}
 .nav-link{color:var(--hdr-fg);}
 
-body.has-hero{--hdr-total:120px;}
+/* Over the slider the utility row starts hidden — the photograph gets the
+   full opening moment, with just the crest and the six-section menu over it
+   — and slides in once the reader scrolls, where it earns its keep as
+   persistent navigation. Below 900px it is already hidden outright (its own
+   rule further down), so --hdr-total there was already sized for a
+   topbar-less header; only the desktop figure changes here, from
+   topbar+bar (120px) down to the bar alone plus breathing room. */
+body.has-hero{--hdr-total:104px;}
 @media(max-width:900px){ body.has-hero{--hdr-total:88px;} }
+
+body.has-hero .topbar{max-height:0;opacity:0;}
+html.is-scrolled body.has-hero .topbar{max-height:44px;opacity:1;}
 
 /* True frosted glass, not a bare transparent bar: a blurred pane that sits on
    the photograph as an object in its own right, with an edge you can see.

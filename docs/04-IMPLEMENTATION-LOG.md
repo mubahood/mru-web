@@ -281,3 +281,23 @@ silently turned `\d` into `d` inside a regex built through several layers of str
 which is its own small lesson: prefer `split()`/`indexOf()` over a regex when a value is being
 built through more than one layer of templating). Full suite unaffected (**1134 passed** — this
 phase touched only `public/css/mru.css`).
+
+## 2026-09-03 — Phase K: the utility row waits for the scroll
+
+Feedback on Phase J: the topbar's utility row (E-Portal, e-Learning, Library, MRU Scholar, phone,
+Staff Login) was visible from the very first frame, competing with the photograph for attention
+exactly where the slider is supposed to make its opening impression. Every other page keeps the
+Chrome-wide rule — topbar visible at rest, folds away only past 40px of scroll — but those pages
+have no photograph to protect. A hero page now inverts it: the topbar opens at `max-height:0` and
+only reaches its usual 44px once `html.is-scrolled` is set. At rest, a hero page shows just the
+crest, wordmark, and six-section menu directly over the photo; scrolling brings the utility row
+back for its keep as persistent navigation.
+
+`.hs-copy`'s own header-clearance padding (`var(--hdr-total)`, keeping the slide's eyebrow and
+title clear of the floating header) dropped from 120px to 104px on desktop to match the shorter
+header a hero page now starts with. Mobile is unchanged at 88px — the topbar there is already
+hidden outright below 900px, hero or not, so nothing about its clearance needed to change.
+
+CSS-only change, confined to the floating-header block in `public/css/mru.css`. Re-verified over
+CDP: menu contract 10/10, slider contract 14/14. Full suite unaffected (**1134 passed, 1
+skipped**).
