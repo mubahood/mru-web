@@ -62,9 +62,11 @@ class PartnerController extends Controller
             'logo' => 'nullable|image|mimes:jpg,jpeg,png,webp,svg|max:5120',
             'url' => 'nullable|string|max:255',
             'sort_order' => 'nullable|integer',
+            'show_on_home' => 'nullable|boolean',
         ]);
 
         $data['sort_order'] = $data['sort_order'] ?? 0;
+        $data['show_on_home'] = $request->boolean('show_on_home');
 
         unset($data['logo']);
 

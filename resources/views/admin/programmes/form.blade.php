@@ -104,6 +104,12 @@
           Published, visible to everyone
         </label>
       </div>
+      <div class="tb-form-group" style="justify-content:flex-end;">
+        <label class="tb-check-group">
+          <input type="checkbox" name="featured" value="1" @checked(old('featured', $item->exists ? $item->featured : false))>
+          Featured on the homepage (one of the curated six)
+        </label>
+      </div>
     </div>
   </div>
   <div class="tb-card-footer" style="display:flex;gap:10px;justify-content:flex-end;">

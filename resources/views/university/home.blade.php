@@ -58,11 +58,22 @@
     </div>
 
     @if($stats)
-      <div class="stat-row" data-rise>
+      {{-- data-count: the layout's count-up-on-scroll-into-view already knows
+           what to do with a .v inside here — it just never had anywhere to
+           run before. Non-numeric values (NCHE) are left alone automatically. --}}
+      <div class="stat-row" data-rise data-count>
         @foreach($stats as $stat)
           <div class="stat"><div class="v">{{ $stat['value'] }}</div><div class="l">{{ $stat['label'] }}</div></div>
         @endforeach
       </div>
+    @endif
+
+    @if(!empty($admissions['deadline_note']))
+      <p class="intake-strip" data-rise>
+        <i class="fas fa-calendar-check" aria-hidden="true"></i>
+        <span>{{ $admissions['deadline_note'] }}</span>
+        <a href="{{ route('admissions.intakes') }}" wire:navigate>Intake dates <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+      </p>
     @endif
 
     <div class="icon-row">
@@ -112,6 +123,7 @@
 </section>
 @push('styles')<style>@media(max-width:820px){.about-split{grid-template-columns:1fr !important;}}</style>@endpush
 
+@if($faculties->isNotEmpty())
 <section>
   <div class="wrap">
     <div class="sec-head left">
@@ -135,6 +147,29 @@
     </div>
   </div>
 </section>
+@endif
+
+@if(!empty($campuses))
+<section class="band-surface">
+  <div class="wrap">
+    <div class="sec-head left">
+      <div class="sec-idx">{{ $idx() }} <span>Two Campuses</span></div>
+      <h2>One university, two homes</h2>
+      <p>Kampala for the capital's energy, Masaka for a quieter pace — the same MRU education at both.</p>
+    </div>
+    <div class="campus-grid">
+      @foreach($campuses as $campus)
+        <a href="{{ $campus['maps'] ?? '#' }}" target="_blank" rel="noopener external" class="card campus-card" data-rise>
+          <span class="ic"><i class="fas fa-location-dot" aria-hidden="true"></i></span>
+          <h3>{{ $campus['name'] }}</h3>
+          <p>{{ $campus['location'] }}</p>
+          <span class="link">Get directions <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></span>
+        </a>
+      @endforeach
+    </div>
+  </div>
+</section>
+@endif
 
 @if($programmes->isNotEmpty())
 <section class="band-surface tex-grid">
@@ -158,6 +193,32 @@
 </section>
 @endif
 
+@if($gallery->isNotEmpty())
+<section>
+  <div class="wrap">
+    <div class="sec-head left">
+      <div class="sec-idx">{{ $idx() }} <span>Campus Life</span></div>
+      <h2>A closer look at who we are</h2>
+      <p>Moments from across the university — its people, its ceremonies, its everyday work.</p>
+    </div>
+    <div class="gallery-wall">
+      @foreach($gallery as $photo)
+        <a href="{{ route('campus-life') }}" wire:navigate class="gallery-tile" data-rise
+           style="aspect-ratio:{{ $photo->ratio() }};">
+          <img src="{{ $photo->thumbUrl() }}" alt="{{ $photo->altText() }}" loading="lazy" decoding="async">
+          <span class="gallery-caption">{{ $photo->title }}</span>
+        </a>
+      @endforeach
+    </div>
+    <div style="text-align:center;margin-top:26px;" data-rise>
+      <a href="{{ route('campus-life') }}" wire:navigate class="btn ghost">
+        See more of campus life <i class="fas fa-arrow-right" aria-hidden="true"></i>
+      </a>
+    </div>
+  </div>
+</section>
+@endif
+
 @if($news->isNotEmpty() || $events->isNotEmpty())
 <section>
   <div class="wrap">
@@ -172,7 +233,7 @@
             @if($post->cover_image)
               <div class="course-cover"><img src="{{ asset('storage/'.$post->cover_image) }}" alt="" loading="lazy" decoding="async" width="400" height="225"></div>
             @endif
-            <span class="client">{{ $post->published_at?->format('j M Y') }}</span>
+            <span class="client">{{ $post->published_at?->diffForHumans() }}</span>
             <h3>{{ $post->title }}</h3>
             <p>{{ \Illuminate\Support\Str::limit($post->excerpt, 100) }}</p>
             <span class="link">Read <i class="fas fa-arrow-right"></i></span>
@@ -186,6 +247,7 @@
             <div style="padding:10px 0;border-bottom:1px solid var(--line);">
               <div style="font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--gold-d);font-weight:700;">
                 {{ $event->starts_at->format('D, j M Y · g:i A') }}
+                <span style="color:var(--tx3);font-weight:500;">· {{ $event->starts_at->diffForHumans() }}</span>
               </div>
               <a href="{{ route('events.show', $event) }}" wire:navigate style="font-weight:600;font-size:14px;color:var(--tx);">{{ $event->title }}</a>
               @if($event->venue)<div style="font-size:12px;color:var(--tx2);"><i class="fas fa-location-dot" aria-hidden="true"></i> {{ $event->venue }}</div>@endif

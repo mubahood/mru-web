@@ -23,6 +23,7 @@ class Programme extends Model
         'faculty_id', 'name', 'slug', 'award_code', 'level', 'duration', 'study_modes',
         'tuition_per_semester', 'tuition_currency', 'tuition_note', 'entry_requirements',
         'description', 'career_prospects', 'intake_months', 'image', 'sort_order', 'is_published',
+        'featured',
     ];
 
     protected function casts(): array
@@ -31,6 +32,7 @@ class Programme extends Model
             'study_modes' => 'array',
             'intake_months' => 'array',
             'is_published' => 'boolean',
+            'featured' => 'boolean',
         ];
     }
 
@@ -43,6 +45,12 @@ class Programme extends Model
     public function scopePublished($query)
     {
         return $query->where('is_published', true);
+    }
+
+    /** The homepage's curated best-foot-forward six, not a random sample. */
+    public function scopeFeatured($query)
+    {
+        return $query->where('featured', true);
     }
 
     public function levelLabel(): string

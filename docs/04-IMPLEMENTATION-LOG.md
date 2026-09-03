@@ -594,3 +594,123 @@ screenshots, menu contract 10/10, slider contract 14/14, full suite **1134 passe
 45-route sweep clean. No PHPUnit test needed updating — every link is still server-rendered on
 every page, just carrying one new class; nothing was removed from the markup, only from what's
 visible under 900px.
+
+## 2026-09-04 — Phase Q: the homepage sections, per `docs/06-HOMEPAGE-SECTIONS-PLAN.md`
+
+A planning document went in first (`docs/06-HOMEPAGE-SECTIONS-PLAN.md`) — a line-by-line audit of
+every homepage section, cross-checked against the existing `03-RESEARCH-TRENDS-BEST-PRACTICES.md`
+competitor research, before any code changed. What follows is what actually shipped from that
+plan, in the order it happened. Testimonials was explicitly excluded on instruction — no
+fabricated quotes.
+
+### Two real data bugs, fixed at the schema level
+
+**Programmes showed a random six on every page load.** `Programme::published()->inRandomOrder()`
+meant the homepage's "best foot forward" academic showcase was actually a lottery — reload and
+get six different ones. Added a `featured` boolean (migration
+`2026_09_03_233241_add_featured_to_programmes_table`, defaults `false`), a matching checkbox on
+the existing Programme admin form, and swapped the query for
+`Programme::published()->featured()->orderBy('sort_order')->limit(6)`. Marking `featured=false`
+by default on a fresh migration meant the section would have gone from "six random" to "zero" the
+moment this shipped — so six real, published programmes were deliberately chosen to seed the
+flag, one per faculty (Bachelor of Education Secondary, Bachelor of Business Administration,
+Bachelor of Mass Communication, Bachelor of Information Technology, Master of Business
+Administration, Bachelor of Civil Engineering) plus a second STEAD pick for breadth, covering all
+five faculties rather than clustering in one.
+
+**Partners had no visibility flag at all.** Every row in the `partners` table rendered on the
+homepage, forever, with no way to curate. Added `show_on_home` (migration
+`2026_09_03_233242_add_show_on_home_to_partners_table`, defaults **true** specifically so the four
+partners already showing didn't silently vanish the moment this shipped), a matching admin
+checkbox, and a `Partner::showOnHome()` scope. Confirmed after migrating: all four existing rows
+still read `show_on_home=true`.
+
+**The Scholar section's latent N+1** (`authorNames()` walking an unloaded `authorRows.scholar`
+relation per publication) was closed with one eager-load added to the controller query — harmless
+today at `limit(3)`, the correct pattern if that number ever grows.
+
+Also removed while touching this controller: the dead `$heroSlides` fetch (the hero partial
+already re-fetches the same Settings key itself, independently).
+
+### The homepage's own numbered-section language, applied to two things that were dormant
+
+**A count-up stat animation existed fully built in the shared layout JS
+(`[data-count]` → `countUp()`) and had never been wired to anything, anywhere on the site.** It
+already knows to leave a non-numeric value (`NCHE`) alone and animate only the ones with a real
+number in them. Turning it on for the homepage stats band took exactly one attribute
+(`data-count` on `.stat-row`) — no JS, no design work, a capability that had already been paid for
+and never spent.
+
+**An intake-deadline strip** now sits between the stats and the quick-action cards — a slim gold
+pill, not a second section, reading `university.admissions.deadline_note` (already seeded, never
+surfaced on the homepage before). Directly named in the existing research doc as a pattern worth
+copying (UCU's "Applications for September Intake now open").
+
+### Two new sections
+
+**"Two Campuses"** (now `.sec-idx` `03`, after Faculties rather than before — a perfectly
+reasonable "what can I study → where would I study it" order, differing slightly from the plan
+doc's original `02` placement without changing the plan's intent). Needed zero new data:
+`university.contacts.campuses` already had name, location, and a real Google Maps link for both
+Kakeeka (Mengo, Kampala) and Kirumba (Kirumba, Masaka), confirmed by reading the seeder directly
+before writing a line of view code. Two cards, a thin top accent rule distinguishing them (gold
+first, navy second — confirmed by reading the actual computed `::before` styles over CDP, not
+assumed from the CSS source), reusing the site's existing `.card` treatment rather than inventing
+a new one. Deliberately sidesteps a real gap surfaced during the hero-slider work: no hero-quality
+photograph of the Masaka campus exists in the imported media library, so a map-and-facts section
+was chosen specifically because it needs no campus photography at all.
+
+**"Campus Life"** (`.sec-idx` `05`, after Programmes), a photo-wall teaser linking through to the
+existing (separate) `/campus-life` page rather than duplicating it. This reuses `$gallery` — a
+`GalleryPhoto` query the controller already ran but the view never rendered — and required real
+photographs to actually populate it:
+
+- Four photos from earlier in this week's hero-slider research were personally reviewed again
+  (three not previously viewed directly — a Buganda formal cultural event, the university gate
+  decorated for a Katikkiro visit, and re-confirming a weak Masaka governance-meeting photo that
+  was *excluded* for the same "generic meeting room" reason a hero candidate was excluded earlier
+  this week) before choosing the final four: Prof. Maria Musoke's council portrait, a curriculum
+  review workshop, the university gate welcoming the Katikkiro of Buganda, and a formal Kiganda
+  ceremony.
+- Processed through the exact same pipeline the admin's own upload flow uses
+  (`GalleryPhotoController::attach()` — `magick -auto-orient -strip -resize 1600x1600> -quality
+  82`, a WebP copy, an 800px thumb) rather than a shortcut, so these four rows are indistinguishable
+  from a real admin upload.
+- Published as genuine `GalleryPhoto` rows (`is_published`, `is_featured`, real `width`/`height`
+  read back from the processed files, factual captions/alt text that describe only what's visibly
+  confirmable — the exact discipline already established for the hero captions: no invented
+  ceremony names, no claimed identities beyond what the source material actually supports).
+
+**A real layout bug, caught by looking at the actual result, not just the code.** The first
+version of `.gallery-wall` was a CSS grid. A grid's row height is set by its *tallest* member, so
+the one portrait photo (Prof. Musoke's) stretched the whole row and left the three shorter
+landscape photos sharing it stranded above a dead gap — visible immediately in a screenshot,
+invisible in the CSS. Fixed by switching to a true masonry layout via CSS multi-column
+(`columns: 3 220px` + `break-inside: avoid`), where each tile's height is exactly its own content,
+not a shared row's. Re-screenshotted to confirm: tight, fully packed, no gap. Reduced from an
+initial `columns:4` to `columns:3` for the same reason — four columns left a visibly empty fourth
+column with only four photos in the set; three columns fill completely today and still have room
+to grow as more photos are added later through the admin panel.
+
+### Smaller polish
+
+Faculties wrapped in a defensive `@if($faculties->isNotEmpty())`, matching every other conditional
+section, instead of being the one section that would render an empty grid if faculty data were
+ever missing. News timestamps switched from a raw date to `diffForHumans()` ("3 months ago");
+events kept their exact date/time (still needed to plan around) and gained the same relative
+phrase alongside it as a secondary cue. Faculties' hover polish, planned as new CSS, turned out to
+already exist site-wide (`.card:hover` already lifts, already shifts its icon gold-on-navy) — found
+by reading the CSS before writing more of it, so nothing was duplicated.
+
+### Verification
+
+Two new admin form checkboxes were rendered directly (with a real authenticated user and a shared
+empty `$errors` bag, since neither is present outside a real HTTP request) rather than assumed
+correct from reading the Blade source — both confirmed present in the rendered HTML. Menu contract
+10/10, slider contract 14/14 (neither section touches header or slider code, but both re-run
+anyway). Full suite **1134 passed, 1 skipped** — which, running against SQLite, also confirmed the
+two new migrations are valid there too, not only against the MySQL dev database they were written
+and manually verified against. 45-route sweep clean. Every new section screenshotted at desktop
+and mobile widths, with genuine scroll-reveal settle time (900ms was sometimes too short and
+caught elements mid-fade — bumped to 2.5s for these checks specifically) so contrast and layout
+were judged on the settled state, not a transitional one.

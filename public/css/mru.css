@@ -2532,3 +2532,49 @@ body.has-hero main > section:first-of-type{padding-top:0;}
    slider. Tighter bottom margin than a normal .sec-head: the stats sit close
    beneath it, not a full section-gap away. */
 .home-intro .sec-head{margin-bottom:var(--s-5);}
+
+/* A single fact worth acting on now, not another whole section — a slim
+   pill rather than a banner, so it reads as a nudge, not an interruption. */
+.intake-strip{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center;
+  width:fit-content;margin:0 auto var(--s-6);padding:12px 22px;border-radius:var(--r-pill);
+  background:var(--gold-soft);border:1px solid rgba(212,168,67,.35);
+  font-size:13.5px;font-weight:600;color:var(--pri);}
+.intake-strip i{color:var(--gold-d);}
+.intake-strip a{color:var(--pri);text-decoration:underline;text-underline-offset:3px;white-space:nowrap;}
+.intake-strip a:hover{color:var(--gold-d);}
+@media(max-width:640px){.intake-strip{font-size:12.5px;padding:10px 16px;text-align:center;}}
+
+/* Two campuses, two cards — a top accent rule tells them apart at a glance
+   (gold for the first, navy for the second) without a second card system. */
+.campus-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:24px;}
+.campus-card{position:relative;overflow:hidden;}
+.campus-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--gold);}
+.campus-card:nth-child(2)::before{background:var(--pri);}
+.campus-card .ic{width:56px;height:56px;font-size:22px;}
+.campus-card h3{font-family:var(--font-display);font-size:22px;margin:4px 0 6px;}
+.campus-card p{color:var(--tx2);margin-bottom:16px;}
+
+/* A photo wall, not a form grid — each tile keeps its own real aspect ratio
+   (set inline from the photo's own dimensions) rather than being cropped to
+   a uniform box, so a portrait among landscapes reads as a deliberate mix,
+   not a mistake. True masonry via CSS columns, not a grid: a grid's row
+   height is set by its tallest member, which left every shorter landscape
+   tile sharing a row with a portrait one stranded above a dead gap. Columns
+   let each tile's own height end exactly where its own content ends. Caption
+   stays hidden until hover/focus: the point is the photograph, the caption
+   is a label for it, not competing content. */
+.gallery-wall{columns:3 220px;column-gap:16px;}
+.gallery-tile{display:block;break-inside:avoid;margin-bottom:16px;
+  position:relative;overflow:hidden;border-radius:var(--r-lg);
+  box-shadow:var(--sh-1);transition:box-shadow .24s ease,transform .24s ease;}
+.gallery-tile:hover,.gallery-tile:focus-visible{box-shadow:var(--sh-3);transform:translateY(-4px);}
+.gallery-tile img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s ease;}
+.gallery-tile:hover img,.gallery-tile:focus-visible img{transform:scale(1.06);}
+.gallery-caption{position:absolute;left:0;right:0;bottom:0;padding:14px 16px 12px;
+  background:linear-gradient(to top,rgba(1,15,38,.82),transparent);
+  color:#fff;font-size:13px;font-weight:600;
+  opacity:0;transform:translateY(6px);transition:opacity .24s ease,transform .24s ease;}
+.gallery-tile:hover .gallery-caption,.gallery-tile:focus-visible .gallery-caption{opacity:1;transform:translateY(0);}
+@media(prefers-reduced-motion:reduce){
+  .gallery-tile,.gallery-tile img,.gallery-caption{transition:none;}
+}

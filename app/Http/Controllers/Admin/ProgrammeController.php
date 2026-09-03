@@ -94,6 +94,7 @@ class ProgrammeController extends Controller
             'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
             'sort_order' => 'nullable|integer',
             'is_published' => 'nullable|boolean',
+            'featured' => 'nullable|boolean',
         ]);
 
         $data['study_modes'] = $this->lines($data['study_modes'] ?? null);
@@ -101,6 +102,7 @@ class ProgrammeController extends Controller
         $data['tuition_currency'] = $data['tuition_currency'] ?? 'UGX';
         $data['sort_order'] = $data['sort_order'] ?? 0;
         $data['is_published'] = $request->boolean('is_published');
+        $data['featured'] = $request->boolean('featured');
 
         unset($data['image']);
 

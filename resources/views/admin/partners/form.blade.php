@@ -37,6 +37,12 @@
         <label class="tb-label">Sort order</label>
         <input class="tb-input" type="number" name="sort_order" value="{{ old('sort_order', $item->sort_order) }}">
       </div>
+      <div class="tb-form-group" style="justify-content:flex-end;">
+        <label class="tb-check-group">
+          <input type="checkbox" name="show_on_home" value="1" @checked(old('show_on_home', $item->exists ? $item->show_on_home : true))>
+          Show on the homepage
+        </label>
+      </div>
     </div>
   </div>
   <div class="tb-card-footer" style="display:flex;gap:10px;justify-content:flex-end;">

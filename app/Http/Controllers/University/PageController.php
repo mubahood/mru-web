@@ -28,14 +28,15 @@ class PageController extends Controller
         return view('university.home', [
             'identity' => University::identity(),
             'stats' => University::get('stats'),
-            'heroSlides' => University::get('hero_slides'),
+            'admissions' => University::get('admissions'),
+            'campuses' => University::contacts()['campuses'] ?? [],
             'faculties' => Faculty::published()->withCount('programmes')->get(),
-            'programmes' => Programme::published()->inRandomOrder()->limit(6)->get(),
+            'programmes' => Programme::published()->featured()->orderBy('sort_order')->limit(6)->get(),
             'news' => Post::published()->latest('published_at')->limit(3)->get(),
             'events' => UniversityEvent::published()->upcoming()->limit(3)->get(),
-            'publications' => Publication::published()->where('is_featured', true)->limit(3)->get(),
-            'partners' => Partner::orderBy('sort_order')->get(),
-            'gallery' => GalleryPhoto::query()->where('is_published', true)->where('is_featured', true)->limit(6)->get(),
+            'publications' => Publication::published()->where('is_featured', true)->with('authorRows.scholar')->limit(3)->get(),
+            'partners' => Partner::showOnHome()->orderBy('sort_order')->get(),
+            'gallery' => GalleryPhoto::query()->where('is_published', true)->where('is_featured', true)->orderBy('sort_order')->limit(6)->get(),
             'testimonials' => collect(json_decode((string) \App\Support\Settings::get('portfolio.testimonials', '[]'), true) ?: []),
         ]);
     }
