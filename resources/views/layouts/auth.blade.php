@@ -7,16 +7,17 @@
   <title>@yield('title', 'Sign in') | Muteesa I Royal University</title>
   <link rel="icon" type="image/png" sizes="48x48" href="{{ asset('favicon.png') }}">
   <meta name="theme-color" content="#ffffff">
-  <link rel="stylesheet" href="{{ asset('vendor/fonts/inter/inter.css') }}">
+  <link rel="stylesheet" href="{{ asset('vendor/fonts/jakarta/jakarta.css') }}">
+  <link rel="stylesheet" href="{{ asset('vendor/fonts/fraunces/fraunces.css') }}">
   <link rel="stylesheet" href="{{ asset('vendor/fa/css/all.min.css') }}" media="print" onload="this.media='all'">
   <noscript><link rel="stylesheet" href="{{ asset('vendor/fa/css/all.min.css') }}"></noscript>
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
     :root{
       --bg:#f7f6f2; --surface:#fff; --surface-2:#f0eee7; --line:#e7e3d8; --line-2:#d8d2c0;
-      --tx:#141a26; --tx2:#5b6270; --tx3:#706f5c; --pri:#0b1f3a; --pri-d:#060f1f; --pri-soft:#eef1f6;
+      --tx:#333333; --tx2:#5C6470; --tx3:#8A929E; --pri:#023479; --pri-d:#012456; --pri-soft:#EDF3FC;
       --ok:#0f6b30; --ok-soft:#e6f4ea; --bad:#b91c1c; --bad-soft:#fbe9e9;
-      --gold:#b8933f; --gold-d:#7d6228; --gold-soft:#f7f0df;
+      --gold:#F5A623; --gold-d:#9A6205; --gold-soft:#FEF5E6;
       --font:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
     }
     body{font-family:var(--font);font-size:13px;font-weight:400;color:var(--tx);
@@ -37,7 +38,7 @@
     .ctx-sub{display:block;font-size:11.5px;font-weight:450;color:var(--tx3);margin-top:2px;line-height:1.45;}
     .a-course-ctx{display:flex;align-items:center;gap:12px;background:var(--pri-soft);border:1px solid var(--line);
       padding:12px 14px;margin-bottom:20px;}
-    .a-course-ctx .thumb{width:44px;height:44px;flex-shrink:0;background:var(--pri);color:#b8933f;
+    .a-course-ctx .thumb{width:44px;height:44px;flex-shrink:0;background:var(--pri);color:var(--gold);
       display:flex;align-items:center;justify-content:center;font-size:16px;}
     .a-course-ctx .thumb img{width:100%;height:100%;object-fit:cover;}
     .a-course-ctx p{font-size:12.5px;color:var(--tx2);line-height:1.45;}

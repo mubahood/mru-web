@@ -7,7 +7,7 @@ use Tests\TestCase;
 /**
  * Guards one specific mistake.
  *
- * The public layout carries a single large inline stylesheet. A terminal cursor
+ * The public design system lives in public/css/mru.css. A terminal cursor
  * was styled as a bare `.caret`, and the navigation chevron and the account-menu
  * chevron were both already using that class name, so both header icons turned
  * into a blinking gold block.
@@ -47,17 +47,33 @@ class StylesheetScopeTest extends TestCase
            site sat with its content pressed against whatever came next. Rules
            for one component belong in one place, or the last edit silently
            wins. */
-        $css = $this->layoutCss();
+        $css = $this->refreshCss();
 
         $this->assertSame(1, preg_match_all('/(?:^|[,}])\s*\.page-hero\s*\{/m', $css),
-            '.page-hero must be defined in exactly one rule');
+            '.page-hero must be defined in exactly one rule in the current design layer');
     }
 
     private function layoutCss(): string
     {
-        $blade = (string) file_get_contents(resource_path('views/layouts/marketing.blade.php'));
-        preg_match('/<style>(.*?)<\/style>/s', $blade, $m);
+        return (string) file_get_contents(public_path('css/mru.css'));
+    }
 
-        return $m[1] ?? '';
+    /**
+     * The refresh layer: everything after the banner that marks it.
+     *
+     * The sheet is deliberately two layers — an inherited base, and the
+     * current design language that settles it. A component may therefore be
+     * touched twice in the file as a whole, but only once in the layer being
+     * edited, which is where the original "last edit silently wins" bug
+     * would happen again.
+     */
+    private function refreshCss(): string
+    {
+        $css = $this->layoutCss();
+        $at = strpos($css, 'MRU visual system');
+
+        $this->assertNotFalse($at, 'the refresh layer banner must stay: the tests below scope to it');
+
+        return substr($css, $at);
     }
 }

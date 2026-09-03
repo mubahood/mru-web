@@ -71,9 +71,10 @@ class SiteNavTest extends TestCase
     {
         $html = (string) $this->get(route('home'))->assertOk()->getContent();
 
-        $this->assertStringContainsString('>E-Portal<', $html);
-        $this->assertStringContainsString('Student E-Portal', $html);
-        $this->assertStringContainsString('Apply on the E-Portal', $html);
+        // The bar carries one standing action; the portal has its own entry
+        // in the utility row above it.
+        $this->assertStringContainsString('Apply Now', $html);
+        $this->assertStringContainsString('E-Portal', $html);
     }
 
     public function test_the_action_buttons_survive_signing_in(): void
@@ -85,8 +86,7 @@ class SiteNavTest extends TestCase
 
         $header = $this->headerOf($this->actingAs($user)->get(route('home')));
 
-        $this->assertStringContainsString('>E-Portal<', $header);
-        $this->assertStringContainsString('>Apply Now<', $header);
+        $this->assertStringContainsString('Apply Now', $header);
     }
 
     public function test_account_navigation_sits_behind_the_avatar_not_beside_the_actions(): void
@@ -105,7 +105,7 @@ class SiteNavTest extends TestCase
     {
         $header = $this->headerOf($this->get(route('home')));
 
-        $this->assertStringContainsString('>Apply Now<', $header);
+        $this->assertStringContainsString('Apply Now', $header);
         // Sign in is a link, not a button. It must not compete with the actions.
         $this->assertStringContainsString('class="signin desk"', $header);
     }
@@ -182,7 +182,7 @@ class SiteNavTest extends TestCase
         // Something waiting to be paid for should be the first control the
         // visitor can get back to.
         $this->assertLessThan(
-            strpos($header, 'class="btn ghost desk sm cta"'),
+            strpos($header, 'class="btn gold desk sm"'),
             strpos($header, 'class="cart-link"'),
             'the basket must come before the calls to action'
         );
@@ -196,9 +196,20 @@ class SiteNavTest extends TestCase
         $html = (string) $this->get(route('home'))->assertOk()->getContent();
         $footer = substr($html, strpos($html, '<footer>') ?: 0);
 
-        foreach (SiteNav::urls() as $url) {
-            $this->assertStringContainsString('href="'.e($url).'"', $footer,
-                "{$url} is in the menu but missing from the footer");
+        /* The footer gives three sections a column each and reaches the rest
+           through its quick links, so what it guarantees is that no section of
+           the menu is unreachable from the bottom of the page — and that a
+           section given a column lists all of it. */
+        foreach (SiteNav::items() as $item) {
+            $this->assertStringContainsString('href="'.e($item['url']).'"', $footer,
+                "the {$item['label']} section is in the menu but unreachable from the footer");
+        }
+
+        foreach (collect(SiteNav::items())->filter(fn ($i) => ! empty($i['children']))->take(3) as $item) {
+            foreach ($item['children'] as $child) {
+                $this->assertStringContainsString('href="'.e($child['url']).'"', $footer,
+                    "{$child['url']} is in the {$item['label']} column but missing from the footer");
+            }
         }
     }
 

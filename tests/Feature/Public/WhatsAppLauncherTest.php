@@ -107,10 +107,10 @@ class WhatsAppLauncherTest extends TestCase
      */
     public function test_it_sits_below_the_controls_it_must_never_cover(): void
     {
-        $html = (string) $this->get('/')->assertOk()->getContent();
+        $css = (string) file_get_contents(public_path('css/mru.css'));
 
-        $this->assertMatchesRegularExpression('/\.wa\{[^}]*z-index:45/', $html);
-        $this->assertMatchesRegularExpression('/\.act-bar\{[^}]*z-index:50/', $html);
+        $this->assertMatchesRegularExpression('/\.wa\{[^}]*z-index:45/', $css);
+        $this->assertMatchesRegularExpression('/\.act-bar\{[^}]*z-index:50/', $css);
     }
 
     /**

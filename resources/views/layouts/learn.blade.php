@@ -20,7 +20,8 @@
   <title>{{ $title ?? $__env->yieldContent('title', 'Learning') }} · MRU e-Learning</title>
   <link rel="icon" type="image/png" sizes="48x48" href="{{ asset('favicon.png') }}">
   <meta name="theme-color" content="#ffffff">
-  <link rel="stylesheet" href="{{ asset('vendor/fonts/inter/inter.css') }}">
+  <link rel="stylesheet" href="{{ asset('vendor/fonts/jakarta/jakarta.css') }}">
+  <link rel="stylesheet" href="{{ asset('vendor/fonts/fraunces/fraunces.css') }}">
   <link rel="stylesheet" href="{{ asset('vendor/fa/css/all.min.css') }}">
   <link rel="stylesheet" href="{{ asset('css/td-admin.css') }}?v={{ filemtime(public_path('css/td-admin.css')) }}">
   @livewireStyles

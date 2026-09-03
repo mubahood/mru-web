@@ -13,7 +13,8 @@
   --bad:#b91c1c; --bad-soft:#fbe9e9; --info:#05275C; --info-soft:#E9EEF6;
   --bd:var(--line); --mt-c:var(--mt);
   --sw:248px; --th:50px;
-  --font:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  --font:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  --font-display:'Fraunces','Iowan Old Style',Georgia,serif;
   --tb-muted:var(--mt);
 }
 
@@ -834,3 +835,24 @@ tr.an-bot{opacity:.55;}
   .tk-health-note{display:none;}
   .tk-client{max-width:120px;}
 }
+
+/* =========================================================================
+   Brand alignment — the back office wears the same suit as the public site.
+   Navy #023479, amber #F5A623, Plus Jakarta Sans, and the same radius family,
+   so moving between the two never feels like moving between two products.
+   ========================================================================= */
+:root{
+  --r-sm:8px; --r:12px; --r-lg:16px; --r-pill:999px;
+  --gold:#F5A623; --gold-d:#9A6205;
+}
+h1,h2,h3,h4,.tb-page-header h1{font-family:var(--font);letter-spacing:-.01em;}
+.tb-page-header h1{font-family:var(--font-display);font-weight:600;letter-spacing:-.02em;color:var(--pri,#023479);}
+
+.tb-card,.tb-panel,.tb-table-wrap,.tb-empty,.tb-stat,.dash-card{border-radius:var(--r-lg);}
+.btn-tb{border-radius:var(--r-pill);}
+.tb-input,.tb-select,.tb-textarea{border-radius:var(--r);}
+.tb-input:focus,.tb-select:focus,.tb-textarea:focus{box-shadow:0 0 0 4px rgba(2,52,121,.1);}
+.badge-tb,.tb-badge,.tb-chip{border-radius:var(--r-pill);}
+.tb-avatar,.tb-thumb{border-radius:var(--r-sm);}
+.tb-nav a,.tb-nav-link{border-radius:var(--r-sm);}
+img.tb-thumb,.tb-table img{border-radius:var(--r-sm);}

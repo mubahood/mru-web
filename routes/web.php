@@ -95,6 +95,10 @@ Route::controller(\App\Http\Controllers\University\PageController::class)->group
     Route::post('/contact', 'sendMessage')->middleware('throttle:8,1')->name('contact.store');
 });
 
+// The footer sign-up, reachable from every page.
+Route::post('/newsletter', [\App\Http\Controllers\University\NewsletterController::class, 'store'])
+    ->middleware('throttle:6,1')->name('newsletter.store');
+
 /*
 |--------------------------------------------------------------------------
 | University — Admissions

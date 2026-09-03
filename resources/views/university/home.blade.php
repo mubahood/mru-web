@@ -131,7 +131,9 @@
       <h2>Five faculties, one Graduate School</h2>
       <p>Every programme belongs to a faculty that teaches it, researches it, and walks you into a career with it.</p>
     </div>
-    <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr));">
+    {{-- Wide tracks on purpose: five faculties fall into 3 + 2 rather than
+         4 + 1, which leaves a single stranded card at the end. --}}
+    <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(340px,1fr));">
       @foreach($faculties as $faculty)
         <a href="{{ route('faculties.show', $faculty) }}" wire:navigate class="card" data-rise>
           <span class="ic"><i class="fas {{ $faculty->icon }}" aria-hidden="true"></i></span>

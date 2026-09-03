@@ -10,6 +10,7 @@ Companion documents:
 - [02-OLD-SITE-ANALYSIS.md](02-OLD-SITE-ANALYSIS.md) — full analysis of the legacy backup (custom PHP + WordPress + DBs) and the content inventory to migrate
 - [03-RESEARCH-TRENDS-BEST-PRACTICES.md](03-RESEARCH-TRENDS-BEST-PRACTICES.md) — 2025–26 higher-ed web research with prioritized recommendations
 - [04-IMPLEMENTATION-LOG.md](04-IMPLEMENTATION-LOG.md) — running log of what was built, challenges, and decisions
+- [05-DESIGN-SYSTEM.md](05-DESIGN-SYSTEM.md) — the visual language: palette, type, geometry, chrome
 
 ---
 
