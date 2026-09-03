@@ -231,6 +231,36 @@ image budget, the responsive set, degrading cleanly with zero or one slides conf
 interaction half is exercised with real pointer/keyboard/touch events over CDP, not by reading
 the DOM and assuming the handlers work.
 
+**The hero borrows the site's own signature, instead of ignoring it.** Every interior section on
+the site opens with `.sec-idx` — a small gold pill-rule marker plus a tracked uppercase two-digit
+label — but the homepage's own hero, the first thing anyone sees, never used it: it read like a
+generic template slider bolted onto a site that has a real visual language everywhere else. The
+eyebrow now carries a matching gold `::before` rule and a per-slide index rendered in Blade
+(`str_pad($i + 1, 2, '0', STR_PAD_LEFT)`, the same zero-padding convention `$idx()` uses on
+interior pages) — "01 Muteesa I Royal University", "02 Rooted in heritage", and so on — so the
+numeral is a real, testable string in the response rather than a value only CSS knows about. A
+slim vertical gold spine (a gradient rule, faded at both ends rather than running edge to edge)
+anchors the whole text column the same way, turning the site's one horizontal accent into a
+vertical one for a taller block of copy.
+
+**The dot and arrow controls used to float on the photo as two unrelated widgets; now they're one
+designed object.** Each cluster sits inside its own dark-glass chip — the same
+`rgba(1,15,38,~.46)` + blur recipe already verified safe for the header — so the control row reads
+as something someone actually designed, not leftover template chrome. Verified over CDP and real
+pixel sampling: the arrow icons measure 8.6:1+ against their chip in the worst case; the inactive
+dot bars, which only measured ~2.8:1 against their new chip background (under WCAG's 3:1 floor for
+non-text UI components) before their opacity was raised, now measure 5.1:1+.
+
+**The secondary "ghost" button had the header's original mistake, just not caught yet.** It kept
+its first light-glass treatment — `rgba(255,255,255,.10)` — through the header's own light→dark
+correction, because nobody had measured *this* element specifically. Real pixel sampling behind
+its actual rendered position on all three slides found worst-case contrast of **2.07:1**
+(international, sitting over a pale blouse) and **3.2:1** (graduation) — both clear WCAG AA
+failures for text this size, with only the heritage slide scraping past at 4.64:1. Same fix as the
+header, same reason: dark glass composites the same white label against something close to navy
+regardless of what the photo underneath is doing. Re-measured after the fix: worst case **5.98:1**
+across all three real slides.
+
 ## 7. Rules worth keeping
 
 - **A static cache with no invalidation is not a cache, it is a bug waiting for a second

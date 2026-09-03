@@ -2291,13 +2291,27 @@ html.menu-open::after{content:'';position:fixed;inset:0;z-index:48;
 
 .hs-copy{position:relative;height:100%;display:flex;align-items:center;
   padding-top:var(--hdr-total,120px);padding-bottom:120px;}
-.hs-copy .wrap{width:100%;}
+/* A slim gold spine anchors the whole text column to something other than
+   the photo underneath it — the same rounded-gold-bar language as .sec-idx's
+   own marker, just turned vertical. Fades at both ends rather than running
+   edge to edge, so it reads as a deliberate accent, not a ruled-off margin. */
+.hs-copy .wrap{width:100%;position:relative;padding-left:58px;}
+.hs-copy .wrap::before{content:'';position:absolute;left:32px;top:6px;bottom:6px;width:3px;
+  border-radius:var(--r-pill);
+  background:linear-gradient(to bottom,transparent,var(--gold) 14%,var(--gold) 86%,transparent);}
 /* The scrim now does less of the legibility work — most of the frame is
    deliberately clear — so a soft, wide text-shadow picks up the rest. Blur
    with almost no offset reads as a lift off the photo, not a hard drop
    shadow, which is what keeps this elegant rather than heavy-handed. */
-.hs-eyebrow{font-size:12px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;
+.hs-eyebrow{display:flex;align-items:center;gap:12px;
+  font-size:12px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;
   color:var(--gold);margin-bottom:20px;text-shadow:0 2px 14px rgba(0,0,0,.6);}
+/* Echoes .sec-idx's own leading marker so the hero — the one place on the
+   site that never used the site's own numbered-section language — finally
+   speaks it too, instead of reading like a generic template hero bolted on
+   the front of a site that has its own visual signature everywhere else. */
+.hs-eyebrow::before{content:'';flex:0 0 28px;height:3px;border-radius:var(--r-pill);
+  background:var(--gold);box-shadow:0 1px 8px rgba(0,0,0,.45);}
 .hs-title{font-family:var(--font-display);font-variation-settings:'opsz' 144;
   font-size:clamp(38px,5.6vw,76px);line-height:1.03;letter-spacing:-.025em;
   font-weight:700;color:#fff;max-width:19ch;margin-bottom:22px;
@@ -2305,11 +2319,18 @@ html.menu-open::after{content:'';position:fixed;inset:0;z-index:48;
 .hs-text{font-size:clamp(16px,1.35vw,19.5px);line-height:1.65;color:rgba(255,255,255,.92);
   max-width:56ch;margin-bottom:34px;text-shadow:0 2px 16px rgba(0,0,0,.5);}
 .hs-actions{display:flex;gap:14px;flex-wrap:wrap;}
-/* Matched at .btn.ghost's own weight, or the navy from the base button wins
-   and the label disappears into the photograph. */
-.btn.ghost.hs-ghost{color:#fff;border-color:rgba(255,255,255,.55);background:rgba(255,255,255,.10);
-  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);}
-.btn.ghost.hs-ghost:hover{background:rgba(255,255,255,.2);border-color:#fff;color:#fff;
+/* Light glass was the first attempt here too — same mistake the header made
+   before it was measured: white text over translucent white depends on
+   what's behind it, and this button can land over anything from navy scrim
+   to a stranger's white blouse. Measured worst case over the three real
+   photos, pre-fix: 3.2:1 and 2.07:1 (both fail WCAG AA's 4.5:1 floor), with
+   only the heritage slide scraping past at 4.64:1. Dark glass — the same
+   recipe already verified safe for the header and the control chips —
+   composites the same white label against something close to navy
+   regardless of what the photo behind it is doing. */
+.btn.ghost.hs-ghost{color:#fff;border-color:rgba(255,255,255,.24);background:rgba(1,15,38,.46);
+  -webkit-backdrop-filter:blur(16px) saturate(150%);backdrop-filter:blur(16px) saturate(150%);}
+.btn.ghost.hs-ghost:hover{background:rgba(1,15,38,.62);border-color:rgba(255,255,255,.5);color:#fff;
   box-shadow:0 12px 28px -14px rgba(0,0,0,.6);}
 
 /* Each slide's copy arrives a beat after the image. */
@@ -2322,21 +2343,32 @@ html.menu-open::after{content:'';position:fixed;inset:0;z-index:48;
 .hs-slide.is-active .hs-actions{animation-delay:.24s;}
 @keyframes hs-rise{from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:none}}
 
-.hs-arrows{display:flex;gap:10px;}
+/* Dots and arrows used to float directly on the photo as two unrelated
+   widgets sharing a horizontal line — functional, but it read as leftover
+   template chrome rather than something anyone had actually designed. Each
+   cluster now sits inside its own dark-glass chip (the same recipe already
+   verified safe over all three photographs for the header) so the control
+   row reads as one deliberate object, not a loose pair of controls. */
+.hs-arrows{display:flex;gap:8px;padding:8px;border-radius:var(--r-pill);
+  background:rgba(1,15,38,.46);-webkit-backdrop-filter:blur(16px) saturate(150%);
+  backdrop-filter:blur(16px) saturate(150%);border:1px solid rgba(255,255,255,.16);
+  box-shadow:0 10px 28px -14px rgba(0,0,0,.5);}
 .hs-arrow{width:52px;height:52px;border-radius:var(--r-pill);cursor:pointer;
-  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.34);color:#fff;
-  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);font-size:15px;
+  background:transparent;border:0;color:#fff;font-size:15px;
   display:flex;align-items:center;justify-content:center;
-  transition:background .2s,border-color .2s,transform .2s;}
-.hs-arrow:hover{background:rgba(255,255,255,.26);border-color:#fff;transform:translateY(-2px);}
-.hs-arrow:focus-visible{outline:3px solid var(--gold);outline-offset:3px;}
+  transition:background .2s,transform .2s;}
+.hs-arrow:hover{background:rgba(255,255,255,.16);transform:translateY(-2px);}
+.hs-arrow:focus-visible{outline:3px solid var(--gold);outline-offset:2px;}
 
 .hs-bar{position:absolute;left:0;right:0;bottom:40px;z-index:3;}
 .hs-bar-inner{display:flex;align-items:center;justify-content:space-between;gap:24px;}
-.hs-dots{display:flex;gap:12px;}
-.hs-dot{width:58px;height:4px;padding:0;border:0;border-radius:var(--r-pill);cursor:pointer;
-  background:rgba(255,255,255,.3);overflow:hidden;transition:background .2s;}
-.hs-dot:hover{background:rgba(255,255,255,.5);}
+.hs-dots{display:flex;align-items:center;gap:12px;padding:14px 20px;border-radius:var(--r-pill);
+  background:rgba(1,15,38,.46);-webkit-backdrop-filter:blur(16px) saturate(150%);
+  backdrop-filter:blur(16px) saturate(150%);border:1px solid rgba(255,255,255,.16);
+  box-shadow:0 10px 28px -14px rgba(0,0,0,.5);}
+.hs-dot{width:36px;height:4px;padding:0;border:0;border-radius:var(--r-pill);cursor:pointer;
+  background:rgba(255,255,255,.5);overflow:hidden;transition:background .2s;}
+.hs-dot:hover{background:rgba(255,255,255,.72);}
 .hs-dot:focus-visible{outline:2px solid var(--gold);outline-offset:4px;}
 .hs-dot span{display:block;height:100%;width:0;background:var(--gold);border-radius:inherit;}
 /* The active dot doubles as the autoplay clock, so the wait is visible. */
@@ -2354,10 +2386,11 @@ html.menu-open::after{content:'';position:fixed;inset:0;z-index:48;
 @media(max-width:900px){
   .hero-slider{min-height:560px;}
   .hs-copy{padding-top:var(--hdr-total,88px);padding-bottom:150px;}
+  .hs-copy .wrap{padding-left:34px;}       /* full spine gutter is too wide a bite out of a phone's text column */
+  .hs-copy .wrap::before{left:16px;}
   .hs-arrows{display:none;}                /* dots and swipe carry it */
   .hs-title{max-width:none;}
   .hs-bar{bottom:78px;}
-  .hs-dot{width:44px;}
 }
 @media(prefers-reduced-motion:reduce){
   .hs-media,.hs-slide{transition:none;}

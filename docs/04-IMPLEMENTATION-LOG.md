@@ -301,3 +301,59 @@ hidden outright below 900px, hero or not, so nothing about its clearance needed 
 CSS-only change, confined to the floating-header block in `public/css/mru.css`. Re-verified over
 CDP: menu contract 10/10, slider contract 14/14. Full suite unaffected (**1134 passed, 1
 skipped**).
+
+## 2026-09-03 — Phase L: the hero learns the site's own signature, and a second glass mistake
+
+Feedback on Phase K: the slider itself still read as generic — "not elegant, still blander" —
+distinct from the header-visibility fix. Two things changed to answer it, one visual device and
+one real accessibility bug found the same way the header's was.
+
+### Borrowing `.sec-idx` instead of ignoring it
+
+Every interior section on the site opens with the same signature: a small gold pill-rule plus a
+tracked uppercase two-digit label. The homepage's own hero — the first thing anyone sees — never
+used it, which is exactly backwards. The eyebrow now carries a matching gold `::before` rule and a
+per-slide index rendered server-side (`str_pad($i + 1, 2, '0', STR_PAD_LEFT)` in
+`hero-slider.blade.php`, the same zero-padding convention `$idx()` already uses on interior
+pages) — "01 Muteesa I Royal University", "02 Rooted in heritage", "03 International" — so it's a
+real string in the response, not a value only CSS knows about. A slim vertical gold spine (a
+gradient rule, faded at both ends) now anchors the text column the same way, and the dot/arrow
+controls — previously two bare widgets floating directly on the photo — each sit inside their own
+dark-glass chip, so the control row reads as one designed object.
+
+### The ghost button had the header's original mistake — just not caught yet
+
+Phase J measured the header carefully and fixed its light-glass contrast problem. It did not
+occur to measure the slider's *other* glass surface: the secondary "ghost" CTA button kept its
+original `rgba(255,255,255,.10)` treatment straight through that fix, because nobody had pointed
+the same pixel-sampling method at it specifically. Doing that now, on all three real slides: worst
+case **2.07:1** (international, where the button happens to land over a pale blouse) and **3.2:1**
+(graduation) — both clear WCAG AA failures for text this size (floor is 4.5:1), with only the
+heritage slide scraping past at 4.64:1. Same fix, same reasoning as the header: dark glass
+composites the same white label against something close to navy no matter what the photo
+underneath is doing. Re-measured after: worst case **5.98:1**.
+
+The new dot/arrow chips got the same scrutiny rather than being assumed safe because they reuse a
+proven recipe: arrow icons measured 8.6:1+ against their chip in the worst case (no change
+needed), but the inactive dot bars measured only ~2.8:1 against their new dark-glass backing —
+under WCAG's 3:1 floor for non-text UI components, a smaller problem than the ghost button but a
+real one. Raised from 32%
+to 50% white opacity; re-measured at 5.1:1+.
+
+**The lesson this phase reinforces:** a contrast fix verified on one element doesn't transfer to a
+sibling element just because it looks similar — the ghost button sat two phases away from the
+header fix, using the exact treatment that fix had already disproven, because it was never itself
+measured. Every glass surface on this page has now actually been sampled, not assumed.
+
+Blade change confined to `hero-slider.blade.php` (the eyebrow numeral); everything else is CSS.
+Re-verified over CDP: menu contract 10/10, slider contract 14/14. `HeroSliderTest` unaffected (10
+passed). Full suite: **1134 passed, 1 skipped**. 45-route sweep clean.
+
+### Source photography: flagged, not changed
+
+Two of the three slides' source photos read as generic snapshots rather than vivid hero
+photography — the heritage slide is an indoor conference room with no visible tie to Buganda
+heritage, and the international slide is a static posed lineup. Chrome and contrast are this
+phase's fix; which photographs represent the university is a content call, not a styling one, so
+candidate replacements were researched but not applied — see the round's conversation record
+rather than this log for the specific file paths, since swapping them is still pending a decision.

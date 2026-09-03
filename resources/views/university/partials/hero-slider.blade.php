@@ -60,7 +60,7 @@
       <div class="hs-copy">
         <div class="wrap">
           @if(!empty($slide['eyebrow']))
-            <p class="hs-eyebrow">{{ $slide['eyebrow'] }}</p>
+            <p class="hs-eyebrow">{{ str_pad($i + 1, 2, '0', STR_PAD_LEFT) }} {{ $slide['eyebrow'] }}</p>
           @endif
           <h1 class="hs-title">{{ $slide['title'] }}</h1>
           @if(!empty($slide['text']))
