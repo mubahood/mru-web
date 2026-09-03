@@ -84,25 +84,25 @@ class UniversityContentSeeder extends Seeder
          *
          * Six real photographs of this university, each paired with copy that
          * describes what is actually in it and, taken together, meant to show
-         * the range of who is actually here — a graduation, a visiting
-         * scholar, the 2025 Ommanyi inter-institutional games held under the
-         * Kingdom of Buganda, student guild elections, a packed lecture hall,
-         * and a visit from international partners. `image` is a base name;
-         * the view appends -700/-1100/-1600 for the responsive set. Editable
-         * here rather than hard-coded in the template so the slider is
-         * content, not markup. Order is deliberate, not alphabetical or
-         * import-order: the strongest photographs lead, since the first is
-         * also the only one paying the first-paint cost.
+         * the range of who is actually here — the 2025 Ommanyi
+         * inter-institutional games held under the Kingdom of Buganda, a
+         * visiting scholar, a graduation, student guild elections, a packed
+         * lecture hall, and a visit from international partners. `image` is a
+         * base name; the view appends -700/-1100/-1600 for the responsive
+         * set. Editable here rather than hard-coded in the template so the
+         * slider is content, not markup. Order is deliberate, not
+         * alphabetical or import-order — the first pays the only first-paint
+         * cost, so it leads.
          */
         Settings::set('university.hero_slides', json_encode([
             [
-                'image' => 'university/hero/hero-graduation',
-                'alt' => 'Graduands in cap and gown seated at a Muteesa I Royal University graduation ceremony',
-                'eyebrow' => 'Muteesa I Royal University',
-                'title' => 'Shape your future at MRU',
-                'text' => 'Career-focused certificates, diplomas, degrees and postgraduate study — on two campuses, in Kampala and Masaka.',
-                'primary' => ['label' => 'Apply Now', 'url' => 'https://eportal.mru.ac.ug/apply', 'external' => true],
-                'secondary' => ['label' => 'Explore Programmes', 'route' => 'programmes.index'],
+                'image' => 'university/hero/hero-heritage',
+                'alt' => 'University and Kingdom of Buganda officials holding trophies at the 2025 Ommanyi inter-institutional games, with the Buganda Kingdom and MRU crests on the backdrop',
+                'eyebrow' => 'Rooted in heritage',
+                'title' => 'A royal university of the Buganda Kingdom',
+                'text' => 'Named in honour of Kabaka Muteesa I, and a meeting place for the Kingdom it belongs to.',
+                'primary' => ['label' => 'Our story', 'route' => 'about'],
+                'secondary' => ['label' => 'Who we are', 'route' => 'who-we-are'],
             ],
             [
                 'image' => 'university/hero/hero-scholarship',
@@ -114,13 +114,13 @@ class UniversityContentSeeder extends Seeder
                 'secondary' => ['label' => 'Our Faculties', 'route' => 'faculties.index'],
             ],
             [
-                'image' => 'university/hero/hero-heritage',
-                'alt' => 'University and Kingdom of Buganda officials holding trophies at the 2025 Ommanyi inter-institutional games, with the Buganda Kingdom and MRU crests on the backdrop',
-                'eyebrow' => 'Rooted in heritage',
-                'title' => 'A royal university of the Buganda Kingdom',
-                'text' => 'Named in honour of Kabaka Muteesa I, and a meeting place for the Kingdom it belongs to.',
-                'primary' => ['label' => 'Our story', 'route' => 'about'],
-                'secondary' => ['label' => 'Who we are', 'route' => 'who-we-are'],
+                'image' => 'university/hero/hero-graduation',
+                'alt' => 'Graduands in cap and gown seated at a Muteesa I Royal University graduation ceremony',
+                'eyebrow' => 'Muteesa I Royal University',
+                'title' => 'Shape your future at MRU',
+                'text' => 'Career-focused certificates, diplomas, degrees and postgraduate study — on two campuses, in Kampala and Masaka.',
+                'primary' => ['label' => 'Apply Now', 'url' => 'https://eportal.mru.ac.ug/apply', 'external' => true],
+                'secondary' => ['label' => 'Explore Programmes', 'route' => 'programmes.index'],
             ],
             [
                 'image' => 'university/hero/hero-student-voice',

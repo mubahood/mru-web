@@ -52,7 +52,7 @@
       --sh-4:0 28px 60px -20px rgba(2,52,121,.26);
 
       /* Rhythm */
-      --hd:76px;            /* header height, roomier than before */
+      --hd:66px;            /* header height — tightened; the crest was the tallest thing in the row, not the text */
       --wrap:1400px;        /* wide shell: six menu sections need the room */
       --s-1:8px; --s-2:16px; --s-3:24px; --s-4:32px; --s-5:48px;
       --s-6:64px; --s-7:88px; --s-8:112px;
@@ -1550,11 +1550,11 @@ html.is-scrolled .topbar{max-height:0;opacity:0;}
 
 header.site .bar{display:flex;align-items:center;gap:26px;height:var(--hd);
   transition:height .25s cubic-bezier(.22,.61,.36,1);}
-html.is-scrolled header.site .bar{height:64px;}
+html.is-scrolled header.site .bar{height:56px;}
 
 .brand{display:flex;align-items:center;gap:12px;font-weight:700;font-size:15px;letter-spacing:-.01em;color:var(--pri);}
-.brand img.crest{height:46px;transition:height .25s cubic-bezier(.22,.61,.36,1);}
-html.is-scrolled .brand img.crest{height:38px;}
+.brand img.crest{height:40px;transition:height .25s cubic-bezier(.22,.61,.36,1);}
+html.is-scrolled .brand img.crest{height:34px;}
 .brand .brand-name{font-family:var(--font);line-height:1.15;font-weight:700;}
 .brand .brand-name small{display:block;font-family:var(--font-display);font-size:11px;font-weight:500;
   letter-spacing:.01em;text-transform:none;color:var(--gold-d);font-style:italic;margin-top:1px;}
@@ -2273,19 +2273,27 @@ html.menu-open::after{content:'';position:fixed;inset:0;z-index:48;
 .hs-slide.is-active{opacity:1;visibility:visible;}
 
 .hs-media{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
-  object-position:center 32%;transform:scale(1.07);transition:transform 9s linear;
+  object-position:center 32%;
   /* The photograph is the point. A small, deliberate lift — not a filter that
      apologises for it — so real colour reads as vivid rather than washed. */
   filter:saturate(1.14) contrast(1.05);}
-.hs-slide.is-active .hs-media{transform:scale(1);}
-/* Alternating drift so a run of several slides doesn't repeat the identical
-   zoom — odd slides settle in from the right, even ones from the left. Small
-   enough (1.4%) to read as a living photograph, not a pan anyone consciously
-   follows. */
+/* A `transition` never played on the first slide: it ships `.is-active`
+   already in the server-rendered HTML, so there is no "before" state for a
+   transition to interpolate from — the browser just paints the settled value
+   immediately, and the very first photo a visitor sees sat completely still
+   until they clicked next. A `transition` needs a discrete state change to
+   fire; an `animation` runs from its own `from` keyframe the moment it is
+   first applied, on-load class or not — the same reason `.hs-rise` already
+   animates the first slide's text in correctly. Odd and even slides settle
+   from opposite sides so a run of several slides doesn't repeat one
+   mechanical zoom; 1.4% is small enough to read as a living photograph, not
+   a pan anyone consciously follows. */
 .hs-slide:nth-child(odd) .hs-media{transform:scale(1.09) translate3d(1.4%,0,0);}
-.hs-slide:nth-child(odd).is-active .hs-media{transform:scale(1) translate3d(0,0,0);}
 .hs-slide:nth-child(even) .hs-media{transform:scale(1.09) translate3d(-1.4%,0,0);}
-.hs-slide:nth-child(even).is-active .hs-media{transform:scale(1) translate3d(0,0,0);}
+.hs-slide:nth-child(odd).is-active .hs-media{animation:hs-zoom-odd 9s linear both;}
+.hs-slide:nth-child(even).is-active .hs-media{animation:hs-zoom-even 9s linear both;}
+@keyframes hs-zoom-odd{from{transform:scale(1.09) translate3d(1.4%,0,0)} to{transform:scale(1) translate3d(0,0,0)}}
+@keyframes hs-zoom-even{from{transform:scale(1.09) translate3d(-1.4%,0,0)} to{transform:scale(1) translate3d(0,0,0)}}
 
 /* One tight, fast-fading wash behind the text column, and a low, shallow one
    at the floor for the control bar. Everywhere else — most of the frame,
@@ -2412,9 +2420,10 @@ html.menu-open::after{content:'';position:fixed;inset:0;z-index:48;
 }
 @media(prefers-reduced-motion:reduce){
   .hs-media,.hs-slide{transition:none;}
-  .hs-slide.is-active .hs-media,
+  .hs-slide:nth-child(odd) .hs-media,
+  .hs-slide:nth-child(even) .hs-media{transform:none;}
   .hs-slide:nth-child(odd).is-active .hs-media,
-  .hs-slide:nth-child(even).is-active .hs-media{transform:none;}
+  .hs-slide:nth-child(even).is-active .hs-media{animation:none;}
   .hs-slide.is-active .hs-eyebrow,.hs-slide.is-active .hs-title,
   .hs-slide.is-active .hs-text,.hs-slide.is-active .hs-actions{animation:none;}
   .hs-slide.is-active .hs-copy .wrap::before{animation:none;transform:scaleY(1);opacity:1;}
@@ -2440,9 +2449,11 @@ header.site{--hdr-fg:var(--tx);--hdr-brand:var(--pri);--hdr-crest:none;}
    persistent navigation. Below 900px it is already hidden outright (its own
    rule further down), so --hdr-total there was already sized for a
    topbar-less header; only the desktop figure changes here, from
-   topbar+bar (120px) down to the bar alone plus breathing room. */
-body.has-hero{--hdr-total:104px;}
-@media(max-width:900px){ body.has-hero{--hdr-total:88px;} }
+   topbar+bar down to the bar alone plus breathing room. Both figures track
+   --hd (now 66px, was 76px) minus the same 10px, so the hero copy's own
+   clearance never drifts out of sync with the header it's clearing. */
+body.has-hero{--hdr-total:94px;}
+@media(max-width:900px){ body.has-hero{--hdr-total:78px;} }
 
 body.has-hero .topbar{max-height:0;opacity:0;}
 html.is-scrolled body.has-hero .topbar{max-height:44px;opacity:1;}

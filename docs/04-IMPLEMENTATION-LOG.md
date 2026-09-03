@@ -475,3 +475,55 @@ sources / 18 tiers.
 Re-verified: `MakeHeroImagesTest` (4 passed), slider contract 14/14, menu contract 10/10, full
 suite **1134 passed, 1 skipped** (assertion count up by exactly 9 — the new test's 6×3 existence
 checks replacing 3×3), 45-route sweep clean.
+
+## 2026-09-03 — Phase N: a real animation bug, a tighter header, a reorder
+
+Three pieces of feedback on Phase M's six-slide slider, one of them a genuine bug rather than a
+taste call.
+
+### The first slide never moved — a `transition` needs a "before"
+
+The report: the slider "isn't animating until clicked next." Verified before touching anything —
+sampled the first slide's `.hs-media` computed `transform` at 300ms, 2.3s and 5.3s after a fresh
+page load with zero interaction, and it read the identical settled matrix every time. The cause is
+inherent to `transition`, not a mistake in the values: the first slide ships `class="hs-slide
+is-active"` already in the server-rendered HTML, so there is no discrete "before → after" class
+change for a transition to interpolate from on that slide's first paint — the browser paints the
+final value immediately. Every *other* slide activation is a genuine class change (JS adding
+`.is-active`), which is exactly why Phase M's own verification (sampling a slide change, not the
+initial load) missed this: it happened to test the one case where the mechanism doesn't apply.
+
+Fixed by switching `.hs-media`'s zoom/pan from a `transition` to a named `@keyframes animation`
+(`hs-zoom-odd` / `hs-zoom-even`), applied via `.hs-slide:nth-child(odd/even).is-active .hs-media`.
+An `animation` runs from its own `from` keyframe the instant it is first applied to an element,
+on-load class or not — the same reason `.hs-rise` already animated the first slide's text in
+correctly, which is what made this an inconsistency between two adjacent rules rather than two
+separate design decisions. `prefers-reduced-motion` updated to match: `animation:none` on the two
+`:nth-child` rules (replacing the old `transform:none`), plus the resting `transform` neutralised
+so a reduced-motion visitor never sees the 1.09× resting zoom either.
+
+Re-verified by sampling again after the fix: 300ms/2.3s/5.3s now show a genuinely progressing
+matrix (`scale(1.087)→1.067→1.037`, translate correctly signed for the slide's parity) — motion
+confirmed from the very first frame, not inferred from the code reading correctly.
+
+### Header height, and the second variable that had to move with it
+
+`--hd` (76px) was set when the header last needed room for a wider menu; asked to tighten it now.
+The crest, not the two-line wordmark, was the tallest thing in the row (46px vs. the text block's
+own ~31px), so it led the cut: `--hd` 76→66px, crest 46→40px (38→34px scrolled), scrolled bar
+64→56px. `--hdr-total` (the hero copy's own clearance for the floating header) is a *second*,
+independently-set variable that happens to describe the same header — it isn't derived from `--hd`
+automatically, so it had to be walked down by the same 10px by hand (104→94px desktop, 88→78px
+mobile) or the hero text would have kept its old clearance above a header that no longer needed it,
+opening a gap that wasn't there before.
+
+### Reordered: the strongest of the six leads
+
+The heritage photo (Ommanyi games — outdoor, vivid, explicit Kingdom of Buganda branding) swapped
+into slide 1; the graduation photo moved to slide 3. Since `hero-slider.blade.php` derives
+first-paint priority from array position (`$i === 0`), not a hardcoded slide name, this needed no
+template change — only the seeder's array order and a matching live-settings write.
+
+Re-verified: menu contract 10/10, slider contract 14/14, ghost-button contrast re-measured at the
+shifted positions (header height changes moved where the copy block sits on the photo) — worst
+case still 5.24:1, full suite **1134 passed, 1 skipped**, 45-route sweep clean.

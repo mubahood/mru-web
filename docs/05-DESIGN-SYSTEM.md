@@ -96,8 +96,18 @@ second, hidden label.
 - `.bar` — crest + wordmark, six-section navigation, one standing **Apply Now** action.
 
 Past 40px of scroll, JS adds `.is-scrolled` to `<html>`: the utility row folds away, the bar
-tightens 76 → 64px, the crest shrinks, and a shadow appears. A 40-down/10-up hysteresis gap
-stops the bar flickering. The class goes on `<html>` so one hook reaches every part.
+tightens 66 → 56px, the crest shrinks (40 → 34px), and a shadow appears. A 40-down/10-up hysteresis
+gap stops the bar flickering. The class goes on `<html>` so one hook reaches every part.
+
+The bar's resting height (`--hd`) is a single variable read everywhere the header's footprint
+matters — `main`'s top padding, sticky rail/buy-box offsets, the mobile menu's inset, anchor
+`scroll-margin-top` — so tightening it (76→66px, the crest was the tallest thing in the row, not
+the two-line wordmark) moved correctly everywhere in one edit. The one place it *doesn't* reach
+automatically is `--hdr-total`, the hero copy's own clearance for the floating header on a hero
+page: it's a second, independently-set variable that happens to describe the same header, not a
+calculation derived from `--hd`, so a change to one has to be walked into the other by hand (a 10px
+cut here became a 10px cut there — 104→94px desktop, 88→78px mobile) or the hero text keeps
+clearance for a header that no longer needs it.
 
 ### The mega menu, and the bug it is built to avoid
 
@@ -203,20 +213,27 @@ colour reads as vivid rather than apologised-for, and the text itself carries a 
 text-shadow (blur with almost no offset, so it reads as a lift off the photo, not a hard drop
 shadow) to stay crisp wherever it happens to sit.
 
-**Motion has direction, not just duration.** `.hs-media` already carried a slow zoom
-(`scale(1.07)→scale(1)` over 9s); it now alternates a small pan with it — odd slides settle in
-from the right, even ones from the left (`:nth-child` driven, ±1.4% translate) — so a run of six
-slides doesn't repeat one mechanical zoom six times. The vertical gold spine beside the text
-column unfurls top-to-bottom the instant a slide activates, and the eyebrow's own gold marker
-draws itself left-to-right a beat later, so the frame reads as being assembled rather than simply
-appearing. All of it (the pan, the spine, the rule) is named explicitly inside
-`prefers-reduced-motion:reduce`, not just the original zoom — an alternating `:nth-child` rule is
-*more* specific than the blanket override it's meant to be covered by, so the override has to name
-it directly or reduced-motion silently stops working for exactly the rule added on top of it.
-Verified over CDP by sampling the actual computed `transform` mid-transition on a real slide
-change, not just trusting the settled screenshot — a sample partway into an even slide's own
-transition and another partway into an odd slide's both matched the expected numbers for their
-respective pan direction and elapsed fraction.
+**Motion has direction, not just duration — and it has to run on `.is-active`, not `transition`.**
+`.hs-media` carries a slow zoom-and-pan (`scale(1.09)→scale(1)` over 9s, odd slides settling in
+from the right and even ones from the left, `:nth-child` driven, ±1.4% translate) so a run of six
+slides doesn't repeat one mechanical zoom six times. It first shipped as a `transition`, verified
+by sampling a slide *change* mid-flight — which is exactly the one case that couldn't have caught
+the bug that was actually there: the first slide ships `class="hs-slide is-active"` already in the
+server-rendered HTML, so a `transition` (which only fires on a discrete before→after state change)
+never had a "before" to interpolate from on that slide's first paint, and it sat completely still
+until a reader clicked next. Fixed by moving the zoom to a named `@keyframes` animation
+(`hs-zoom-odd` / `hs-zoom-even`) applied via `.hs-slide:nth-child(odd/even).is-active .hs-media` —
+an `animation` runs from its own `from` keyframe the instant it's first applied, on-load class or
+not, which is also why `.hs-rise` (below) never had this problem on the very same slide. The
+vertical gold spine beside the text column unfurls top-to-bottom the instant a slide activates, and
+the eyebrow's own gold marker draws itself left-to-right a beat later, so the frame reads as being
+assembled rather than simply appearing. All of it (the pan, the spine, the rule) is named
+explicitly inside `prefers-reduced-motion:reduce`, not just the original zoom — an alternating
+`:nth-child` rule is *more* specific than the blanket override it's meant to be covered by, so the
+override has to name it directly or reduced-motion silently stops working for exactly the rule
+added on top of it. Re-verified after the fix by sampling the first slide's computed `transform` on
+a completely fresh load with zero interaction — a progressing matrix at 300ms, 2.3s and 5.3s, not
+the frozen identity matrix the transition-based version showed at every one of those points.
 
 **The floating header is genuine frosted glass, not a bare transparent bar** — and specifically a
 *dark*-tinted glass (`rgba(1,15,38,.58)` + `blur(22px) saturate(160%)`), not a light one. A light
