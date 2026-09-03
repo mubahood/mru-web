@@ -714,3 +714,84 @@ and manually verified against. 45-route sweep clean. Every new section screensho
 and mobile widths, with genuine scroll-reveal settle time (900ms was sometimes too short and
 caught elements mid-fade — bumped to 2.5s for these checks specifically) so contrast and layout
 were judged on the settled state, not a transitional one.
+
+## 2026-09-04 — Phase R: the opening band gets an actual interface, not four more links
+
+Feedback on Phase Q: the intro band (eyebrow, stats, quick actions) still read as static — a list
+of facts, not something with anything to interact with. This wasn't a request to polish what was
+there; it was a request to reconsider it.
+
+### "I am a…" — a named pattern, not an invented one
+
+`docs/03-RESEARCH-TRENDS-BEST-PRACTICES.md` already named the fix, months before this feedback
+arrived: *"Audience personalisation, lightweight: University of Arizona's 'I am a…' dropdown is
+the cheap, effective pattern."* The four quick-action links were always written for one audience
+(a prospective student) and shown to everyone. They're now one of four tabbed panels — Prospective
+Student, Current Student, Parent/Guardian, International — each with its own four links to real,
+different destinations, not the same four relabelled:
+
+- **Prospective** (unchanged): View Programmes, How to Apply, Fees, Intake Dates — plus the
+  intake-deadline strip, which moved from a standalone element into this panel specifically, since
+  a parent checking accommodation costs doesn't need an admissions-deadline nudge in their way.
+- **Current Student**: E-Portal, e-Learning, Library, Academic Calendar.
+- **Parent/Guardian**: Fees, Accommodation, Scholarships, Contact Us.
+- **International**: International Admissions, Entry Requirements, How to Apply, Contact Us.
+
+Every route was verified with `Route::has()` before being written into the view — `courses.index`,
+`library`, `almanac`, `accommodation`, `admissions.scholarships`, `admissions.requirements` all
+confirmed resolvable first, rather than guessed from the URL shape.
+
+Built as a standard ARIA tabs pattern (`role="tablist"`/`"tab"`/`"tabpanel"`, roving `tabindex`,
+arrow keys move focus and selection together) in the same vanilla JS the hero slider and mega menu
+already use — no Livewire, no Alpine, matching the homepage's existing all-server-rendered
+architecture. `initAudiencePicker()` follows `initHeroSlider()`'s own conventions exactly: a
+`dataset.wired` guard against double-binding, called both on first load and inside the
+`livewire:navigated` handler.
+
+### A real bug caught by an off-screen test click, not a real bug in the site
+
+First interaction-test pass showed 5 of 17 checks failing — clicking a tab appeared to do nothing
+at all. Before concluding the feature was broken, checked where the click was actually landing:
+the tab's `getBoundingClientRect()` put it at `y≈1473` against a `1200`px-tall test viewport — the
+synthetic click was dispatched *below the visible viewport*, hitting nothing. Not a site bug; a
+test bug, from a viewport sized for the old, shorter section. Re-run at a tall-enough viewport:
+14/17 passed.
+
+The remaining 3 "failures" were a second test bug, not a second site bug: they asserted
+`getComputedStyle(panel).opacity === '1'` as a proxy for "is this panel visible," polled 300ms
+after each click. The panel's own entrance animation runs 450ms. Polled the actual opacity value
+over time instead of trusting a boolean — `0.39` at 100ms, `0.92` at 300ms, `1` by 400ms+ — which
+is the animation working exactly as designed, just not finished yet at the moment a hasty assertion
+checked it. Confirmed the real, meaningful checks (the `hidden` attribute and `aria-selected`
+toggling correctly, keyboard `ArrowRight` wrapping from the last tab to the first) all passed
+cleanly once the viewport was fixed — 17/17 on the corrected assertions.
+
+### Two of four stats became real links
+
+Faculties and Programmes now link to `faculties.index` and `programmes.index` — the two stats with
+an obvious next page. Campuses and NCHE stayed plain text rather than forcing a link onto a
+destination that doesn't actually exist yet (no dedicated accreditation page, and the two-campuses
+section three sections down isn't worth a same-page jump-link competing with the tab panels right
+below it). A small negative-margin hover treatment gives the two real links a bigger, more forgiving
+hit area without shifting their neighbours.
+
+### Verified
+
+The count-up animation (Phase Q) still had to work on stats now wrapped in `<a>` rather than bare
+`<div>` — checked by polling the actual digits every 80ms after a scroll-into-view, not just
+trusting the DOM structure change was harmless: `0 → 1 → 2 → 3 → 4 → 5` and `0+ → 12+ → 21+ → 29+
+→ … → 46+` both counted genuinely from zero, `NCHE` stayed static throughout exactly as designed.
+Menu contract 10/10, slider contract 14/14, full suite **1134 passed, 1 skipped**, 45-route sweep
+clean. Screenshotted at both desktop and mobile widths — the four tab labels don't fit one row at
+phone width without either wrapping the pill in half or shrinking type past comfort, so the tab
+strip scrolls horizontally there, the same resolution a native segmented control uses when it runs
+out of room.
+
+A real bug was hit and fixed mid-implementation, unrelated to the audience picker itself: the
+Current Student panel's E-Portal link used `$eportalUrl`, a variable that exists in
+`layouts/marketing.blade.php`'s own top-of-file scope but is never shared with a child view's
+`@extends` content — `home.blade.php` only ever defined `$applyUrl`. A 500 on first load
+(`Undefined variable $eportalUrl`) was caught immediately by the same "does the page even return
+200" smoke check this project runs before trusting anything else about a change, fixed by defining
+the same variable locally from `University::links()['eportal']`, the actual underlying source
+`marketing.blade.php` itself reads.

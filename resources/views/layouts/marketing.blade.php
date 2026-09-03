@@ -599,6 +599,57 @@
     play();
   }
 
+  /* "I am a…" on the homepage: four real, different sets of links behind
+     four tabs, not one generic set relabelled. Standard ARIA tabs pattern —
+     roving tabindex, arrow keys move focus and selection together, click
+     does the same. */
+  function initAudiencePicker(){
+    var picker = document.querySelector('.audience-picker');
+    if (!picker || picker.dataset.wired) return;
+    picker.dataset.wired = '1';
+
+    var tabs = [].slice.call(picker.querySelectorAll('[data-audience]'));
+    var panels = [].slice.call(picker.querySelectorAll('[data-audience-panel]'));
+    var tablist = picker.querySelector('[role="tablist"]');
+    if (!tabs.length || !panels.length || !tablist) return;
+
+    function show(name){
+      tabs.forEach(function(tab){
+        var on = tab.dataset.audience === name;
+        tab.classList.toggle('is-active', on);
+        tab.setAttribute('aria-selected', on ? 'true' : 'false');
+        tab.tabIndex = on ? 0 : -1;
+      });
+      panels.forEach(function(panel){
+        var on = panel.dataset.audiencePanel === name;
+        panel.hidden = !on;
+        if (on) {
+          // The same trick the slider's dots use to replay an animation: a
+          // class re-added in the same frame does not restart it, so remove,
+          // force layout, then re-add.
+          panel.classList.remove('is-entering');
+          void panel.offsetWidth;
+          panel.classList.add('is-entering');
+        }
+      });
+    }
+
+    tabs.forEach(function(tab){
+      tab.addEventListener('click', function(){ show(tab.dataset.audience); });
+    });
+
+    tablist.addEventListener('keydown', function(e){
+      if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+      e.preventDefault();
+      var current = tabs.findIndex(function(t){ return t.classList.contains('is-active'); });
+      var next = e.key === 'ArrowRight'
+        ? (current + 1) % tabs.length
+        : (current - 1 + tabs.length) % tabs.length;
+      tabs[next].focus();
+      show(tabs[next].dataset.audience);
+    });
+  }
+
   /* The header floats over the slider, so the body has to say whether this
      page has one. Derived from the DOM rather than set per page, so it stays
      correct across wire:navigate. */
@@ -608,6 +659,7 @@
 
   syncHeroFlag();
   initHeroSlider();
+  initAudiencePicker();
 
   /* Reserves room under the fixed chapter bar so it never covers the last
      line of the page. Paired with a :has() rule for anyone whose script does
@@ -629,6 +681,7 @@
     initMegaMenus();
     syncHeroFlag();
     initHeroSlider();
+    initAudiencePicker();
     syncPageChrome();
     var m=document.getElementById('mmenu'), b=document.getElementById('burger');
     if(m && m.classList.contains('open')){ m.classList.remove('open'); document.body.style.overflow=''; if(b){ b.setAttribute('aria-expanded','false'); b.querySelector('i').className='fas fa-bars'; } }

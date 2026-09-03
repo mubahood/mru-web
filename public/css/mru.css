@@ -2544,6 +2544,50 @@ body.has-hero main > section:first-of-type{padding-top:0;}
 .intake-strip a:hover{color:var(--gold-d);}
 @media(max-width:640px){.intake-strip{font-size:12.5px;padding:10px 16px;text-align:center;}}
 
+/* Two of the four stats are real links (Faculties, Programmes) — a slightly
+   larger hit area than the bare text, offset back out with a negative
+   margin so it doesn't nudge its neighbours. */
+a.stat-link{display:block;text-decoration:none;border-radius:var(--r);
+  padding:8px 14px;margin:-8px -14px;transition:background .2s ease,transform .2s ease;}
+a.stat-link:hover{background:var(--gold-soft);transform:translateY(-3px);}
+a.stat-link:hover .v{color:var(--gold-d);}
+a.stat-link:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+
+/* "I am a…" — the University of Arizona's cheap-personalisation pattern.
+   A segmented pill control, not a row of underlined text tabs, so it reads
+   as a genuine control (something with state) rather than more body copy. */
+.audience-picker{margin-top:var(--s-6);}
+.audience-label{text-align:center;font-size:12px;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--tx3);margin-bottom:14px;}
+.audience-tabs{display:flex;gap:4px;width:fit-content;max-width:100%;margin:0 auto var(--s-5);
+  padding:5px;border-radius:var(--r-pill);background:var(--surface);border:1px solid var(--line);}
+.audience-tab{padding:10px 20px;border-radius:var(--r-pill);border:0;background:transparent;
+  font:inherit;font-size:13.5px;font-weight:600;color:var(--tx2);cursor:pointer;white-space:nowrap;
+  transition:background .2s ease,color .2s ease;}
+.audience-tab:hover{color:var(--pri);}
+.audience-tab.is-active{background:var(--pri);color:#fff;box-shadow:var(--sh-2);}
+.audience-tab:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+
+.audience-panel .intake-strip{margin-bottom:var(--s-5);}
+
+/* Replays every time a panel is switched to, not just once on scroll —
+   the tab click itself is the trigger, the same way .hs-rise re-plays on
+   every slide change rather than only on first paint. */
+@keyframes audience-panel-in{from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:none}}
+.audience-panel.is-entering{animation:audience-panel-in .45s cubic-bezier(.22,.61,.36,1) both;}
+@media(prefers-reduced-motion:reduce){.audience-panel.is-entering{animation:none;}}
+
+@media(max-width:640px){
+  /* Four labels ("Prospective Student", "Parent / Guardian"...) do not fit
+     one row at phone width without either wrapping the pill in half or
+     shrinking the type past comfortable — a horizontal scroll on the tab
+     strip itself is the standard resolution, the same way a mobile OS's own
+     segmented controls behave once they run out of width. */
+  .audience-tabs{width:100%;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
+  .audience-tabs::-webkit-scrollbar{display:none;}
+  .audience-tab{flex:0 0 auto;}
+}
+
 /* Two campuses, two cards — a top accent rule tells them apart at a glance
    (gold for the first, navy for the second) without a second card system. */
 .campus-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:24px;}

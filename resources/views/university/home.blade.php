@@ -34,6 +34,7 @@
   $n = 0;
   $idx = function () use (&$n) { return str_pad((string) ++$n, 2, '0', STR_PAD_LEFT); };
   $applyUrl = \App\Support\University::applyUrl();
+  $eportalUrl = \App\Support\University::links()['eportal'] ?? 'https://eportal.mru.ac.ug/';
 @endphp
 
 {{--
@@ -60,39 +61,129 @@
     @if($stats)
       {{-- data-count: the layout's count-up-on-scroll-into-view already knows
            what to do with a .v inside here — it just never had anywhere to
-           run before. Non-numeric values (NCHE) are left alone automatically. --}}
+           run before. Non-numeric values (NCHE) are left alone automatically.
+           Two of the four are real links: the ones with an obvious next page
+           to send a curious click to. Forcing all four to be "clickable" for
+           its own sake would have meant inventing a destination for the
+           other two that doesn't actually exist. --}}
       <div class="stat-row" data-rise data-count>
-        @foreach($stats as $stat)
+        <a href="{{ route('faculties.index') }}" wire:navigate class="stat stat-link">
+          <div class="v">{{ $stats[0]['value'] ?? '' }}</div><div class="l">{{ $stats[0]['label'] ?? '' }}</div>
+        </a>
+        <a href="{{ route('programmes.index') }}" wire:navigate class="stat stat-link">
+          <div class="v">{{ $stats[1]['value'] ?? '' }}</div><div class="l">{{ $stats[1]['label'] ?? '' }}</div>
+        </a>
+        @foreach(array_slice($stats, 2) as $stat)
           <div class="stat"><div class="v">{{ $stat['value'] }}</div><div class="l">{{ $stat['label'] }}</div></div>
         @endforeach
       </div>
     @endif
 
-    @if(!empty($admissions['deadline_note']))
-      <p class="intake-strip" data-rise>
-        <i class="fas fa-calendar-check" aria-hidden="true"></i>
-        <span>{{ $admissions['deadline_note'] }}</span>
-        <a href="{{ route('admissions.intakes') }}" wire:navigate>Intake dates <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
-      </p>
-    @endif
+    {{-- "I am a…" — a cheap, well-evidenced personalisation pattern (the
+         University of Arizona's version is the model this follows) rather
+         than one generic set of four links pretending to serve a prospective
+         student, a parent, a current student and an international applicant
+         equally. The four panels below are real destinations, not the same
+         links relabelled. --}}
+    <div class="audience-picker" data-rise>
+      <p class="audience-label">I am a…</p>
+      <div class="audience-tabs" role="tablist" aria-label="Choose who you are">
+        <button type="button" class="audience-tab is-active" role="tab" aria-selected="true" aria-controls="audience-prospective" tabindex="0" data-audience="prospective">Prospective Student</button>
+        <button type="button" class="audience-tab" role="tab" aria-selected="false" aria-controls="audience-current" tabindex="-1" data-audience="current">Current Student</button>
+        <button type="button" class="audience-tab" role="tab" aria-selected="false" aria-controls="audience-parent" tabindex="-1" data-audience="parent">Parent / Guardian</button>
+        <button type="button" class="audience-tab" role="tab" aria-selected="false" aria-controls="audience-international" tabindex="-1" data-audience="international">International</button>
+      </div>
 
-    <div class="icon-row">
-      <a href="{{ route('programmes.index') }}" wire:navigate data-rise>
-        <span class="ic"><i class="fas fa-magnifying-glass" aria-hidden="true"></i></span>
-        <span>View Programmes</span>
-      </a>
-      <a href="{{ route('admissions.apply') }}" wire:navigate data-rise>
-        <span class="ic"><i class="fas fa-file-pen" aria-hidden="true"></i></span>
-        <span>How to Apply</span>
-      </a>
-      <a href="{{ route('admissions.fees') }}" wire:navigate data-rise>
-        <span class="ic"><i class="fas fa-money-bill-wave" aria-hidden="true"></i></span>
-        <span>Fees Structure</span>
-      </a>
-      <a href="{{ route('admissions.intakes') }}" wire:navigate data-rise>
-        <span class="ic"><i class="fas fa-calendar-days" aria-hidden="true"></i></span>
-        <span>Intake Dates</span>
-      </a>
+      <div class="audience-panel" id="audience-prospective" data-audience-panel="prospective" role="tabpanel">
+        @if(!empty($admissions['deadline_note']))
+          <p class="intake-strip">
+            <i class="fas fa-calendar-check" aria-hidden="true"></i>
+            <span>{{ $admissions['deadline_note'] }}</span>
+            <a href="{{ route('admissions.intakes') }}" wire:navigate>Intake dates <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+          </p>
+        @endif
+        <div class="icon-row">
+          <a href="{{ route('programmes.index') }}" wire:navigate>
+            <span class="ic"><i class="fas fa-magnifying-glass" aria-hidden="true"></i></span>
+            <span>View Programmes</span>
+          </a>
+          <a href="{{ route('admissions.apply') }}" wire:navigate>
+            <span class="ic"><i class="fas fa-file-pen" aria-hidden="true"></i></span>
+            <span>How to Apply</span>
+          </a>
+          <a href="{{ route('admissions.fees') }}" wire:navigate>
+            <span class="ic"><i class="fas fa-money-bill-wave" aria-hidden="true"></i></span>
+            <span>Fees Structure</span>
+          </a>
+          <a href="{{ route('admissions.intakes') }}" wire:navigate>
+            <span class="ic"><i class="fas fa-calendar-days" aria-hidden="true"></i></span>
+            <span>Intake Dates</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="audience-panel" id="audience-current" data-audience-panel="current" role="tabpanel" hidden>
+        <div class="icon-row">
+          <a href="{{ $eportalUrl }}" rel="external">
+            <span class="ic"><i class="fas fa-right-to-bracket" aria-hidden="true"></i></span>
+            <span>E-Portal</span>
+          </a>
+          <a href="{{ route('courses.index') }}" wire:navigate>
+            <span class="ic"><i class="fas fa-laptop" aria-hidden="true"></i></span>
+            <span>e-Learning</span>
+          </a>
+          <a href="{{ route('library') }}" wire:navigate>
+            <span class="ic"><i class="fas fa-book" aria-hidden="true"></i></span>
+            <span>Library</span>
+          </a>
+          <a href="{{ route('almanac') }}" wire:navigate>
+            <span class="ic"><i class="fas fa-calendar-week" aria-hidden="true"></i></span>
+            <span>Academic Calendar</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="audience-panel" id="audience-parent" data-audience-panel="parent" role="tabpanel" hidden>
+        <div class="icon-row">
+          <a href="{{ route('admissions.fees') }}" wire:navigate>
+            <span class="ic"><i class="fas fa-money-bill-wave" aria-hidden="true"></i></span>
+            <span>Fees Structure</span>
+          </a>
+          <a href="{{ route('accommodation') }}" wire:navigate>
+            <span class="ic"><i class="fas fa-bed" aria-hidden="true"></i></span>
+            <span>Accommodation</span>
+          </a>
+          <a href="{{ route('admissions.scholarships') }}" wire:navigate>
+            <span class="ic"><i class="fas fa-hand-holding-dollar" aria-hidden="true"></i></span>
+            <span>Scholarships</span>
+          </a>
+          <a href="{{ route('contact') }}" wire:navigate>
+            <span class="ic"><i class="fas fa-phone" aria-hidden="true"></i></span>
+            <span>Contact Us</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="audience-panel" id="audience-international" data-audience-panel="international" role="tabpanel" hidden>
+        <div class="icon-row">
+          <a href="{{ route('admissions.international') }}" wire:navigate>
+            <span class="ic"><i class="fas fa-earth-africa" aria-hidden="true"></i></span>
+            <span>International Admissions</span>
+          </a>
+          <a href="{{ route('admissions.requirements') }}" wire:navigate>
+            <span class="ic"><i class="fas fa-clipboard-check" aria-hidden="true"></i></span>
+            <span>Entry Requirements</span>
+          </a>
+          <a href="{{ route('admissions.apply') }}" wire:navigate>
+            <span class="ic"><i class="fas fa-file-pen" aria-hidden="true"></i></span>
+            <span>How to Apply</span>
+          </a>
+          <a href="{{ route('contact') }}" wire:navigate>
+            <span class="ic"><i class="fas fa-comments" aria-hidden="true"></i></span>
+            <span>Contact Us</span>
+          </a>
+        </div>
+      </div>
     </div>
   </div>
 </section>
