@@ -199,7 +199,28 @@
         @foreach(array_slice($identity['history'] ?? [], 0, 2) as $paragraph)
           <p class="lead" data-rise style="margin-bottom:14px;">{{ $paragraph }}</p>
         @endforeach
-        <div data-rise style="margin-top:20px;">
+
+        {{-- Two facts that were already sitting in Settings, written once for
+             the /about page, and never surfaced here: the namesake and the
+             accreditation line. Full sentences rather than clipped to a pill
+             — neither is short enough to compress without losing what it
+             actually says. --}}
+        <div class="credential-row" data-rise>
+          @if(!empty($identity['namesake']))
+            <div class="credential-item">
+              <i class="fas fa-crown" aria-hidden="true"></i>
+              <span>{{ $identity['namesake'] }}</span>
+            </div>
+          @endif
+          @if(!empty($identity['accreditation']))
+            <div class="credential-item">
+              <i class="fas fa-certificate" aria-hidden="true"></i>
+              <span>{{ $identity['accreditation'] }}</span>
+            </div>
+          @endif
+        </div>
+
+        <div data-rise style="margin-top:24px;">
           <a href="{{ route('about') }}" wire:navigate class="btn ghost">
             Discover MRU <i class="fas fa-arrow-right" aria-hidden="true"></i>
           </a>
@@ -210,6 +231,32 @@
              loading="lazy" decoding="async" style="max-width:250px;margin:0 auto;">
       </div>
     </div>
+
+    {{-- "Our values" also already existed — the full, always-expanded version
+         lives on /who-we-are. This is deliberately not a repeat of that: six
+         compact tiles, collapsed to an icon and a name, each opening on its
+         own to reveal the one sentence behind it. A teaser earns a lighter
+         treatment than the page that's actually about this. Same six values,
+         same icons ($valueIcons on /who-we-are), so the two pages agree with
+         each other rather than each inventing their own version. --}}
+    @if(!empty($identity['values']))
+      @php $valueIcons = ['fa-award', 'fa-scale-balanced', 'fa-drum', 'fa-hands-holding-circle', 'fa-lightbulb', 'fa-hand-holding-heart']; @endphp
+      <div class="values-teaser" data-rise>
+        <p class="values-teaser-label">What we stand for</p>
+        <div class="value-tiles">
+          @foreach($identity['values'] as $i => $value)
+            <div class="value-tile">
+              <button type="button" class="value-trigger" aria-expanded="false">
+                <span class="ic"><i class="fas {{ $valueIcons[$i] ?? 'fa-star' }}" aria-hidden="true"></i></span>
+                <span class="value-name">{{ $value['name'] }}</span>
+                <i class="fas fa-chevron-down value-chevron" aria-hidden="true"></i>
+              </button>
+              <p class="value-desc">{{ $value['desc'] }}</p>
+            </div>
+          @endforeach
+        </div>
+      </div>
+    @endif
   </div>
 </section>
 @push('styles')<style>@media(max-width:820px){.about-split{grid-template-columns:1fr !important;}}</style>@endpush

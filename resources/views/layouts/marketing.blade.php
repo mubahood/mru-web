@@ -650,6 +650,24 @@
     });
   }
 
+  /* The six value tiles under "About MRU": CSS alone already opens one on
+     hover or keyboard focus (:hover, :focus-within). This layers in a tap
+     for touch, which has neither — no state machine needed, since unlike
+     the mega menu these tiles never compete with each other and opening one
+     is never supposed to close another. */
+  function initValueTiles(){
+    document.querySelectorAll('.value-tile').forEach(function(tile){
+      if (tile.dataset.wired) return;
+      tile.dataset.wired = '1';
+      var trigger = tile.querySelector('.value-trigger');
+      if (!trigger) return;
+      trigger.addEventListener('click', function(){
+        var open = tile.classList.toggle('is-open');
+        trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+    });
+  }
+
   /* The header floats over the slider, so the body has to say whether this
      page has one. Derived from the DOM rather than set per page, so it stays
      correct across wire:navigate. */
@@ -660,6 +678,7 @@
   syncHeroFlag();
   initHeroSlider();
   initAudiencePicker();
+  initValueTiles();
 
   /* Reserves room under the fixed chapter bar so it never covers the last
      line of the page. Paired with a :has() rule for anyone whose script does
@@ -682,6 +701,7 @@
     syncHeroFlag();
     initHeroSlider();
     initAudiencePicker();
+    initValueTiles();
     syncPageChrome();
     var m=document.getElementById('mmenu'), b=document.getElementById('burger');
     if(m && m.classList.contains('open')){ m.classList.remove('open'); document.body.style.overflow=''; if(b){ b.setAttribute('aria-expanded','false'); b.querySelector('i').className='fas fa-bars'; } }

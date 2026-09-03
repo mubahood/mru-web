@@ -795,3 +795,86 @@ Current Student panel's E-Portal link used `$eportalUrl`, a variable that exists
 200" smoke check this project runs before trusting anything else about a change, fixed by defining
 the same variable locally from `University::links()['eportal']`, the actual underlying source
 `marketing.blade.php` itself reads.
+
+## 2026-09-04 — Phase S: About MRU stops being two paragraphs next to a crest
+
+Feedback singled out one section for full focus: "01 About MRU" — the heritage paragraphs, the
+h2, and, until now, nothing else. Everything either side of it (the intro band, the audience
+picker) had already been rebuilt into something with texture; this section was still the plainest
+thing on the page.
+
+### Checking what already existed before adding anything
+
+Before designing new content, checked whether `university.identity` had more to offer than the two
+history paragraphs already in use. It does: `vision`, `mission`, `values` (six entries, each with a
+name and description), `namesake`, and `accreditation` all live in the same Settings blob. The
+first instinct — that this was unused data free for the taking — was wrong and was checked before
+acting on it: `grep -rln` across `resources/views/` showed `values` and the rest already rendered
+in full on `/about` and `/who-we-are`. Building the same full values grid on the homepage would
+have been a duplicate, not an addition. The homepage treatment was designed instead as a
+deliberately lighter teaser — collapsed by default, one line of description revealed on demand —
+and it reuses the *exact* `$valueIcons` array already defined in `who-we-are.blade.php`
+(`fa-award`, `fa-scale-balanced`, `fa-drum`, `fa-hands-holding-circle`, `fa-lightbulb`,
+`fa-hand-holding-heart`) rather than inventing a second icon mapping for the same six values.
+
+### What was added
+
+- **A credential row** between the heritage paragraphs and the "Discover MRU" button: two pills
+  surfacing `$identity['namesake']` (crown icon) and `$identity['accreditation']` (certificate
+  icon) — real seeded facts ("Named for Kabaka Muteesa I of Buganda (1856–1884)", "Accredited by
+  the Uganda National Council for Higher Education (NCHE)"), not invented copy.
+- **A values teaser** spanning the full section width below the two-column split: six
+  `.value-tile` elements, each a button (icon, name, chevron) that expands its own description on
+  hover, click, or keyboard focus. Tiles are independent, not a single-open accordion — opening one
+  doesn't close another, matching how little content each holds (one sentence) and avoiding a
+  false sense of exclusivity between six things the university holds equally.
+- `initValueTiles()` in `marketing.blade.php`, following the same shape as every other homepage
+  script this session: `dataset.wired` guard, click toggles `is-open` and `aria-expanded`, wired at
+  both initial load and inside `livewire:navigated`. The CSS does the actual expand/collapse
+  (`max-height` transition, triggered by `:hover`, `:focus-within`, or `.is-open`); the JS only
+  makes the open state persist after the pointer or focus leaves, which `:hover`/`:focus-within`
+  alone can't do.
+
+### Two test bugs, not two site bugs — found by checking, not by re-running
+
+The first interaction-test pass showed 3 of 18 checks failing: a second click failing to close a
+tile, its `aria-expanded` not resetting, and Enter appearing not to toggle a focused tile at all.
+Same discipline as Phase R's audience-picker false failures — checked what was actually happening
+before concluding anything was broken.
+
+The first two failures shared one cause. `window.scrollY` was logged before and after opening a
+tile: `1886` → `1936`. Opening the tile grows the page, and Chrome's scroll anchoring shifted the
+viewport by 50px to compensate — a real, standard browser behaviour, not a bug. The test's second
+click reused a `getBoundingClientRect()` captured *before* that shift, so it fired at stale
+viewport coordinates. `document.elementFromPoint()` at that exact stale point confirmed what it
+now landed on: `<p class="value-desc">`, not the button — a paragraph with no click handler,
+clicked twice for no visible effect. Fixed by re-fetching the trigger's rect immediately before
+every click instead of caching it once; re-run clean.
+
+The third failure was a different mistake, in the key event itself. `Input.dispatchKeyEvent` with
+`type: 'rawKeyDown'` and virtual key codes but no `text`/`unmodifiedText` field never reached the
+button's native activation handling. Attached a temporary capture-phase listener for `keydown`,
+`keyup`, and `click` to see what the browser actually did with each variant tried. With `text:
+'\r'` added, the log showed exactly the sequence the HTML button-activation spec describes:
+`keydown:Enter` → `click:value-trigger` → `keyup:Enter`, and the tile opened. A second check
+confirmed Space activates on `keyup` instead of `keydown`, also per spec, also fully working. Both
+keyboard paths were already correct; the first test just wasn't constructing a complete enough
+synthetic event to prove it. Corrected test: **18/18.**
+
+### Verified
+
+Value-tile contract 18/18 (six tiles present and independently collapsible, real non-empty
+description text, click toggles both the CSS hook class and `aria-expanded`, two tiles can be open
+simultaneously, keyboard focus reaches every trigger and both Enter and Space activate it, the
+credential row shows both real facts). Menu contract 10/10, slider contract 14/14, full suite
+**1134 passed, 1 skipped** — unchanged from baseline. Swept every registered GET route this time
+(84, not a fixed 45) rather than a hand-picked subset: 82 returned 200 or the expected 301/302
+(admin routes correctly redirect unauthenticated requests to login), one 204 is Sanctum's
+`csrf-cookie` route working exactly as designed (a bare grep for `200|301|302` simply didn't list
+204 as expected, not a site problem), and the one genuine 500 — `_debugbar/open` — is Laravel
+Debugbar's own internal AJAX open-handler, which requires an `id` query parameter to do anything
+and is never linked from any real page; unrelated to anything touched this session, confirmed by
+route name (`debugbar.openhandler`, from the `barryvdh/laravel-debugbar` package) rather than
+assumed. Screenshotted at mobile width (390px): the two-column split collapses to one column, both
+credential pills wrap to full width without clipping, and an opened value tile renders its full
+description with the chevron rotated and no horizontal overflow on the document.
