@@ -192,7 +192,7 @@
 
 <section class="band-surface tex-glow">
   <div class="wrap">
-    <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:40px;align-items:center;" class="about-split">
+    <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:56px;align-items:center;" class="about-split">
       <div>
         <div class="sec-head left" style="margin-bottom:18px;">
           <h2>A royal university with a modern mission</h2>
@@ -295,8 +295,10 @@
           {{-- alt is intentionally empty: the link's own text already names the
                faculty, so a described image would just be announced twice. --}}
           @if($faculty->cover_image)
-            <img class="faculty-card-photo" src="{{ asset('storage/'.$faculty->cover_image) }}"
-                 alt="" width="800" height="1000" loading="lazy" decoding="async">
+            <span class="faculty-card-media">
+              <img src="{{ asset('storage/'.$faculty->cover_image) }}"
+                   alt="" width="800" height="1000" loading="lazy" decoding="async">
+            </span>
           @endif
         </a>
       @endforeach
@@ -314,8 +316,10 @@
           </span>
         </div>
         @if($gradSchool->cover_image)
-          <img class="grad-school-photo" src="{{ asset('storage/'.$gradSchool->cover_image) }}"
-               alt="" width="800" height="1000" loading="lazy" decoding="async">
+          <span class="grad-school-media">
+            <img src="{{ asset('storage/'.$gradSchool->cover_image) }}"
+                 alt="" width="800" height="1000" loading="lazy" decoding="async">
+          </span>
         @endif
       </a>
     @endif
@@ -323,81 +327,20 @@
 </section>
 @endif
 
-@if(!empty($campuses))
-<section class="band-surface">
-  <div class="wrap">
-    <div class="sec-head left">
-      <h2>One university, two homes</h2>
-      <p>Kampala for the capital's energy, Masaka for a quieter pace — the same MRU education at both.</p>
-    </div>
-    <div class="campus-grid">
-      @foreach($campuses as $campus)
-        <a href="{{ $campus['maps'] ?? '#' }}" target="_blank" rel="noopener external" class="card campus-card" data-rise>
-          <span class="ic"><i class="fas fa-location-dot" aria-hidden="true"></i></span>
-          <h3>{{ $campus['name'] }}</h3>
-          <p>{{ $campus['location'] }}</p>
-          <span class="link">Get directions <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></span>
-        </a>
-      @endforeach
-    </div>
-  </div>
-</section>
-@endif
-
-@if($programmes->isNotEmpty())
-<section class="band-surface tex-grid">
-  <div class="wrap">
-    <div class="sec-head left">
-      <h2>Find the programme that fits you</h2>
-      <p>From one-year certificates to masters degrees — filter the full directory by level, faculty or name.</p>
-    </div>
-    <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr));">
-      @foreach($programmes as $programme)
-        @include('university.partials.programme-card', ['programme' => $programme])
-      @endforeach
-    </div>
-    <div style="text-align:center;margin-top:30px;" data-rise>
-      <a href="{{ route('programmes.index') }}" wire:navigate class="btn ghost">
-        All programmes <i class="fas fa-arrow-right" aria-hidden="true"></i>
-      </a>
-    </div>
-  </div>
-</section>
-@endif
-
-@if($gallery->isNotEmpty())
-<section>
-  <div class="wrap">
-    <div class="sec-head left">
-      <h2>A closer look at who we are</h2>
-      <p>Moments from across the university — its people, its ceremonies, its everyday work.</p>
-    </div>
-    <div class="gallery-wall">
-      @foreach($gallery as $photo)
-        <a href="{{ route('campus-life') }}" wire:navigate class="gallery-tile" data-rise
-           style="aspect-ratio:{{ $photo->ratio() }};">
-          <img src="{{ $photo->thumbUrl() }}" alt="{{ $photo->altText() }}" loading="lazy" decoding="async">
-          <span class="gallery-caption">{{ $photo->title }}</span>
-        </a>
-      @endforeach
-    </div>
-    <div style="text-align:center;margin-top:26px;" data-rise>
-      <a href="{{ route('campus-life') }}" wire:navigate class="btn ghost">
-        See more of campus life <i class="fas fa-arrow-right" aria-hidden="true"></i>
-      </a>
-    </div>
-  </div>
-</section>
-@endif
-
 @if($news->isNotEmpty() || $events->isNotEmpty())
-<section>
+{{-- A photograph of the university's own festival grounds, fixed in place
+     while the cards float over it on scroll — fixed only where hover exists,
+     since mobile browsers janked background-attachment:fixed badly enough
+     that they simply ignore it, and pretending otherwise gets a jumpy
+     repaint instead of parallax. --}}
+<section class="band-news">
   <div class="wrap">
     <div class="sec-head left">
       <h2>Life at the university, this week</h2>
+      <p>The latest from both campuses — and what is coming next.</p>
     </div>
-    <div style="display:grid;grid-template-columns:2fr 1fr;gap:24px;" class="news-split">
-      <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr));align-content:start;">
+    <div class="news-split">
+      <div class="news-cards">
         @foreach($news as $post)
           <a href="{{ route('insights.show', $post) }}" wire:navigate class="proj-card" data-rise>
             @if($post->cover_image)
@@ -410,35 +353,33 @@
           </a>
         @endforeach
       </div>
-      <div data-rise>
-        <div class="feature-box" style="height:100%;">
-          <div class="sub">Upcoming events</div>
-          @forelse($events as $event)
-            <div style="padding:10px 0;border-bottom:1px solid var(--line);">
-              <div style="font-family:ui-monospace,Menlo,monospace;font-size:11px;color:var(--gold-d);font-weight:700;">
-                {{ $event->starts_at->format('D, j M Y · g:i A') }}
-                <span style="color:var(--tx3);font-weight:500;">· {{ $event->starts_at->diffForHumans() }}</span>
-              </div>
-              <a href="{{ route('events.show', $event) }}" wire:navigate style="font-weight:600;font-size:14px;color:var(--tx);">{{ $event->title }}</a>
-              @if($event->venue)<div style="font-size:12px;color:var(--tx2);"><i class="fas fa-location-dot" aria-hidden="true"></i> {{ $event->venue }}</div>@endif
+      <aside class="events-panel" data-rise>
+        <div class="sub">Upcoming events</div>
+        @forelse($events as $event)
+          <div class="event-row">
+            <div class="event-when">
+              {{ $event->starts_at->format('D, j M Y · g:i A') }}
+              <span>· {{ $event->starts_at->diffForHumans() }}</span>
             </div>
-          @empty
-            <p style="font-size:13px;color:var(--tx2);">New events are announced here and on our social channels.</p>
-          @endforelse
-          <div style="margin-top:14px;">
-            <a href="{{ route('events.index') }}" wire:navigate class="link" style="color:var(--pri);font-weight:600;">All events <i class="fas fa-arrow-right"></i></a>
+            <a href="{{ route('events.show', $event) }}" wire:navigate class="event-title">{{ $event->title }}</a>
+            @if($event->venue)<div class="event-venue"><i class="fas fa-location-dot" aria-hidden="true"></i> {{ $event->venue }}</div>@endif
           </div>
-        </div>
-      </div>
+        @empty
+          <p class="event-empty">New events are announced here and on our social channels.</p>
+        @endforelse
+        <a href="{{ route('events.index') }}" wire:navigate class="link events-all">All events <i class="fas fa-arrow-right"></i></a>
+      </aside>
     </div>
-    <div style="text-align:center;margin-top:26px;" data-rise>
-      <a href="{{ route('insights.index') }}" wire:navigate class="btn ghost">
+    <div class="band-news-actions" data-rise>
+      <a href="{{ route('insights.index') }}" wire:navigate class="btn gold">
         All news <i class="fas fa-arrow-right" aria-hidden="true"></i>
+      </a>
+      <a href="{{ route('campus-life') }}" wire:navigate class="btn ghost">
+        Life on campus
       </a>
     </div>
   </div>
 </section>
-@push('styles')<style>@media(max-width:900px){.news-split{grid-template-columns:1fr !important;}}</style>@endpush
 @endif
 
 <section class="band-deep">

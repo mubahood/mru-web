@@ -1357,3 +1357,68 @@ reviewed: slide one in regalia under its royal title; the About shelf with photo
 icon-free columns; the Academics shelf two-column with the corrected copy; the mobile sheet
 icon-free with its disclosure groups. Full suite **1134 passed, 1 skipped** — which also re-runs
 the SiteNav URL smoke tests against the edited nav, so every menu destination still resolves.
+
+## 2026-09-04 — Phase AA: three sections leave, the news floats on a photograph
+
+Instructions: kill the underline on the faculty cards' hover and replace it with something more
+elegant; remove three sections outright (Two Campuses, the programme teaser, the Campus Life
+gallery); re-imagine News & Events with a fixed photograph behind floating content; and — mid-
+round — "the website is too compacted", so the whole page gets more air.
+
+### The faculty cards' hover learns to speak without underlining
+
+The line under "9 programmes" came from the sitewide `*:hover > .link::after` reveal. It is
+switched off for this section only (`content:none` scoped to the cards and the strip) and the
+hover now speaks four other ways at once: a gold rule draws itself along the card's top edge
+(`::after`, scaleX 0→1), the photograph breathes inside a new clipped `.faculty-card-media`
+frame (a slow 1.05 zoom — the img could never be clipped by its own border-radius while
+transformed, hence the wrapper), the icon flips navy-and-gold via the shared `.card` rule that
+was already there, and the arrow keeps its slide. All of it under `prefers-reduced-motion`
+guards. The Graduate School strip gets the same zoom and the same underline removal. The photo
+swap offer was checked and declined: the remaining unviewed archive candidates (a staff seminar,
+a portrait, a second kanzu-and-gomesi group nearly identical to the Luwalo shot already in use)
+beat none of the five in place — verified by looking, recorded here so nobody re-litigates it
+from filenames.
+
+### Three sections deleted whole
+
+Two Campuses, "Find the programme that fits you", and the gallery wall are gone: markup,
+their CSS blocks (grep confirmed all three were homepage-only before deletion), their
+controller data (`campuses`, `programmes`, `gallery` keys and the now-unused `Programme`
+import — `GalleryPhoto` stays, `/campus-life` still queries it), and nothing else. The
+`featured`/`show_on_home` admin switches survive; they simply steer nothing on the homepage
+until some future section wants them. The page now runs hero → intro → About → Faculties →
+News on photograph → Scholar → Partners → CTA: eight beats instead of eleven.
+
+### News & Events: the page scrolls, the picture doesn't
+
+The section sits on the university's own Buganda Institutions Games photograph (tents, pitch,
+crowd — chosen over a procession shot and a busier games frame after viewing all three),
+processed to 1600px/287KB and buried under a double navy scrim so it reads as texture, not
+content. `background-attachment:fixed` gives the float-on-scroll effect — verified by
+screenshotting the band at two scroll positions 320px apart and watching the figures in the
+background hold still while the cards moved — and is explicitly downgraded to `scroll` where
+`(hover:none)` or the viewport is narrow, because mobile browsers ignore or jank fixed
+attachment and a broken promise is worse than a scrolling photo. News cards keep their exact
+inner markup, floated on heavy shadows; the events list moved from a `feature-box` with seven
+inline styles to a proper `.events-panel` with classes. One honest-data edge the first
+screenshot exposed: with no upcoming events seeded, the panel was a tall blank slab stretched
+to the news column's height — `.events-panel:has(.event-row)` now decides whether it stands
+full-height or hugs its single line (142px against the 504px column, measured after the fix).
+
+### Air
+
+"Too compacted" was fixed at the token layer, not section by section: `section` padding
+--s-7→--s-8 (88→112px), `.sec-head` clearance --s-5→--s-6 (48→64px), the faculty grid's gap and
+its margin to the strip widened, the About split 40→56px, the news split 24→28px. Two token
+changes move every band on the page together, which is the point of having tokens.
+
+### Verified
+
+Menu 10/10, slider 14/14, audience 21/21. Homepage 200 with all three removed headings absent
+from the HTML (grep count 0); `/campus-life`, `/programmes`, `/faculties` all still 200 — the
+deleted teasers' destinations live on. Hover state screenshotted (gold rule drawn, no underline
+— computed `::after` content none while hovered); the fixed background proven at two scroll
+offsets; mobile band screenshotted with `background-attachment: scroll` confirmed computed. No
+horizontal overflow at 1440px or 390px. Braces 1449/1449, orphan grep for the deleted classes:
+zero. Full suite **1134 passed, 1 skipped**, unchanged.

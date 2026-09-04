@@ -1494,8 +1494,11 @@ h4{font-family:var(--font);font-size:15px;font-weight:700;color:var(--pri);}
 
 /* ------------------------------------------------------- 2. Page rhythm */
 
-section{padding:var(--s-7) 0;}
-.sec-head{max-width:680px;margin:0 auto var(--s-5);}
+/* The page breathes at --s-8, not --s-7: sections carry 112px of air and a
+   section's heading stands 64px clear of its content. One token change each,
+   so every band moves together instead of being spaced by hand. */
+section{padding:var(--s-8) 0;}
+.sec-head{max-width:680px;margin:0 auto var(--s-6);}
 .sec-head.left{text-align:left;margin-left:0;max-width:720px;}
 .sec-head h2{margin-bottom:14px;}
 .sec-head p{color:var(--tx2);font-size:16.5px;line-height:1.7;}
@@ -2636,7 +2639,7 @@ a.stat-link:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
    old 5-item grid's own comment warned about exactly this stranded-card
    risk) — the minmax lower bound is picked so exactly two fit the wrap
    width and one fits below it, with no width where 3 columns sneak in. */
-.faculty-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(480px,100%),1fr));gap:22px;margin-bottom:22px;}
+.faculty-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(480px,100%),1fr));gap:26px;margin-bottom:var(--s-4);}
 /* a.card pins flex-direction:column at element+class specificity, so the row
    override must match it — same trap the grad-school strip hit first. */
 a.faculty-card{flex-direction:row;}
@@ -2647,11 +2650,29 @@ a.faculty-card{flex-direction:row;}
 .faculty-card .tag-row{margin:2px 0 4px;}
 .faculty-card .tag-row .pill{font-size:12px;padding:6px 12px;}
 .faculty-card .link{margin-top:auto;padding-top:10px;font-size:13px;}
-.faculty-card-photo{flex:0 0 190px;width:190px;align-self:stretch;height:auto;
-  object-fit:cover;border-radius:var(--r-lg);}
+
+/* Hover speaks through the card, not an underline: a gold rule draws along
+   the top edge, the photograph breathes (a slow zoom inside its clipped
+   frame), the icon flips to navy-and-gold (the shared .card rule), and the
+   arrow slides. The .link underline is switched off here — four signals is
+   plenty, and a line under "9 programmes" was the least elegant of them. */
+.faculty-card{position:relative;overflow:hidden;}
+.faculty-card::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:var(--gold);transform:scaleX(0);transform-origin:left;
+  transition:transform .3s cubic-bezier(.22,.61,.36,1);}
+.faculty-card:hover::after,.faculty-card:focus-visible::after{transform:scaleX(1);}
+.faculty-card .link::after{content:none;}
+.faculty-card-media{flex:0 0 190px;width:190px;align-self:stretch;display:block;
+  overflow:hidden;border-radius:var(--r-lg);}
+.faculty-card-media img{width:100%;height:100%;object-fit:cover;display:block;
+  transition:transform .5s cubic-bezier(.22,.61,.36,1);}
+.faculty-card:hover .faculty-card-media img{transform:scale(1.05);}
+@media(prefers-reduced-motion:reduce){
+  .faculty-card::after,.faculty-card-media img{transition:none;}
+}
 @media(max-width:640px){
   a.faculty-card{flex-direction:column;}
-  .faculty-card-photo{order:-1;width:100%;flex:none;aspect-ratio:16/9;}
+  .faculty-card-media{order:-1;width:100%;flex:none;aspect-ratio:16/9;}
 }
 
 /* The Graduate School's own shape: a single horizontal strip instead of a
@@ -2668,45 +2689,56 @@ a.grad-school-strip{flex-direction:row;}
 .grad-school-body h3{font-size:17px;margin:0 0 4px;}
 .grad-school-body p{font-size:14.5px;margin:0 0 10px;}
 .grad-school-body .link{font-size:13px;}
-.grad-school-photo{flex:0 0 260px;width:260px;height:168px;align-self:center;
-  object-fit:cover;border-radius:var(--r-lg);}
+.grad-school-strip .link::after{content:none;}
+.grad-school-media{flex:0 0 260px;width:260px;height:168px;align-self:center;
+  display:block;overflow:hidden;border-radius:var(--r-lg);}
+.grad-school-media img{width:100%;height:100%;object-fit:cover;display:block;
+  transition:transform .5s cubic-bezier(.22,.61,.36,1);}
+.grad-school-strip:hover .grad-school-media img{transform:scale(1.05);}
+@media(prefers-reduced-motion:reduce){.grad-school-media img{transition:none;}}
 @media(max-width:700px){
   a.grad-school-strip{flex-direction:column;}
   .grad-school-strip{align-items:flex-start;}
-  .grad-school-photo{order:-1;width:100%;flex:none;aspect-ratio:16/9;}
+  .grad-school-media{order:-1;width:100%;height:auto;flex:none;aspect-ratio:16/9;}
 }
 
-/* Two campuses, two cards — a top accent rule tells them apart at a glance
-   (gold for the first, navy for the second) without a second card system. */
-.campus-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:24px;}
-.campus-card{position:relative;overflow:hidden;}
-.campus-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--gold);}
-.campus-card:nth-child(2)::before{background:var(--pri);}
-.campus-card .ic{width:56px;height:56px;font-size:22px;}
-.campus-card h3{font-family:var(--font-display);font-size:22px;margin:4px 0 6px;}
-.campus-card p{color:var(--tx2);margin-bottom:16px;}
-
-/* A photo wall, not a form grid — each tile keeps its own real aspect ratio
-   (set inline from the photo's own dimensions) rather than being cropped to
-   a uniform box, so a portrait among landscapes reads as a deliberate mix,
-   not a mistake. True masonry via CSS columns, not a grid: a grid's row
-   height is set by its tallest member, which left every shorter landscape
-   tile sharing a row with a portrait one stranded above a dead gap. Columns
-   let each tile's own height end exactly where its own content ends. Caption
-   stays hidden until hover/focus: the point is the photograph, the caption
-   is a label for it, not competing content. */
-.gallery-wall{columns:3 220px;column-gap:16px;}
-.gallery-tile{display:block;break-inside:avoid;margin-bottom:16px;
-  position:relative;overflow:hidden;border-radius:var(--r-lg);
-  box-shadow:var(--sh-1);transition:box-shadow .24s ease,transform .24s ease;}
-.gallery-tile:hover,.gallery-tile:focus-visible{box-shadow:var(--sh-3);transform:translateY(-4px);}
-.gallery-tile img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s ease;}
-.gallery-tile:hover img,.gallery-tile:focus-visible img{transform:scale(1.06);}
-.gallery-caption{position:absolute;left:0;right:0;bottom:0;padding:14px 16px 12px;
-  background:linear-gradient(to top,rgba(1,15,38,.82),transparent);
-  color:#fff;font-size:13px;font-weight:600;
-  opacity:0;transform:translateY(6px);transition:opacity .24s ease,transform .24s ease;}
-.gallery-tile:hover .gallery-caption,.gallery-tile:focus-visible .gallery-caption{opacity:1;transform:translateY(0);}
-@media(prefers-reduced-motion:reduce){
-  .gallery-tile,.gallery-tile img,.gallery-caption{transition:none;}
+/* News & Events on a fixed photograph: the page scrolls, the picture holds
+   still, the cards float over it. background-attachment:fixed only where a
+   real pointer exists — mobile browsers ignore or jank it, so they get the
+   photograph scrolling normally instead of a broken promise. */
+.band-news{position:relative;
+  background:linear-gradient(rgba(4,19,43,.87),rgba(4,19,43,.92)),
+             url('../images/news-band.jpg') center/cover no-repeat;
+  background-attachment:fixed,fixed;}
+@media (hover:none),(max-width:900px){
+  .band-news{background-attachment:scroll,scroll;}
+}
+.band-news .sec-head h2{color:#fff;}
+.band-news .sec-head p{color:rgba(255,255,255,.75);}
+.band-news .news-split{display:grid;grid-template-columns:2fr 1fr;gap:28px;}
+.band-news .news-cards{display:grid;gap:var(--s-3);align-content:start;
+  grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));}
+.band-news .proj-card{background:rgba(255,255,255,.97);border-color:transparent;
+  box-shadow:0 20px 44px -20px rgba(0,0,0,.55);}
+.events-panel{background:rgba(255,255,255,.97);border-radius:var(--r-lg);
+  padding:24px;box-shadow:0 20px 44px -20px rgba(0,0,0,.55);align-self:start;}
+/* With real rows the panel stands the full column; empty, it hugs its one
+   line instead of stretching a blank card to the news column's height. */
+.events-panel:has(.event-row){align-self:stretch;height:100%;}
+.events-panel .sub{font-size:11.5px;color:var(--gold-d);font-weight:700;
+  text-transform:uppercase;letter-spacing:.13em;margin-bottom:14px;}
+.event-row{padding:10px 0;border-bottom:1px solid var(--line);}
+.event-when{font-family:ui-monospace,Menlo,monospace;font-size:11px;
+  color:var(--gold-d);font-weight:700;}
+.event-when span{color:var(--tx3);font-weight:500;}
+.event-title{font-weight:600;font-size:14px;color:var(--tx);}
+.event-venue{font-size:12px;color:var(--tx2);}
+.event-empty{font-size:13px;color:var(--tx2);}
+.events-panel .events-all{margin-top:14px;color:var(--pri);font-weight:600;font-size:14px;}
+.band-news-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;
+  margin-top:30px;}
+.band-news .btn.ghost{color:#fff;border-color:rgba(255,255,255,.42);}
+.band-news .btn.ghost:hover{background:rgba(255,255,255,.12);border-color:#fff;color:#fff;}
+@media(max-width:900px){
+  .band-news .news-split{grid-template-columns:1fr;}
 }

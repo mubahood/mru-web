@@ -9,7 +9,6 @@ use App\Models\Faculty;
 use App\Models\GalleryPhoto;
 use App\Models\Partner;
 use App\Models\Post;
-use App\Models\Programme;
 use App\Models\Publication;
 use App\Models\StaffMember;
 use App\Models\UniversityEvent;
@@ -29,14 +28,11 @@ class PageController extends Controller
             'identity' => University::identity(),
             'stats' => University::get('stats'),
             'admissions' => University::get('admissions'),
-            'campuses' => University::contacts()['campuses'] ?? [],
             'faculties' => Faculty::published()->withCount('programmes')->get(),
-            'programmes' => Programme::published()->featured()->orderBy('sort_order')->limit(6)->get(),
             'news' => Post::published()->latest('published_at')->limit(3)->get(),
             'events' => UniversityEvent::published()->upcoming()->limit(3)->get(),
             'publications' => Publication::published()->where('is_featured', true)->with('authorRows.scholar')->limit(3)->get(),
             'partners' => Partner::showOnHome()->orderBy('sort_order')->get(),
-            'gallery' => GalleryPhoto::query()->where('is_published', true)->where('is_featured', true)->orderBy('sort_order')->limit(6)->get(),
             'testimonials' => collect(json_decode((string) \App\Support\Settings::get('portfolio.testimonials', '[]'), true) ?: []),
         ]);
     }
