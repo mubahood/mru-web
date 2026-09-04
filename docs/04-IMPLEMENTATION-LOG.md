@@ -1163,3 +1163,79 @@ pre-diagnosed three). `/faculties` and two faculty show pages still 200 — the 
 `.faculty-card`/`.grad-school-*` scoped and `cover_image` is still rendered by no other public
 view, so nothing else changed appearance. Screenshotted desktop and mobile, including the
 mobile strip with its photo-on-top collapse.
+
+## 2026-09-04 — Phase X: the audience picker learns hover, and stops moving the page
+
+Three asks for "I am a…": switch on hover, organise it properly on phones, and make it stable and
+elegant. Each turned into one specific engineering decision.
+
+### Hover, with intent
+
+Hovering a tab now switches to it — but only where hover is real (`matchMedia('(hover: hover) and
+(pointer: fine)')`, so a touch screen never gets ghost-hover behaviour), and only after a 130ms
+dwell. The dwell is the difference between a control and a nuisance: without it, a cursor crossing
+the strip on its way to the content below riffles through all four panels. The timer arms on
+`mouseenter` and cancels on `mouseleave`; a genuine pause switches, a pass-through does nothing.
+Click and keyboard behave exactly as before, through the same `show()`.
+
+### Stability: the panels stopped being display-toggled
+
+The old mechanism (`hidden` attribute + a replay-animation class) had a flaw that hover made
+worse: panels differ in height (Prospective carries the intake strip), so every switch reflowed
+everything below the picker. Replaced with four panels stacked in one CSS grid cell
+(`grid-area:1/1`), hidden by `visibility` + `opacity` rather than `display`, cross-fading through
+a 280ms transition. The block is now permanently as tall as its tallest panel — the contract test
+asserts the stack's height changes by less than a pixel across switches. `visibility:hidden` keeps
+inactive panels out of the accessibility tree and tab order just as `display:none` did, so the
+ARIA tabs semantics are unchanged. The `is-entering` keyframe and the remove-reflow-re-add replay
+trick are deleted along with the `hidden` toggling; grep confirms zero references left.
+
+### Phones: a 2×2 grid instead of a hidden scroll
+
+Phase R resolved the four-labels-don't-fit problem with a horizontal scroll on the tab strip.
+Honest reassessment: a scroll with the scrollbar hidden is a control that has to be discovered.
+Four self-contained pills in a 2×2 grid show every choice at once, cut nothing off, and give each
+a full-width touch target. The segmented-container look (shared border, joined background) makes
+no sense split across two rows, so below 640px each tab carries its own border and the container
+dissolves.
+
+### Two harness artifacts dispatched on the way
+
+The contract test was rewritten for the new mechanism — and this time it passes whole: **19/19**,
+including three checks the old suite couldn't express: a hover dwell switches, a sub-dwell
+pass-through does not, and the stack height is identical before and after every switch. The three
+permanently-flaky opacity assertions from Phase R are gone with the mechanism that made them
+flaky.
+
+A mobile "tap does nothing" scare turned out to be the test again, twice over: raw
+`dispatchTouchEvent` pairs don't run Chrome's tap recogniser (the proper API is
+`Input.synthesizeTapGesture`), and — the actual killer — `scrollIntoView({block:'start'})` had
+parked the tab row underneath the fixed header, so the tap landed on the header. Asked the page
+(`elementsFromPoint`: `DIV.wrap | HEADER.site | BUTTON.audience-tab`) instead of assuming; with
+the picker scrolled to centre and a real tap gesture, the panel switches on touch exactly as built
+— the click path was never gated behind the hover media query.
+
+### The intake strip stops talking about a deadline that passed
+
+Same round, same component: the strip inside the Prospective panel read "Applications for the
+August intake close on 31 May. Late applications are considered on merit." — stiff, and stale
+twice over: it is September, and the seeded intake calendar itself says the August intake's
+window is January–May while the **January intake's window is September–December**. So the
+truthful, current message is that applications are ongoing right now. The note is a Settings
+value (`university.admissions.deadline_note`) feeding five pages (the home strip plus the leads
+on `/admissions`, `/admissions/intakes`, `/admissions/how-to-apply` and the FAQs page), so it was
+reworded once at the source — "Applications for the January intake are ongoing." — and all five
+pages follow; confirmed by curling `/admissions` and finding the new line, not by assuming the
+cache flushed. The strip's link changed from the internal intake-dates page to the thing the
+message now invites: `University::applyUrl()` (`https://eportal.mru.ac.ug/apply`), labelled
+"Apply now", `rel="external"`, no `wire:navigate` since it leaves the site.
+
+### Verified
+
+Audience contract **19/19** (up from 14-of-17-with-three-known-flakes). Menu 10/10, slider 14/14.
+Homepage 200, braces 1419/1419, no horizontal overflow at 1440px or 390px. Desktop screenshot
+captures the hover switch live (cursor resting on Parent/Guardian, its panel shown); mobile
+screenshots show the 2×2 grid and a successful tap switch. Full suite ran at 03:20 EAT — 00:20
+UTC, inside Phase W's documented analytics flake window — and failed exactly the two documented
+fixture-clock tests; the analytics file was re-run after 00:30 UTC and came back green, keeping
+the real baseline intact.

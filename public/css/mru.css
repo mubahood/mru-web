@@ -2570,22 +2570,30 @@ a.stat-link:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
 
 .audience-panel .intake-strip{margin-bottom:var(--s-5);}
 
-/* Replays every time a panel is switched to, not just once on scroll —
-   the tab click itself is the trigger, the same way .hs-rise re-plays on
-   every slide change rather than only on first paint. */
-@keyframes audience-panel-in{from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:none}}
-.audience-panel.is-entering{animation:audience-panel-in .45s cubic-bezier(.22,.61,.36,1) both;}
-@media(prefers-reduced-motion:reduce){.audience-panel.is-entering{animation:none;}}
+/* All four panels occupy the same grid cell, so the block's height is the
+   tallest panel's height at all times — switching never moves the sections
+   below it, which matters twice over now that hovering a tab switches.
+   Hidden panels are visibility:hidden (out of the a11y tree and tab order,
+   like display:none) rather than display:none, because display:none panels
+   have no height to size the stack by. */
+.audience-panels{display:grid;}
+.audience-panel{grid-area:1/1;visibility:hidden;opacity:0;transform:translateY(8px);
+  pointer-events:none;
+  transition:opacity .28s ease,transform .28s cubic-bezier(.22,.61,.36,1),visibility 0s .28s;}
+.audience-panel.is-active{visibility:visible;opacity:1;transform:none;pointer-events:auto;
+  transition:opacity .28s ease,transform .28s cubic-bezier(.22,.61,.36,1),visibility 0s 0s;}
+@media(prefers-reduced-motion:reduce){.audience-panel{transition:none;}}
 
 @media(max-width:640px){
   /* Four labels ("Prospective Student", "Parent / Guardian"...) do not fit
-     one row at phone width without either wrapping the pill in half or
-     shrinking the type past comfortable — a horizontal scroll on the tab
-     strip itself is the standard resolution, the same way a mobile OS's own
-     segmented controls behave once they run out of width. */
-  .audience-tabs{width:100%;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
-  .audience-tabs::-webkit-scrollbar{display:none;}
-  .audience-tab{flex:0 0 auto;}
+     one row at phone width. A 2×2 grid of self-contained pills beats the
+     old horizontal scroll: nothing is cut off, nothing has to be discovered
+     by swiping, and all four choices are visible at once. */
+  .audience-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;
+    padding:0;background:transparent;border:0;border-radius:0;}
+  .audience-tab{width:100%;text-align:center;padding:12px 8px;
+    border:1px solid var(--line);background:#fff;}
+  .audience-tab.is-active{border-color:var(--pri);}
 }
 
 /* Two facts already written for /about, never shown here — full sentences,

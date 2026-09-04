@@ -90,12 +90,17 @@
         <button type="button" class="audience-tab" role="tab" aria-selected="false" aria-controls="audience-international" tabindex="-1" data-audience="international">International</button>
       </div>
 
-      <div class="audience-panel" id="audience-prospective" data-audience-panel="prospective" role="tabpanel">
+      {{-- All four panels stack in one grid cell, so the block is always as
+           tall as its tallest panel — switching (especially by hover) never
+           reflows the page below it. Hiding is visibility, not display, for
+           the same reason. --}}
+      <div class="audience-panels">
+      <div class="audience-panel is-active" id="audience-prospective" data-audience-panel="prospective" role="tabpanel">
         @if(!empty($admissions['deadline_note']))
           <p class="intake-strip">
             <i class="fas fa-calendar-check" aria-hidden="true"></i>
             <span>{{ $admissions['deadline_note'] }}</span>
-            <a href="{{ route('admissions.intakes') }}" wire:navigate>Intake dates <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+            <a href="{{ $applyUrl }}" rel="external">Apply now <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
           </p>
         @endif
         <div class="icon-row">
@@ -118,7 +123,7 @@
         </div>
       </div>
 
-      <div class="audience-panel" id="audience-current" data-audience-panel="current" role="tabpanel" hidden>
+      <div class="audience-panel" id="audience-current" data-audience-panel="current" role="tabpanel">
         <div class="icon-row">
           <a href="{{ $eportalUrl }}" rel="external">
             <span class="ic"><i class="fas fa-right-to-bracket" aria-hidden="true"></i></span>
@@ -139,7 +144,7 @@
         </div>
       </div>
 
-      <div class="audience-panel" id="audience-parent" data-audience-panel="parent" role="tabpanel" hidden>
+      <div class="audience-panel" id="audience-parent" data-audience-panel="parent" role="tabpanel">
         <div class="icon-row">
           <a href="{{ route('admissions.fees') }}" wire:navigate>
             <span class="ic"><i class="fas fa-money-bill-wave" aria-hidden="true"></i></span>
@@ -160,7 +165,7 @@
         </div>
       </div>
 
-      <div class="audience-panel" id="audience-international" data-audience-panel="international" role="tabpanel" hidden>
+      <div class="audience-panel" id="audience-international" data-audience-panel="international" role="tabpanel">
         <div class="icon-row">
           <a href="{{ route('admissions.international') }}" wire:navigate>
             <span class="ic"><i class="fas fa-earth-africa" aria-hidden="true"></i></span>
@@ -179,6 +184,7 @@
             <span>Contact Us</span>
           </a>
         </div>
+      </div>
       </div>
     </div>
   </div>

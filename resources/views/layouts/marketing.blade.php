@@ -621,22 +621,31 @@
         tab.tabIndex = on ? 0 : -1;
       });
       panels.forEach(function(panel){
-        var on = panel.dataset.audiencePanel === name;
-        panel.hidden = !on;
-        if (on) {
-          // The same trick the slider's dots use to replay an animation: a
-          // class re-added in the same frame does not restart it, so remove,
-          // force layout, then re-add.
-          panel.classList.remove('is-entering');
-          void panel.offsetWidth;
-          panel.classList.add('is-entering');
-        }
+        // Visibility lives in CSS (.is-active cross-fades panels stacked in
+        // one grid cell); the old hidden-attribute + replay-animation pair
+        // is gone with it.
+        panel.classList.toggle('is-active', panel.dataset.audiencePanel === name);
       });
     }
 
     tabs.forEach(function(tab){
       tab.addEventListener('click', function(){ show(tab.dataset.audience); });
     });
+
+    /* Hover switches too — but only where hover is a real thing (a mouse or
+       trackpad, not a finger), and only after a short dwell, so a cursor
+       merely crossing the strip on its way elsewhere doesn't riffle through
+       all four panels. Click and keyboard behave exactly as before. */
+    if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+      var hoverTimer = null;
+      tabs.forEach(function(tab){
+        tab.addEventListener('mouseenter', function(){
+          clearTimeout(hoverTimer);
+          hoverTimer = setTimeout(function(){ show(tab.dataset.audience); }, 130);
+        });
+        tab.addEventListener('mouseleave', function(){ clearTimeout(hoverTimer); });
+      });
+    }
 
     tablist.addEventListener('keydown', function(e){
       if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
