@@ -227,10 +227,22 @@
           </a>
         </div>
       </div>
-      <div data-rise style="text-align:center;">
-        <img src="{{ asset('images/logo-icon.png') }}" alt="The crest of Muteesa I Royal University"
-             loading="lazy" decoding="async" style="max-width:260px;margin:0 auto;">
-      </div>
+      {{-- A real photograph instead of a crest floating in white space: the
+           Katikkiro-led Kingdom partnership the paragraphs describe, from the
+           university's own news coverage of the Buganda Partnership
+           Symposium. The crest stays — as a seal over the photo's edge, the
+           way it would sit on a letterhead, not as the whole exhibit. --}}
+      <figure class="heritage-card" data-rise>
+        <span class="heritage-frame">
+          <img class="heritage-photo" src="{{ asset('images/about-heritage.jpg') }}"
+               alt="A speaker at the Buganda Partnership Symposium holding the Kingdom's Social Transformation booklet"
+               width="880" height="1100" loading="lazy" decoding="async">
+          <span class="heritage-crest" aria-hidden="true">
+            <img src="{{ asset('images/logo-icon.png') }}" alt="" width="62" height="62" loading="lazy" decoding="async">
+          </span>
+        </span>
+        <figcaption>At the Buganda Partnership Symposium</figcaption>
+      </figure>
     </div>
   </div>
 </section>

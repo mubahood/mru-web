@@ -1239,3 +1239,57 @@ screenshots show the 2×2 grid and a successful tap switch. Full suite ran at 03
 UTC, inside Phase W's documented analytics flake window — and failed exactly the two documented
 fixture-clock tests; the analytics file was re-run after 00:30 UTC and came back green, keeping
 the real baseline intact.
+
+## 2026-09-04 — Phase Y: the picker stops hoarding height, and About gets a photograph
+
+Feedback came with a screenshot: with Parent/Guardian selected, a wall of blank space sat between
+the four cards and the next section. That was Phase X's own trade-off showing — the grid-stacked
+panels sized the block to the *tallest* panel permanently, which bought zero layout shift at the
+price of dead space under every shorter panel. And a second instruction: give "A royal university
+with a modern mission" the full-focus treatment.
+
+### The stage now hugs the active panel — measured, not stretched
+
+The fix keeps both halves of the bargain: no dead space *and* no jump. `fitStage()` pins the
+stack's height to the active panel's own height and CSS transitions it (280ms), so switching
+settles instead of snapping; re-measured on debounced resize because wrapping changes every
+panel's height. The first attempt didn't work and the reason is worth writing down: grid items
+**stretch to the row by default**, so every panel measured 244px — the tallest panel's height —
+and the "short" panels weren't short at all, just stretched with empty insides
+(`offsetHeight` said 244 for all four; the intake strip alone is 49px, so that was clearly
+wrong). `align-items:start` on the stack made each panel own its true height, and the numbers
+came apart properly. The contract test now asserts the opposite of what Phase X asserted — that
+the stage *equals the active panel's height* after every switch, and that the short panel really
+is >20px shorter than Prospective — because "no dead space" is now the promise, where "never
+changes height" was before. **21/21.**
+
+### About: a photograph of the exact thing the paragraphs claim
+
+The right column was a crest floating in white space — accurate, but flat, and the crest already
+appears in the header a hand's width above it. The paragraphs' core claim is "strong support from
+the Executive Committee of the Buganda Kingdom, led by the Katikkiro" — and the news library has
+a photograph of precisely that: the Buganda Partnership Symposium coverage, a speaker at the
+lectern holding the Kingdom's own *Social Transformation* booklet. Rejected on the way (looked
+at, not guessed): the AMATIKKIRA coronation-anniversary image (a designed social-media poster
+with text overlays, not a photograph) and the Leaders' Retreat photo (a generic conference hall).
+
+The composition is a "letterhead" figure: the photograph rounded and shadowed, the crest reduced
+to an 88px seal sitting half-over the photo's bottom edge (anchored to a dedicated
+`.heritage-frame` wrapper, because anchoring to the figure would have measured the caption too),
+and a one-line caption in the quiet text tone. The crest survives — as a seal, which is what
+crests are for — instead of being the whole exhibit. The processed image lives in
+`public/images/about-heritage.jpg` as a design asset (not a `storage/` news path a future admin
+clean-up could break), cropped 4:5 with the same ImageMagick pipeline as everything else this
+week, subject confirmed intact after the crop. Alt text describes the scene without asserting
+any individual's name; the caption says where, not who.
+
+### Verified
+
+Audience contract 21/21 (two new height assertions replacing Phase X's fixed-height one — the
+sub-dwell hover check and everything else unchanged). Menu 10/10, slider 14/14. Homepage 200,
+braces 1429/1429, no horizontal overflow at 1440px or 390px. Screenshots: desktop shows the
+Parent/Guardian panel sitting tight above the About band (the complained-about gap gone), the
+heritage card balanced against the text column; mobile shows the card stacking under the text at
+340px with the seal and caption intact. Full suite at 03:39 EAT — outside the flake window this
+time — **1134 passed, 1 skipped**: the true baseline, green, further confirming Phase W's
+diagnosis by passing exactly when the clock says it should.

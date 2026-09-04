@@ -611,7 +611,18 @@
     var tabs = [].slice.call(picker.querySelectorAll('[data-audience]'));
     var panels = [].slice.call(picker.querySelectorAll('[data-audience-panel]'));
     var tablist = picker.querySelector('[role="tablist"]');
-    if (!tabs.length || !panels.length || !tablist) return;
+    var stage = picker.querySelector('.audience-panels');
+    if (!tabs.length || !panels.length || !tablist || !stage) return;
+
+    /* The stack sizes itself to its tallest panel, which left dead space
+       under the shorter ones. Instead the stage's height is pinned to the
+       active panel and transitioned in CSS — no dead space, and no jump
+       either, just a settle. Re-measured on resize because wrapping changes
+       every panel's height. */
+    function fitStage(){
+      var active = panels.find(function(p){ return p.classList.contains('is-active'); });
+      if (active) stage.style.height = active.offsetHeight + 'px';
+    }
 
     function show(name){
       tabs.forEach(function(tab){
@@ -626,7 +637,15 @@
         // is gone with it.
         panel.classList.toggle('is-active', panel.dataset.audiencePanel === name);
       });
+      fitStage();
     }
+
+    fitStage();
+    var fitTimer = null;
+    window.addEventListener('resize', function(){
+      clearTimeout(fitTimer);
+      fitTimer = setTimeout(fitStage, 120);
+    });
 
     tabs.forEach(function(tab){
       tab.addEventListener('click', function(){ show(tab.dataset.audience); });

@@ -2570,13 +2570,15 @@ a.stat-link:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
 
 .audience-panel .intake-strip{margin-bottom:var(--s-5);}
 
-/* All four panels occupy the same grid cell, so the block's height is the
-   tallest panel's height at all times — switching never moves the sections
-   below it, which matters twice over now that hovering a tab switches.
+/* All four panels occupy the same grid cell; the stage's height is pinned
+   by JS to the active panel and transitioned, so switching neither leaves
+   dead space under a short panel nor jumps the sections below — it settles.
    Hidden panels are visibility:hidden (out of the a11y tree and tab order,
-   like display:none) rather than display:none, because display:none panels
-   have no height to size the stack by. */
-.audience-panels{display:grid;}
+   like display:none) rather than display:none, so they can still be
+   measured and cross-faded in place. */
+.audience-panels{display:grid;align-items:start;overflow:hidden;
+  transition:height .28s cubic-bezier(.22,.61,.36,1);}
+@media(prefers-reduced-motion:reduce){.audience-panels{transition:none;}}
 .audience-panel{grid-area:1/1;visibility:hidden;opacity:0;transform:translateY(8px);
   pointer-events:none;
   transition:opacity .28s ease,transform .28s cubic-bezier(.22,.61,.36,1),visibility 0s .28s;}
@@ -2594,6 +2596,22 @@ a.stat-link:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
   .audience-tab{width:100%;text-align:center;padding:12px 8px;
     border:1px solid var(--line);background:#fff;}
   .audience-tab.is-active{border-color:var(--pri);}
+}
+
+/* The About band's photo card: a real photograph with the crest sitting
+   over its bottom edge like a seal on a letterhead, caption beneath. */
+.heritage-card{margin:0 auto;max-width:400px;}
+.heritage-frame{position:relative;display:block;}
+.heritage-photo{display:block;width:100%;height:auto;border-radius:var(--r-lg);
+  box-shadow:var(--sh-2);}
+.heritage-crest{position:absolute;left:50%;bottom:0;transform:translate(-50%,50%);
+  width:88px;height:88px;border-radius:50%;background:#fff;border:1px solid var(--line);
+  box-shadow:var(--sh-2);display:flex;align-items:center;justify-content:center;}
+.heritage-crest img{width:60px;height:auto;}
+.heritage-card figcaption{margin-top:58px;text-align:center;font-size:12.5px;
+  color:var(--tx3);letter-spacing:.02em;}
+@media(max-width:820px){
+  .heritage-card{max-width:340px;margin-top:8px;}
 }
 
 /* Two facts already written for /about, never shown here — full sentences,
