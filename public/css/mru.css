@@ -2702,6 +2702,90 @@ a.grad-school-strip{flex-direction:row;}
   .grad-school-media{order:-1;width:100%;height:auto;flex:none;aspect-ratio:16/9;}
 }
 
+/* Scholarships as a bento: the Kabaka's Scholarship holds a tall featured
+   cell — the one scheme no other university can offer earns the flagship
+   spot and a standing gold rule — while the other five stand beside it as
+   compact cards. */
+.scholarship-bento{display:grid;grid-template-columns:1.25fr 1fr 1fr;gap:24px;
+  margin-bottom:var(--s-4);}
+.scholarship-featured{grid-row:span 3;display:flex;flex-direction:column;
+  position:relative;overflow:hidden;}
+.scholarship-featured::after{content:'';position:absolute;top:0;left:0;right:0;
+  height:3px;background:var(--gold);}
+.scholarship-featured .ic{background:var(--gold-soft);color:var(--gold-d);}
+.scholarship-featured h3{font-size:20px;}
+.scholarship-facts{display:grid;gap:10px;margin:16px 0 8px;}
+.scholarship-facts .fact{font-size:13.5px;line-height:1.5;color:var(--tx);
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
+  padding:10px 13px;}
+.scholarship-facts .fact span{display:block;font-size:10.5px;font-weight:700;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--gold-d);margin-bottom:3px;}
+.scholarship-featured .link{margin-top:auto;padding-top:14px;font-size:13.5px;}
+.scholarship-featured .link::after{content:none;}
+.scholarship-card{display:flex;flex-direction:column;gap:5px;padding:20px;}
+.scholarship-card .ic{width:40px;height:40px;font-size:16px;margin-bottom:8px;}
+.scholarship-card h3{font-size:15.5px;margin:0;}
+.scholarship-cov{font-size:12.5px;color:var(--gold-d);font-weight:600;}
+/* The sixth cell closes the bento on purpose: a quiet "all schemes" tile
+   instead of either a stranded card or an empty hole. */
+.scholarship-more{display:flex;flex-direction:column;align-items:flex-start;
+  justify-content:center;gap:6px;padding:20px;border:1.5px dashed var(--line-2);
+  border-radius:var(--r-lg);color:var(--pri);font-weight:700;font-size:15px;
+  transition:border-color .2s,background .2s;}
+.scholarship-more span{font-size:12.5px;font-weight:500;color:var(--tx2);}
+.scholarship-more:hover{border-color:var(--pri);background:var(--pri-soft);}
+.sec-cta{text-align:center;margin-top:var(--s-3);}
+@media(max-width:980px){
+  .scholarship-bento{grid-template-columns:1fr 1fr;}
+  .scholarship-featured{grid-row:auto;grid-column:1/-1;}
+}
+@media(max-width:560px){.scholarship-bento{grid-template-columns:1fr;}}
+
+/* The academic year as four stops on one gold line — horizontal on desktop,
+   a left rail on phones. */
+.year-line{list-style:none;margin:0;padding:0;position:relative;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:28px;}
+.year-line::before{content:'';position:absolute;top:7px;left:8px;right:8px;height:2px;
+  border-radius:var(--r-pill);background:linear-gradient(90deg,var(--gold),var(--line-2));}
+.year-stop{position:relative;padding-top:30px;}
+.year-dot{position:absolute;top:0;left:0;width:16px;height:16px;border-radius:50%;
+  background:#fff;border:3px solid var(--gold);}
+.year-when{display:block;font-family:ui-monospace,Menlo,monospace;font-size:11.5px;
+  font-weight:700;color:var(--gold-d);}
+.year-what{display:block;font-size:14.5px;font-weight:600;color:var(--tx);
+  line-height:1.5;margin:7px 0 10px;}
+.year-sem{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--tx3);border:1px solid var(--line);
+  border-radius:var(--r-pill);padding:3px 10px;}
+@media(max-width:900px){
+  .year-line{grid-template-columns:1fr;gap:26px;padding-left:30px;}
+  .year-line::before{top:6px;bottom:6px;left:7px;right:auto;width:2px;height:auto;
+    background:linear-gradient(180deg,var(--gold),var(--line-2));}
+  .year-stop{padding-top:0;}
+  .year-dot{left:-30px;top:2px;}
+}
+
+/* Leadership: four portrait cards. The photographs are studio headshots on
+   white, so the frame keeps a surface tint behind them; hover borrows the
+   faculty cards' language — gold rule along the top, the portrait breathes. */
+.lead-grid{display:grid;gap:24px;margin-bottom:var(--s-4);
+  grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));}
+.lead-card{display:flex;flex-direction:column;padding:0 0 20px;text-align:center;
+  position:relative;overflow:hidden;}
+.lead-card::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:var(--gold);transform:scaleX(0);transform-origin:left;
+  transition:transform .3s cubic-bezier(.22,.61,.36,1);}
+.lead-card:hover::after,.lead-card:focus-visible::after{transform:scaleX(1);}
+.lead-media{display:block;aspect-ratio:4/5;background:var(--surface);overflow:hidden;}
+.lead-media img{width:100%;height:100%;object-fit:cover;object-position:top center;
+  transition:transform .5s cubic-bezier(.22,.61,.36,1);}
+.lead-card:hover .lead-media img{transform:scale(1.05);}
+.lead-card h3{font-size:16px;margin:16px 14px 3px;}
+.lead-card p{font-size:13px;color:var(--tx2);margin:0 14px;}
+@media(prefers-reduced-motion:reduce){
+  .lead-card::after,.lead-media img{transition:none;}
+}
+
 /* News & Events on a fixed photograph: the page scrolls, the picture holds
    still, the cards float over it. background-attachment:fixed only where a
    real pointer exists — mobile browsers ignore or jank it, so they get the

@@ -10,6 +10,7 @@ use App\Models\GalleryPhoto;
 use App\Models\Partner;
 use App\Models\Post;
 use App\Models\Publication;
+use App\Models\Scholarship;
 use App\Models\StaffMember;
 use App\Models\UniversityEvent;
 use App\Support\Spam\Captcha;
@@ -33,8 +34,43 @@ class PageController extends Controller
             'events' => UniversityEvent::published()->upcoming()->limit(3)->get(),
             'publications' => Publication::published()->where('is_featured', true)->with('authorRows.scholar')->limit(3)->get(),
             'partners' => Partner::showOnHome()->orderBy('sort_order')->get(),
+            'scholarships' => Scholarship::where('is_published', true)->orderBy('sort_order')->get(),
+            'leaders' => StaffMember::where('is_published', true)->where('staff_role', 'leadership')
+                ->whereNotNull('photo')->orderBy('sort_order')->limit(4)->get(),
+            'yearGlance' => $this->yearGlance(),
             'testimonials' => collect(json_decode((string) \App\Support\Settings::get('portfolio.testimonials', '[]'), true) ?: []),
         ]);
+    }
+
+    /**
+     * Four landmarks of the academic year for the homepage timeline. The
+     * almanac stores its dates inside free-text periods ("Week 1 — Aug 18 -
+     * Aug 24, 2026"), so landmarks are picked by what they say, not when
+     * they are: orientation, cultural week, the Semester I finals, and
+     * graduation. If an admin rewrites the almanac and fewer than three
+     * match, fall back to the first four rows rather than a broken line.
+     */
+    private function yearGlance(): \Illuminate\Support\Collection
+    {
+        $entries = AlmanacEntry::orderBy('sort_order')->get();
+
+        $pick = function (string $needle, ?string $semester = null) use ($entries) {
+            $matches = $entries->filter(fn ($e) => str_contains(strtolower((string) $e->activity), $needle));
+            if ($semester) {
+                $matches = $matches->sortBy(fn ($e) => $e->semester === $semester ? 0 : 1);
+            }
+
+            return $matches->first();
+        };
+
+        $landmarks = collect([
+            $pick('orientation'),
+            $pick('cultural'),
+            $pick('final examinations', 'Semester I'),
+            $pick('graduation'),
+        ])->filter()->unique('id')->values();
+
+        return $landmarks->count() >= 3 ? $landmarks : $entries->take(4)->values();
     }
 
     public function about(): View

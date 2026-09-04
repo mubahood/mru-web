@@ -1422,3 +1422,57 @@ deleted teasers' destinations live on. Hover state screenshotted (gold rule draw
 offsets; mobile band screenshotted with `background-attachment: scroll` confirmed computed. No
 horizontal overflow at 1440px or 390px. Braces 1449/1449, orphan grep for the deleted classes:
 zero. Full suite **1134 passed, 1 skipped**, unchanged.
+
+## 2026-09-04 — Phase AB: three new sections, chosen by inventory, not imagination
+
+The brief asked for three creative additions "based on our backed up data, images available" —
+so the round began as an audit, not a sketch. Candidates were kept only if a real model with real
+rows and, where needed, real photographs stood behind them. Chosen: **Scholarships** (a
+`Scholarship` model with six published schemes — verifying that also proved the nav blurb's "six
+schemes" claim true), **the academic year** (fourteen 2026/27 `AlmanacEntry` rows whose year we
+are actually inside), and **Leadership** (four officers with portrait files on disk — two more
+rows are photo-less placeholders and are filtered out in the controller, not papered over in the
+view). All three also map directly onto the NN/g findings in `docs/03` — cost and scholarship
+visibility, deadline awareness, and "people pages persuade". Rejected on data grounds:
+e-learning short courses (inherited LMS content, brand-odd for this page), vacancies (rarely
+populated), and anything the user has previously removed (values, testimonials, gallery,
+programme teasers stay gone).
+
+### Scholarships: a bento with the Kabaka's Scholarship in the flagship cell
+
+The one scheme no other university can offer holds a tall featured card — crown icon, a standing
+gold rule, and its actual `coverage` ("50–100% tuition fee waiver") and `criteria` rendered as
+labelled facts, not marketing copy. The first cut stranded the fifth compact card on a ragged
+third row: a featured card spanning two rows leaves a 2×2 pocket, and five into four does not
+go. The fix made the geometry honest — the featured cell spans three rows, giving a 2×3 pocket
+that seats the five schemes plus a dashed "All scholarships & bursaries" closer tile in the
+sixth cell, which also replaced the redundant centre button below the grid.
+
+### The year on one line
+
+Four landmarks — freshers' orientation (Aug), Buganda Kingdom Cultural Week (Oct), Semester I
+finals (Dec), graduation (Apr) — as stops on a gold line, horizontal at desktop, a left rail on
+phones. The almanac stores its dates as human text ("Week 1 — Aug 18 - Aug 24, 2026"), so the
+section shows the year's shape rather than pretending to a live countdown, and the controller
+picks landmarks by what they say (`orientation`, `cultural`, `final examinations` preferring
+Semester I, `graduation`) with a first-four fallback if an admin rewrites the almanac out from
+under the keywords.
+
+### Leadership: four real faces
+
+VC, Deputy VC, Academic Registrar, Dean of Students — studio portraits on white, framed 4:5 over
+a surface tint so the white backgrounds don't bleed into white cards, names and titles beneath,
+everything linking to `/governance`. Hover borrows the faculty cards' established language: the
+gold rule draws along the top, the portrait breathes. No new interaction vocabulary invented for
+a page that already has one.
+
+### Verified
+
+All three destination routes (`admissions.scholarships`, `governance`, `almanac`) confirmed with
+`Route::has()` before being written into the view, then curled 200 after. Homepage 200 with all
+three headings present; braces 1496/1496; no horizontal overflow at 1440px or 390px; desktop
+screenshots reviewed for each section and the mobile timeline confirmed on its left rail. Menu
+10/10, slider 14/14, audience 21/21, full suite **1134 passed, 1 skipped** — unchanged. Page
+order now: hero → intro → About → Faculties → Scholarships (surface) → News on photograph →
+Scholar (deep) → Year at a glance (plain) → Leadership (surface) → Partners → CTA, keeping the
+light/dark alternation intact.

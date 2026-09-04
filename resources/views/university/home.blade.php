@@ -327,6 +327,62 @@
 </section>
 @endif
 
+@if($scholarships->isNotEmpty())
+{{-- Six real schemes from the Scholarship model, arranged as a bento: the
+     Kabaka's Scholarship — the one no other university can offer — holds
+     the tall featured cell with its actual coverage and criteria, and the
+     other five stand beside it as compact cards. Everything links to the
+     same admissions page, where the full terms live. --}}
+<section class="band-surface tex-grid">
+  <div class="wrap">
+    <div class="sec-head left">
+      <h2>Scholarships that open the door</h2>
+      <p>{{ $scholarships->count() }} schemes — merit, need, sports, disability support and partner
+         awards — including the Kabaka's own scholarship for students of the Kingdom.</p>
+    </div>
+    @php $kabaka = $scholarships->first(fn ($s) => str_contains(strtolower($s->name), 'kabaka')); @endphp
+    <div class="scholarship-bento">
+      @if($kabaka)
+        <a href="{{ route('admissions.scholarships') }}" wire:navigate class="card scholarship-featured" data-rise>
+          <span class="ic"><i class="fas fa-crown" aria-hidden="true"></i></span>
+          <h3>{{ $kabaka->name }}</h3>
+          <p>{{ $kabaka->description }}</p>
+          <div class="scholarship-facts">
+            @if($kabaka->coverage)
+              <div class="fact"><span>Coverage</span>{{ $kabaka->coverage }}</div>
+            @endif
+            @if($kabaka->criteria)
+              <div class="fact"><span>Who qualifies</span>{{ $kabaka->criteria }}</div>
+            @endif
+          </div>
+          <span class="link">How to qualify <i class="fas fa-arrow-right" aria-hidden="true"></i></span>
+        </a>
+      @endif
+      @foreach($scholarships->reject(fn ($s) => $kabaka && $s->is($kabaka)) as $scheme)
+        @php
+          $schemeIcons = ['academic' => 'fa-award', 'financial' => 'fa-hand-holding-heart',
+                          'sports' => 'fa-futbol', 'disabilit' => 'fa-universal-access',
+                          'partner' => 'fa-handshake'];
+          $icon = 'fa-graduation-cap';
+          foreach ($schemeIcons as $needle => $candidate) {
+              if (str_contains($scheme->slug, $needle)) { $icon = $candidate; break; }
+          }
+        @endphp
+        <a href="{{ route('admissions.scholarships') }}" wire:navigate class="card scholarship-card" data-rise>
+          <span class="ic"><i class="fas {{ $icon }}" aria-hidden="true"></i></span>
+          <h3>{{ $scheme->name }}</h3>
+          @if($scheme->coverage)<p class="scholarship-cov">{{ $scheme->coverage }}</p>@endif
+        </a>
+      @endforeach
+      <a href="{{ route('admissions.scholarships') }}" wire:navigate class="scholarship-more" data-rise>
+        All scholarships &amp; bursaries <i class="fas fa-arrow-right" aria-hidden="true"></i>
+        <span>Full terms, criteria and how to apply</span>
+      </a>
+    </div>
+  </div>
+</section>
+@endif
+
 @if($news->isNotEmpty() || $events->isNotEmpty())
 {{-- A photograph of the university's own festival grounds, fixed in place
      while the cards float over it on scroll — fixed only where hover exists,
@@ -407,6 +463,69 @@
     </div>
   </div>
 </section>
+
+@if($yearGlance->isNotEmpty())
+{{-- The almanac's four landmark weeks on one gold line. The almanac keeps
+     its dates as human text, so this shows the year's shape rather than
+     claiming a live countdown — the full week-by-week table is one click
+     away. --}}
+<section>
+  <div class="wrap">
+    <div class="sec-head left">
+      <h2>{{ $yearGlance->first()->academic_year }}, at a glance</h2>
+      <p>Four landmarks of the academic year. The full almanac has every week of both semesters.</p>
+    </div>
+    <ol class="year-line" data-rise>
+      @foreach($yearGlance as $stop)
+        <li class="year-stop">
+          <span class="year-dot" aria-hidden="true"></span>
+          <span class="year-when">{{ $stop->period }}</span>
+          <span class="year-what">{{ $stop->activity }}</span>
+          <span class="year-sem">{{ $stop->semester }}</span>
+        </li>
+      @endforeach
+    </ol>
+    <div class="sec-cta" data-rise>
+      <a href="{{ route('almanac') }}" wire:navigate class="btn ghost">
+        Full academic almanac <i class="fas fa-arrow-right" aria-hidden="true"></i>
+      </a>
+    </div>
+  </div>
+</section>
+@endif
+
+@if($leaders->isNotEmpty())
+{{-- Four real officers with real portraits (rows without a photo are
+     placeholders and are filtered out in the controller). NN/g's research
+     note in docs/03 — people pages persuade — is the reason this earns
+     homepage space. Cards link to governance, where the full structure
+     lives. --}}
+<section class="band-surface tex-glow">
+  <div class="wrap">
+    <div class="sec-head left">
+      <h2>The people leading MRU</h2>
+      <p>A university answers to its students through its officers — meet the four who lead this one.</p>
+    </div>
+    <div class="lead-grid">
+      @foreach($leaders as $leader)
+        <a href="{{ route('governance') }}" wire:navigate class="card lead-card" data-rise>
+          <span class="lead-media">
+            <img src="{{ asset('storage/'.$leader->photo) }}" alt=""
+                 width="600" height="750" loading="lazy" decoding="async">
+          </span>
+          <h3>{{ $leader->name }}</h3>
+          <p>{{ $leader->title }}</p>
+        </a>
+      @endforeach
+    </div>
+    <div class="sec-cta" data-rise>
+      <a href="{{ route('governance') }}" wire:navigate class="btn ghost">
+        Governance &amp; leadership <i class="fas fa-arrow-right" aria-hidden="true"></i>
+      </a>
+    </div>
+  </div>
+</section>
+@endif
 
 {{-- Omitted entirely until real student quotes exist: an empty "what our
      students say" band is worse than none. --}}
