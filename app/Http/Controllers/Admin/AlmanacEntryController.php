@@ -61,10 +61,14 @@ class AlmanacEntryController extends Controller
             'starts_on' => 'nullable|date',
             'ends_on' => 'nullable|date|after_or_equal:starts_on',
             'activity' => 'required|string|max:300',
+            'responsible' => 'nullable|string|max:255',
+            'category' => 'nullable|string|in:'.implode(',', array_keys(\App\Models\AlmanacEntry::CATEGORIES)),
+            'is_key_date' => 'nullable|boolean',
             'sort_order' => 'nullable|integer',
         ]);
 
         $data['sort_order'] = $data['sort_order'] ?? 0;
+        $data['is_key_date'] = $request->boolean('is_key_date');
 
         return $data;
     }

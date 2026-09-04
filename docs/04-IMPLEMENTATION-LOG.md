@@ -1538,3 +1538,71 @@ programmatic check that no seal's box overlaps its own name's box. Menu 10/10, s
 audience 21/21, `/governance` 200, no horizontal overflow at 1440px or 390px, braces 1500/1500,
 orphan grep for the replaced `.lead-grid`/`.lead-card`/`.lead-media` classes: zero. Full suite
 **1134 passed, 1 skipped**.
+
+## 2026-09-04 — Phase AD: the real almanac replaces fourteen placeholder rows
+
+The Academic Registrar's consolidated Academic Almanac 2026/2027 arrived in full — the cycle
+overview, twelve months of dated activity, the cross-year commitments, an abbreviation list and
+the Senate confirmation register. The table held fourteen invented rows. This round replaced the
+content and rebuilt both surfaces that read it.
+
+### What the schema could not hold
+
+Two of the source's three columns had nowhere to go. `almanac_entries` had `activity` and a
+free-text `period`, but no field for **who is answerable** — a primary column in the Registrar's
+document and arguably its most useful one. It also had `starts_on`/`ends_on` columns that every
+existing row left **null**, so the almanac could not be sorted, filtered or asked "what is next"
+without parsing English. Added `responsible`, `category` and `is_key_date`; populated the date
+columns properly for all 230 dated entries. Sorting, month grouping, the homepage strip and the
+category filter all now read structured data rather than guessing at prose — the homepage's
+`yearGlance()` in particular dropped its keyword-matching heuristic ("find an activity containing
+the word *graduation*") for a straight `is_key_date` + `upcoming()` query.
+
+### Transcription, and two classes of source problem handled openly
+
+252 entries: 112 in Semester I, 97 in Semester II, 21 in the recess, 22 undated standing
+commitments; 14 public holidays; 17 flagged as key dates. Two problems in the source were handled
+explicitly rather than papered over, and both are recorded in the seeder's own docblock:
+
+- **Year typos inside a month section.** The April 2027 table carries "3/5/6 April 2026" for
+  Easter and "8 April 2026" for a Faculty Board; January 2027 carries "6 January 2026". These are
+  normalised to the year of the section they sit in — the same treatment the document's own
+  "Editorial normalisations applied" table describes. But the Easter *dates* are 2026's dates (in
+  2027 Good Friday falls in March), so rather than silently substitute dates I computed myself,
+  those three rows are published as "date pending confirmation" and flagged to the university.
+- **Undated work.** "TBC" and "Ongoing throughout the academic year" entries keep no start date
+  and group under a separate "Running through the year" section, so they can never masquerade as
+  belonging to a month.
+
+The document's internal draft-control apparatus — the confirmation register and the editorial
+normalisation table — is deliberately *not* seeded as calendar entries: it is Senate review
+material, not the academic year. The abbreviation list is, because a reader meeting "FSTEAD" or
+"CGC" needs it. A standing note on the page states that this is the consolidated draft pending
+Senate approval, which is what the document says of itself.
+
+### The two surfaces
+
+**Homepage.** Four stops became four real dated cards — a navy day/month chip beside the period,
+activity and semester — reading the next key dates from today rather than four hand-picked
+landmarks. Today that is 7 Sep tests → 16 Oct timetable → 16 Nov examinations → 29 Nov end of
+semester. Once the year ends it falls back to the last four rather than rendering empty.
+
+**The almanac page** was a single inline-styled table grouped year → semester. It is now: a
+milestone grid where past dates dim themselves and are marked "Completed"; a "Next key date"
+panel; a category filter (eight kinds, progressive enhancement — every row ships visible, and a
+month whose rows are all filtered out hides its own heading so no empty table headers are left
+behind); month-by-month tables carrying date, activity, category and the office in charge, with
+public holidays tinted gold; the standing cross-year commitments; and the abbreviations.
+
+### Verified
+
+Filter proven by measurement, not appearance: clicking *Examinations* leaves 24 visible rows
+across 9 months, and every visible row's category is `examination` — 24 matching the database's
+own count exactly. The first filter test appeared to fail entirely; the cause was my own script
+scrolling the chip under the sticky header (`scrollIntoView({block:'start'})`), the same trap as
+Phase X — `elementFromPoint` identified it, and a programmatic click proved the logic sound before
+the pointer test was corrected. The seeder is idempotent (re-running holds at 252, not 504) and is
+registered in `DatabaseSeeder`, so a fresh install gets the real almanac rather than nothing.
+Admin CRUD extended for all three new fields. `/almanac` 200, admin 302 (auth). Menu 10/10,
+slider 14/14, audience 21/21, no horizontal overflow at 1440px or 390px (the month tables scroll
+inside their own container by design), braces 1543/1543, full suite **1134 passed, 1 skipped**.

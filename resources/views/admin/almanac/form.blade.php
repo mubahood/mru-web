@@ -45,8 +45,29 @@
         @error('ends_on')<p class="tb-field-error">{{ $message }}</p>@enderror
       </div>
       <div class="tb-form-group">
+        <label class="tb-label">Person(s) / office in charge</label>
+        <input class="tb-input" type="text" name="responsible" value="{{ old('responsible', $item->responsible) }}" maxlength="255" placeholder="e.g. Academic Registrar / Examinations Office">
+        @error('responsible')<p class="tb-field-error">{{ $message }}</p>@enderror
+      </div>
+      <div class="tb-form-group">
+        <label class="tb-label">Category</label>
+        <select class="tb-input" name="category">
+          <option value="">— None —</option>
+          @foreach(\App\Models\AlmanacEntry::CATEGORIES as $key => $meta)
+            <option value="{{ $key }}" @selected(old('category', $item->category) === $key)>{{ $meta[0] }}</option>
+          @endforeach
+        </select>
+        @error('category')<p class="tb-field-error">{{ $message }}</p>@enderror
+      </div>
+      <div class="tb-form-group">
         <label class="tb-label">Sort order</label>
         <input class="tb-input" type="number" name="sort_order" value="{{ old('sort_order', $item->sort_order) }}">
+      </div>
+      <div class="tb-form-group">
+        <label class="tb-label" style="display:flex;align-items:center;gap:8px;">
+          <input type="checkbox" name="is_key_date" value="1" @checked(old('is_key_date', $item->is_key_date))>
+          Key date (may appear on the homepage)
+        </label>
       </div>
     </div>
   </div>

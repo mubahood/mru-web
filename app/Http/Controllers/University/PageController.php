@@ -43,34 +43,21 @@ class PageController extends Controller
     }
 
     /**
-     * Four landmarks of the academic year for the homepage timeline. The
-     * almanac stores its dates inside free-text periods ("Week 1 — Aug 18 -
-     * Aug 24, 2026"), so landmarks are picked by what they say, not when
-     * they are: orientation, cultural week, the Semester I finals, and
-     * graduation. If an admin rewrites the almanac and fewer than three
-     * match, fall back to the first four rows rather than a broken line.
+     * The homepage's academic-year strip. Entries now carry real dates and an
+     * editor-set `is_key_date` flag, so this asks the data rather than
+     * guessing from activity wording as the first version had to: the four
+     * key dates still ahead, falling back to the last four of the year once
+     * the year is over, so the strip is never empty mid-August.
      */
     private function yearGlance(): \Illuminate\Support\Collection
     {
-        $entries = AlmanacEntry::orderBy('sort_order')->get();
+        $key = AlmanacEntry::where('is_key_date', true)->dated();
 
-        $pick = function (string $needle, ?string $semester = null) use ($entries) {
-            $matches = $entries->filter(fn ($e) => str_contains(strtolower((string) $e->activity), $needle));
-            if ($semester) {
-                $matches = $matches->sortBy(fn ($e) => $e->semester === $semester ? 0 : 1);
-            }
+        $upcoming = (clone $key)->upcoming()->orderBy('starts_on')->limit(4)->get();
 
-            return $matches->first();
-        };
-
-        $landmarks = collect([
-            $pick('orientation'),
-            $pick('cultural'),
-            $pick('final examinations', 'Semester I'),
-            $pick('graduation'),
-        ])->filter()->unique('id')->values();
-
-        return $landmarks->count() >= 3 ? $landmarks : $entries->take(4)->values();
+        return $upcoming->isNotEmpty()
+            ? $upcoming
+            : $key->orderByDesc('starts_on')->limit(4)->get()->sortBy('starts_on')->values();
     }
 
     public function about(): View
@@ -168,11 +155,27 @@ class PageController extends Controller
 
     public function almanac(): View
     {
-        $entries = AlmanacEntry::orderBy('sort_order')->get()
-            ->groupBy('academic_year')
-            ->map(fn ($year) => $year->groupBy('semester'));
+        $all = AlmanacEntry::orderBy('sort_order')->get();
 
-        return view('university.almanac', ['years' => $entries]);
+        // Months in chronological order; the undated "ongoing" work is pulled
+        // out so it can be presented as what it is rather than sorted into a
+        // month it does not belong to.
+        $dated = $all->filter(fn ($e) => $e->starts_on !== null)
+            ->sortBy([['starts_on', 'asc'], ['sort_order', 'asc']]);
+
+        return view('university.almanac', [
+            'year' => $all->first()?->academic_year,
+            'months' => $dated->groupBy(fn ($e) => $e->monthKey()),
+            'ongoing' => $all->filter(fn ($e) => $e->starts_on === null)->values(),
+            'keyDates' => $dated->where('is_key_date', true)->values(),
+            // The next milestone that has yet to *begin*. Deliberately not "the
+            // first entry still running", which today would surface a sports
+            // fixture that opened in August — true, but not what a reader
+            // means by "next".
+            'next' => $dated->where('is_key_date', true)->first(fn ($e) => $e->starts_on->gte(today())),
+            'categories' => $dated->pluck('category')->filter()->unique()->values(),
+            'total' => $all->count(),
+        ]);
     }
 
     public function downloads(): View

@@ -465,23 +465,30 @@
 </section>
 
 @if($yearGlance->isNotEmpty())
-{{-- The almanac's four landmark weeks on one gold line. The almanac keeps
-     its dates as human text, so this shows the year's shape rather than
-     claiming a live countdown — the full week-by-week table is one click
-     away. --}}
+{{-- The next four key dates from the almanac, read from real start dates
+     rather than picked by keyword. Each carries its own day and month, so
+     the strip is a calendar rather than a list of phrases. --}}
 <section>
   <div class="wrap">
     <div class="sec-head left">
       <h2>{{ $yearGlance->first()->academic_year }}, at a glance</h2>
-      <p>Four landmarks of the academic year. The full almanac has every week of both semesters.</p>
+      <p>The next milestones of the academic year. The full almanac carries every date of both
+         semesters and the office answerable for each.</p>
     </div>
     <ol class="year-line" data-rise>
       @foreach($yearGlance as $stop)
         <li class="year-stop">
-          <span class="year-dot" aria-hidden="true"></span>
-          <span class="year-when">{{ $stop->period }}</span>
-          <span class="year-what">{{ $stop->activity }}</span>
-          <span class="year-sem">{{ $stop->semester }}</span>
+          <span class="year-date" aria-hidden="true">
+            <span class="year-day">{{ $stop->starts_on->format('j') }}</span>
+            <span class="year-mon">{{ $stop->starts_on->format('M') }}</span>
+          </span>
+          <span class="year-body">
+            <span class="year-when">{{ $stop->period }}</span>
+            <span class="year-what">{{ $stop->activity }}</span>
+            <span class="year-sem">
+              <i class="fas {{ $stop->categoryIcon() }}" aria-hidden="true"></i> {{ $stop->semester }}
+            </span>
+          </span>
         </li>
       @endforeach
     </ol>

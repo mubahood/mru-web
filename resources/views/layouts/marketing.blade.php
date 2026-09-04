@@ -680,6 +680,44 @@
     });
   }
 
+  /* Almanac category filter. Progressive enhancement: the page ships with
+     every row visible, and this only ever hides rows the reader asked to
+     hide. A month whose rows are all filtered out hides its own heading too,
+     so the page never shows an empty month with a table header and nothing
+     under it. */
+  function initAlmanacFilter(){
+    var bar = document.querySelector('[data-alm-filters]');
+    if (!bar || bar.dataset.wired) return;
+    bar.dataset.wired = '1';
+
+    var chips = [].slice.call(bar.querySelectorAll('[data-alm-filter]'));
+    var rows = [].slice.call(document.querySelectorAll('[data-alm-row]'));
+    var months = [].slice.call(document.querySelectorAll('[data-alm-month]'));
+    var empty = document.querySelector('[data-alm-empty]');
+
+    function apply(filter){
+      var shown = 0;
+      rows.forEach(function(row){
+        var on = filter === 'all' || row.dataset.almCat === filter;
+        row.hidden = !on;
+        if (on) shown++;
+      });
+      months.forEach(function(month){
+        month.hidden = !month.querySelector('[data-alm-row]:not([hidden])');
+      });
+      if (empty) empty.hidden = shown > 0;
+      chips.forEach(function(chip){
+        var active = chip.dataset.almFilter === filter;
+        chip.classList.toggle('is-active', active);
+        chip.setAttribute('aria-pressed', active ? 'true' : 'false');
+      });
+    }
+
+    chips.forEach(function(chip){
+      chip.addEventListener('click', function(){ apply(chip.dataset.almFilter); });
+    });
+  }
+
   /* The header floats over the slider, so the body has to say whether this
      page has one. Derived from the DOM rather than set per page, so it stays
      correct across wire:navigate. */
@@ -690,6 +728,7 @@
   syncHeroFlag();
   initHeroSlider();
   initAudiencePicker();
+  initAlmanacFilter();
 
   /* Reserves room under the fixed chapter bar so it never covers the last
      line of the page. Paired with a :has() rule for anyone whose script does
@@ -712,6 +751,7 @@
     syncHeroFlag();
     initHeroSlider();
     initAudiencePicker();
+    initAlmanacFilter();
     syncPageChrome();
     var m=document.getElementById('mmenu'), b=document.getElementById('burger');
     if(m && m.classList.contains('open')){ m.classList.remove('open'); document.body.style.overflow=''; if(b){ b.setAttribute('aria-expanded','false'); b.querySelector('i').className='fas fa-bars'; } }

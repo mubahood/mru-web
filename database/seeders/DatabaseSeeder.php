@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             AdminUserSeeder::class,      // owner (super_admin) account
             DistrictSeeder::class,       // Uganda districts (reference data)
             PortfolioContentSeeder::class, // real bio/portfolio content
+            AlmanacSeeder::class,        // Academic Almanac 2026/2027 (Academic Registrar)
         ]);
     }
 }
