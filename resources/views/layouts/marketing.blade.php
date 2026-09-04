@@ -91,7 +91,13 @@
                  bottom edge, so the pointer never crosses dead space on its
                  way down from the trigger. --}}
             <div class="mega" id="mega-{{ Str::slug($item['label']) }}">
-              <div class="mega-inner">
+              <div class="mega-inner {{ !empty($item['image']) ? 'has-media' : '' }}">
+                @if(!empty($item['image']))
+                  <div class="mega-media" aria-hidden="true">
+                    <img src="{{ asset($item['image']) }}" alt="" width="480" height="600"
+                         loading="lazy" decoding="async">
+                  </div>
+                @endif
                 <div class="mega-intro">
                   <p class="eyebrow">{{ $item['label'] }}</p>
                   @if(!empty($item['blurb']))<p class="mega-blurb">{{ $item['blurb'] }}</p>@endif
@@ -102,11 +108,8 @@
                 <div class="mega-grid">
                   @foreach($item['children'] as $child)
                     <a href="{{ $child['url'] }}" wire:navigate class="mega-link {{ $isOn($child) ? 'on' : '' }}">
-                      <span class="mi"><i class="fas {{ $child['icon'] }}" aria-hidden="true"></i></span>
-                      <span>
-                        <span class="mt">{{ $child['label'] }}</span>
-                        <span class="md">{{ $child['desc'] }}</span>
-                      </span>
+                      <span class="mt">{{ $child['label'] }}</span>
+                      <span class="md">{{ $child['desc'] }}</span>
                     </a>
                   @endforeach
                 </div>
@@ -177,7 +180,6 @@
         <div class="mm-sub">
           @foreach($item['children'] as $child)
             <a href="{{ $child['url'] }}" wire:navigate class="{{ $isOn($child) ? 'on' : '' }}">
-              <span class="mi"><i class="fas {{ $child['icon'] }}" aria-hidden="true"></i></span>
               {{ $child['label'] }}
             </a>
           @endforeach

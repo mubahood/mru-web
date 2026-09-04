@@ -1293,3 +1293,67 @@ heritage card balanced against the text column; mobile shows the card stacking u
 340px with the seal and caption intact. Full suite at 03:39 EAT — outside the flake window this
 time — **1134 passed, 1 skipped**: the true baseline, green, further confirming Phase W's
 diagnosis by passing exactly when the clock says it should.
+
+## 2026-09-04 — Phase Z: slide one loses the Katikkiro, the menu becomes a shelf
+
+Two instructions: the slider's first image had to change — the Katikkiro appeared in both the
+opening slide (the OMMANYI games group) and the new About photo card, twice above the fold — and
+the mega menu was to be re-imagined: no per-item icons, square corners, full-bleed width, a
+photograph on the far left of *some* panels.
+
+### Slide one: same words, better picture
+
+The heritage slide's copy ("A royal university of the Buganda Kingdom") was never the problem —
+the OMMANYI photo was: a sponsor-wall sports group with small faces, and the Katikkiro seated at
+its centre. Surveyed the archive properly before choosing (the coronation poster is a designed
+graphic, the retreat is a generic hall, the registration and football shots are the wrong
+register, the two legacy `slide_*` files duplicate themes already in rotation) and landed on the
+ceremony photograph of university leaders in full academic regalia — reds, blues and purples with
+the MRU crest woven into the gowns, 2560×2560-class source at the slider's own 3:2. Built the
+-700/-1100/-1600 set with the same pipeline as the existing slides, pointed
+`university.hero_slides[0]` at `hero-royal`, rewrote the alt to describe the new scene, and
+re-ran the slider contract: 14/14, mechanics untouched — the "core concept" was never in play.
+
+### The menu: one architecture instead of three
+
+The stylesheet turned out to hold **three** generations of `.mega` rules — a 560px card, a 660px
+card, and a later full-width rebuild — with the last one winning the cascade. The first attempt
+at this round added a fourth. Caught it when the screenshot's numbers disagreed with the code
+just written (panel spanning 20→1420 with rounded bottom corners, neither of which the new rules
+said), traced the computed values to the real owner, deleted the redundant block, and made the
+changes in the section that actually wins:
+
+- **Truly full-bleed**: the panel's containing block is the centred `.bar`, so `left:50%;
+  width:100vw; transform:translate(-50%,…)` — with the translate folded into the open/close
+  animation states, which also carry `-50%` now — and an `html{overflow-x:clip}` guard for
+  browsers whose scrollbars make 100vw wider than the page.
+- **Square everywhere**: the shelf's bottom radius went from `0 0 20px 20px` to 0, and the link
+  tiles inside followed — a full-width shelf reads as part of the header, not a floating card.
+- **Icons gone** from both the desktop grid and the mobile sheet's children — each link is now a
+  bold title over a quiet description with a 2px gold left-edge on hover/active. The dead `.mi`
+  rules were deleted from all three generations; a grep for the class across views and CSS
+  returns nothing.
+- **A photograph on the far left of some panels**: SiteNav items may declare `image`; About
+  (the retired OMMANYI photo — off the top of the page, still true to the section), Admissions
+  (a graduand crowd from a legacy slide never used anywhere), and Student Life (the guild
+  elections registration table) declare one; Academics, Research and News stay two-column. The
+  media column is square-cornered, fills the panel height, and is the first thing to yield at
+  1180px, disappearing entirely below 1000px.
+- **Hover/active truth**: the one real flaw found — an unguarded legacy rule rotated the caret on
+  bare hover, so a click that closed the panel left the caret pointing up while the pointer
+  rested on the trigger. It now rotates only with `.is-open` (the no-JS fallback keeps hover
+  rotation, where hover *is* the open state).
+
+While in SiteNav, three stale facts died: the Admissions blurb still said "August intake closes
+31 May" (now the ongoing-January line, matching Phase X's Settings fix), and both the Academics
+blurb and the Faculties child said "five faculties" (now four, matching Phase V).
+
+### Verified
+
+Menu contract 10/10 — the suite tests behaviour, not geometry, and every behaviour survived the
+rebuild. Slider 14/14 with the new first image; audience 21/21; homepage 200; braces 1430/1430;
+no horizontal overflow at 1440px or 390px (the 100vw shelf measured 0→1440 exactly). Screenshots
+reviewed: slide one in regalia under its royal title; the About shelf with photo, blurb, CTA and
+icon-free columns; the Academics shelf two-column with the corrected copy; the mobile sheet
+icon-free with its disclosure groups. Full suite **1134 passed, 1 skipped** — which also re-runs
+the SiteNav URL smoke tests against the edited nav, so every menu destination still resolves.

@@ -397,7 +397,11 @@
     .nav-link.on{color:var(--gold-d);}
     .nav-link.on::after{content:'';position:absolute;left:0;right:0;bottom:-3px;height:2px;background:var(--gold);}
     .nav-link .caret{font-size:9px;transition:transform .22s;}
-    .nav-item:hover .caret,.nav-item:focus-within .caret{transform:rotate(180deg);}
+    /* Rotation is tied to the panel actually being open (see the header
+       rebuild section); this bare-hover rotation only serves the no-JS
+       fallback, where hover IS the open state. */
+    html:not(.js-nav) .nav-item:hover .caret,
+    html:not(.js-nav) .nav-item:focus-within .caret{transform:rotate(180deg);}
     .nav-link .dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--gold);vertical-align:middle;}
 
     /* The panel is anchored to the header, not the item, so a six-entry menu
@@ -422,9 +426,6 @@ html:not(.js-nav) .nav-item:focus-within > .mega{opacity:1;visibility:visible;tr
     .mega-link{display:flex;gap:10px;padding:9px 11px;align-items:flex-start;transition:background .14s;min-width:0;}
     .mega-link:hover{background:var(--gold-soft);}
     .mega-link.on{background:var(--pri-soft);}
-    .mega-link .mi{width:26px;height:26px;flex-shrink:0;display:flex;align-items:center;justify-content:center;
-      background:var(--gold-soft);color:var(--gold-d);font-size:12px;}
-    .mega-link.on .mi{background:var(--pri);color:var(--gold);}
     .mega-link .mt{display:block;font-size:12.5px;font-weight:600;color:var(--tx);line-height:1.3;}
     .mega-link .md{display:block;font-size:11px;font-weight:450;color:var(--tx2);line-height:1.4;margin-top:2px;}
     .mega-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:8px;
@@ -486,8 +487,6 @@ html:not(.js-nav) .nav-item:focus-within > .mega{opacity:1;visibility:visible;tr
     .mm-sub{padding:0 0 10px 2px;display:flex;flex-direction:column;}
     .mm-sub a{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:500;color:var(--tx2);
       padding:9px 0;border:none;}
-    .mm-sub a .mi{width:24px;height:24px;flex-shrink:0;display:flex;align-items:center;justify-content:center;
-      background:var(--gold-soft);color:var(--gold-d);font-size:11px;}
     .mm-sub a.on{color:var(--pri);font-weight:600;}
     .mmenu .mm-actions{display:flex;flex-direction:column;gap:8px;margin-top:18px;}
     .mmenu .mm-actions .btn{width:100%;justify-content:center;}
@@ -1595,20 +1594,17 @@ html:not(.js-nav) .nav-item:hover > .mega,
 html:not(.js-nav) .nav-item:focus-within > .mega{opacity:1;visibility:visible;transform:none;}
 .nav-item.is-open > .mega{opacity:1;visibility:visible;transform:none;}
 .nav-item.has-menu::after{height:16px;}
-.mega-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;}
-.mega-link{display:flex;gap:13px;padding:12px 13px;align-items:flex-start;border-radius:var(--r);
-  transition:background .16s,transform .16s;min-width:0;}
-.mega-link:hover{background:var(--pri-soft);transform:translateX(2px);}
-.mega-link.on{background:var(--pri-soft);}
-.mega-link .mi{width:36px;height:36px;flex-shrink:0;border-radius:var(--r-sm);
-  background:var(--gold-soft);color:var(--gold-d);display:flex;align-items:center;justify-content:center;font-size:14px;
-  transition:background .16s,color .16s;}
-.mega-link:hover .mi,.mega-link.on .mi{background:var(--pri);color:var(--gold);}
+.mega-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;align-content:start;}
+.mega-link{display:block;padding:11px 13px;border-radius:0;
+  border-left:2px solid transparent;transition:background .16s,border-color .16s;min-width:0;}
+.mega-link:hover{background:var(--pri-soft);border-left-color:var(--gold);}
+.mega-link.on{background:var(--pri-soft);border-left-color:var(--gold);}
 .mega-link .mt{display:block;font-size:14px;font-weight:700;color:var(--pri);line-height:1.35;}
 .mega-link .md{display:block;font-size:12.5px;font-weight:400;color:var(--tx2);line-height:1.5;margin-top:2px;}
 .mega-foot{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:10px;
   padding:13px 14px;background:var(--surface);border-radius:var(--r);border:none;
   font-size:13px;font-weight:500;color:var(--tx2);}
+
 
 /* ------------------------------------------------------------ 5. Buttons */
 
@@ -1855,7 +1851,6 @@ table{border-collapse:separate;border-spacing:0;width:100%;}
 .mmenu a{font-family:var(--font);font-size:18px;font-weight:600;color:var(--pri);padding:15px 0;}
 .mm-group > summary{font-size:18px;font-weight:700;color:var(--pri);padding:15px 0;}
 .mm-sub a{font-size:15.5px;font-weight:500;color:var(--tx2);padding:11px 0;}
-.mm-sub a .mi{border-radius:var(--r-sm);width:30px;height:30px;}
 .mmenu .mm-actions{gap:12px;margin-top:24px;}
 
 /* Floating helpers */
@@ -2121,11 +2116,16 @@ html:not(.js-nav) .nav-item:focus-within .nav-link .caret,
 .nav-item.is-open .nav-link::after{content:'';position:absolute;left:15px;right:15px;bottom:0;
   height:3px;border-radius:3px 3px 0 0;background:var(--gold);}
 
-/* The panel: full width, flush to the header, opening downward. */
-.mega{position:absolute;top:100%;left:0;right:0;width:100%;
-  transform:translateY(-10px);transform-origin:top center;
+/* The panel: a full-bleed shelf. Its containing block is the centered .bar,
+   so true viewport width comes from the 50%/-50% translate trick; the html
+   overflow-x:clip guard (top of this section) absorbs the classic-scrollbar
+   case where 100vw is wider than the visible page. Square corners: a
+   full-width shelf is part of the header, not a floating card. */
+html{overflow-x:clip;}
+.mega{position:absolute;top:100%;left:50%;right:auto;width:100vw;
+  transform:translate(-50%,-10px);transform-origin:top center;
   background:#fff;border:none;border-top:1px solid var(--line);
-  border-radius:0 0 var(--r-lg) var(--r-lg);
+  border-radius:0;
   box-shadow:0 26px 50px -22px rgba(2,52,121,.28);
   padding:0;opacity:0;visibility:hidden;
   transition:opacity .2s ease,transform .2s cubic-bezier(.22,.61,.36,1),visibility .2s;}
@@ -2135,28 +2135,38 @@ html:not(.js-nav) .nav-item:focus-within .nav-link .caret,
    cannot dismiss a :hover state, which is why the panel used to feel
    click-only once it had been clicked. */
 html:not(.js-nav) .nav-item:hover > .mega,
-html:not(.js-nav) .nav-item:focus-within > .mega{opacity:1;visibility:visible;transform:none;}
-.nav-item.is-open > .mega{opacity:1;visibility:visible;transform:none;}
+html:not(.js-nav) .nav-item:focus-within > .mega{opacity:1;visibility:visible;transform:translate(-50%,0);}
+.nav-item.is-open > .mega{opacity:1;visibility:visible;transform:translate(-50%,0);}
 
 .mega-inner{max-width:var(--wrap);margin:0 auto;padding:32px;
   display:grid;grid-template-columns:290px minmax(0,1fr);gap:40px;align-items:start;}
-.mega-intro{border-right:1px solid var(--line);padding-right:32px;}
+/* Some sections lead with a photograph on the far left — square-cornered,
+   filling the panel's height. Only the sections with a photo worth the
+   space declare one (SiteNav's `image` key); the rest keep two columns. */
+.mega-inner.has-media{grid-template-columns:230px 260px minmax(0,1fr);align-items:stretch;}
+.mega-media{display:block;overflow:hidden;}
+.mega-media img{display:block;width:100%;height:100%;object-fit:cover;border-radius:0;}
+.mega-intro{border-right:1px solid var(--line);padding-right:32px;min-width:0;}
 .mega-intro .eyebrow{margin-bottom:12px;}
 .mega-blurb{font-size:14.5px;line-height:1.65;color:var(--tx2);margin-bottom:20px;}
-.mega-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;}
-.mega-link{padding:13px 14px;border-radius:var(--r);}
+.mega-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;align-content:start;}
+.mega-link{padding:13px 14px;border-radius:0;}
 .mega-link .mt{font-size:14.5px;}
 .mega-link .md{font-size:12.5px;}
 
-/* Two columns of links once the panel is narrower than three will read. */
+/* Two columns of links once the panel is narrower than three will read;
+   the photograph is the first thing to give its space back. */
 @media(max-width:1180px){
   .mega-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
   .mega-inner{grid-template-columns:240px minmax(0,1fr);gap:28px;padding:26px;}
+  .mega-inner.has-media{grid-template-columns:200px 220px minmax(0,1fr);}
   .mega-intro{padding-right:24px;}
   .nav-link{padding:0 11px;font-size:14px;}
 }
 @media(max-width:1000px){
   .mega-inner{grid-template-columns:1fr;gap:20px;}
+  .mega-inner.has-media{grid-template-columns:1fr;}
+  .mega-media{display:none;}
   .mega-intro{border-right:none;border-bottom:1px solid var(--line);padding:0 0 18px;}
 }
 

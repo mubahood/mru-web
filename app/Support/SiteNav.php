@@ -30,6 +30,9 @@ class SiteNav
                 ],
                 'icon' => 'fa-building-columns',
                 'blurb' => 'A royal university of the Buganda Kingdom, accredited by NCHE.',
+                // Panel media: a design asset in public/images, not a
+                // settings-managed storage path an admin clean-up could break.
+                'image' => 'images/menu-about.jpg',
                 'children' => [
                     ['label' => 'About MRU', 'url' => route('about'), 'icon' => 'fa-building-columns',
                         'desc' => 'Our story, our campuses and what we stand for.',
@@ -58,7 +61,8 @@ class SiteNav
                 'icon' => 'fa-graduation-cap',
                 // The gold dot: the one thing a prospective student should see first.
                 'flag' => true,
-                'blurb' => 'Applications for the August intake close 31 May.',
+                'blurb' => 'Applications for the January intake are ongoing.',
+                'image' => 'images/menu-admissions.jpg',
                 'children' => [
                     ['label' => 'Admissions overview', 'url' => route('admissions.index'), 'icon' => 'fa-door-open',
                         'desc' => 'How admission works, end to end.',
@@ -91,13 +95,13 @@ class SiteNav
                 'url' => route('programmes.index'),
                 'match' => ['faculties.*', 'programmes.*', 'almanac', 'library', 'downloads', 'courses.*'],
                 'icon' => 'fa-book-open',
-                'blurb' => '46+ programmes across five faculties and the Graduate School.',
+                'blurb' => '46+ programmes across four faculties and the Graduate School.',
                 'children' => [
                     ['label' => 'All programmes', 'url' => route('programmes.index'), 'icon' => 'fa-magnifying-glass',
                         'desc' => 'Find your programme by level, faculty or name.',
                         'match' => ['programmes.*']],
                     ['label' => 'Faculties & schools', 'url' => route('faculties.index'), 'icon' => 'fa-school',
-                        'desc' => 'Five faculties and the Graduate School.',
+                        'desc' => 'Four faculties and the Graduate School.',
                         'match' => ['faculties.*']],
                     ['label' => 'Academic almanac', 'url' => route('almanac'), 'icon' => 'fa-calendar-week',
                         'desc' => 'The academic year, week by week.',
@@ -137,6 +141,7 @@ class SiteNav
                 'match' => ['campus-life', 'accommodation', 'sports', 'guild', 'alumni'],
                 'icon' => 'fa-people-group',
                 'blurb' => 'Life at Kakeeka and Kirumba, in and out of class.',
+                'image' => 'images/menu-student-life.jpg',
                 'children' => [
                     ['label' => 'Campus life', 'url' => route('campus-life'), 'icon' => 'fa-people-group',
                         'desc' => 'Learning, sports, culture and community.',
