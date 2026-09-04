@@ -495,26 +495,32 @@
 @endif
 
 @if($leaders->isNotEmpty())
-{{-- Four real officers with real portraits (rows without a photo are
-     placeholders and are filtered out in the controller). NN/g's research
-     note in docs/03 — people pages persuade — is the reason this earns
-     homepage space. Cards link to governance, where the full structure
-     lives. --}}
+{{-- Officers as medallions rather than cards: the portraits are studio
+     half-body shots, three of them with white baked into the background and
+     one with real alpha, so a circular crop is the one frame that makes all
+     four look deliberate instead of mismatched. It also rhymes with the
+     crest-as-seal in the About band. Rows without a photo are placeholders
+     and never reach the view — the controller drops them. --}}
 <section class="band-surface tex-glow">
   <div class="wrap">
     <div class="sec-head left">
-      <h2>The people leading MRU</h2>
-      <p>A university answers to its students through its officers — meet the four who lead this one.</p>
+      <h2>Leadership you can put a name to</h2>
+      <p>The officers who run the university day to day — and the office each one answers for.</p>
     </div>
-    <div class="lead-grid">
+    <div class="lead-row">
       @foreach($leaders as $leader)
-        <a href="{{ route('governance') }}" wire:navigate class="card lead-card" data-rise>
-          <span class="lead-media">
-            <img src="{{ asset('storage/'.$leader->photo) }}" alt=""
-                 width="600" height="750" loading="lazy" decoding="async">
+        <a href="{{ route('governance') }}" wire:navigate class="lead-medallion" data-rise>
+          {{-- The seal sits outside .lead-ring: the ring clips to a circle, so
+               anything inside it that tries to overlap the rim gets sliced. --}}
+          <span class="lead-frame">
+            <span class="lead-ring">
+              <img src="{{ asset('storage/'.$leader->photo) }}" alt=""
+                   width="300" height="372" loading="lazy" decoding="async">
+            </span>
+            <span class="lead-seal" aria-hidden="true"><i class="fas fa-arrow-right"></i></span>
           </span>
-          <h3>{{ $leader->name }}</h3>
-          <p>{{ $leader->title }}</p>
+          <span class="lead-name">{{ $leader->name }}</span>
+          <span class="lead-role">{{ $leader->title }}</span>
         </a>
       @endforeach
     </div>

@@ -1476,3 +1476,65 @@ screenshots reviewed for each section and the mobile timeline confirmed on its l
 order now: hero → intro → About → Faculties → Scholarships (surface) → News on photograph →
 Scholar (deep) → Year at a glance (plain) → Leadership (surface) → Partners → CTA, keeping the
 light/dark alternation intact.
+
+## 2026-09-04 — Phase AC: officers become medallions, and cards stop drawing lines
+
+Two instructions: the leadership section looked basic, title included — circles and people were
+suggested, creativity invited; and the hover treatment "on top" was to change for all such cards.
+
+### Why circles were the right answer here, not just a nice one
+
+Checked the four portraits before designing around them: 300×372, 300×365, 300×365, 300×333 —
+small, differently cropped, and three with white baked into the background against one with a
+real alpha channel. Rectangular cards had been showing exactly that inconsistency. A circular
+crop is the one frame that reconciles them: it clips every portrait to the same silhouette
+regardless of how each was shot, and a near-white fill behind them makes the three opaque
+backgrounds vanish into the medallion. It also rhymes with the crest-as-seal in the About band,
+so it reads as this page's language rather than a new one. Titles moved to a gold uppercase
+micro-label under a display-font name, and the heading became **"Leadership you can put a name
+to"** — which is what the section actually does, and the NN/g "people pages persuade" note made
+literal. The sub-line was deliberately left general ("the officers who run the university day to
+day") rather than naming the four roles, so an admin publishing a fifth officer cannot make the
+copy lie.
+
+### The hover: a ring, not a line racing along an edge
+
+The gold rule that drew across a card's top edge was a line reacting, not the card reacting.
+Replaced everywhere with a gold ring — a crisp 1.5px gold border plus a soft cream halo, drawn
+with `box-shadow` so there is no pseudo-element geometry to mis-clip or mis-origin, and it works
+identically on a rectangle or a circle. That last property is the point: the medallions and the
+cards now speak the same hover. Applied to the homepage card family (faculty cards, the Graduate
+School strip, both scholarship card types) and deliberately **not** to the sitewide `.card:hover`
+— pages nobody has reviewed this round keep the hover they were designed with, the same scoping
+judgement as the `.sec-idx` removal in Phase U.
+
+### Two bugs, the second one created by fixing the first
+
+The medallion carries a small navy seal that rises over the rim on hover. First attempt put it
+inside `.lead-ring` — which clips to a circle, so the seal rendered as a sliced blob. Moving it
+out to a `.lead-frame` wrapper fixed the clipping and immediately exposed what the clipping had
+been hiding: at rest the seal, merely translated downward, now came to rest **on top of the name
+below it**, obscuring three of the four. Screenshots caught both. The seal is now hidden by
+`opacity` and scale rather than by relying on something to crop it, which is the version that
+cannot break when its container changes.
+
+A third suspected bug was measured and dismissed: the mobile screenshot showed seals visible over
+names, but on a genuine touch viewport with the synthetic pointer parked away, all four report
+`opacity: 0` and none matches `:hover` — my own script's stale CDP cursor had carried across the
+viewport change, the same class of artifact as the stale-coordinate findings in Phases S and X.
+Hover is nonetheless now gated behind `@media (hover:hover)` with `:focus-visible` kept outside
+it, so a tap can never leave a medallion wearing a stuck ring, and keyboard users always get the
+affordance.
+
+### Verified
+
+The ring was confirmed by magnified clip captures rather than by squinting at a full-page
+screenshot, where a 1.5px border is genuinely too fine to read: hovered shows the gold border,
+the cream halo and the navy-and-gold icon flip; resting shows a grey hairline and a pale icon.
+(The first clip attempt came back blank — `Page.captureScreenshot`'s clip takes document
+coordinates, not viewport ones, and the page had been scrolled.) Computed values cross-checked
+throughout: `::after` content `none` on faculty cards, resting seal opacity `0,0,0,0`, and a
+programmatic check that no seal's box overlaps its own name's box. Menu 10/10, slider 14/14,
+audience 21/21, `/governance` 200, no horizontal overflow at 1440px or 390px, braces 1500/1500,
+orphan grep for the replaced `.lead-grid`/`.lead-card`/`.lead-media` classes: zero. Full suite
+**1134 passed, 1 skipped**.

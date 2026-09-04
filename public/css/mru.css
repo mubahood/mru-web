@@ -2651,16 +2651,22 @@ a.faculty-card{flex-direction:row;}
 .faculty-card .tag-row .pill{font-size:12px;padding:6px 12px;}
 .faculty-card .link{margin-top:auto;padding-top:10px;font-size:13px;}
 
-/* Hover speaks through the card, not an underline: a gold rule draws along
-   the top edge, the photograph breathes (a slow zoom inside its clipped
-   frame), the icon flips to navy-and-gold (the shared .card rule), and the
-   arrow slides. The .link underline is switched off here — four signals is
-   plenty, and a line under "9 programmes" was the least elegant of them. */
+/* Hover speaks through the whole card, not an underline and not a line
+   racing across one edge: the card takes a gold ring (a crisp border plus a
+   soft gold halo, drawn with box-shadow so no pseudo-element geometry can
+   mis-clip), the photograph breathes inside its frame, the icon flips
+   navy-and-gold via the shared .card rule, and the arrow slides. The .link
+   underline is switched off here — the card is already answering. */
 .faculty-card{position:relative;overflow:hidden;}
-.faculty-card::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;
-  background:var(--gold);transform:scaleX(0);transform-origin:left;
-  transition:transform .3s cubic-bezier(.22,.61,.36,1);}
-.faculty-card:hover::after,.faculty-card:focus-visible::after{transform:scaleX(1);}
+/* The homepage's card family shares one hover. Scoped to these four rather
+   than the sitewide .card:hover, so pages nobody has reviewed this round
+   keep the hover they were designed with. */
+.faculty-card:hover,.faculty-card:focus-visible,
+.grad-school-strip:hover,.grad-school-strip:focus-visible,
+.scholarship-featured:hover,.scholarship-featured:focus-visible,
+.scholarship-card:hover,.scholarship-card:focus-visible{
+  border-color:var(--gold);
+  box-shadow:0 0 0 1.5px var(--gold),0 0 0 6px var(--gold-soft),var(--sh-3);}
 .faculty-card .link::after{content:none;}
 .faculty-card-media{flex:0 0 190px;width:190px;align-self:stretch;display:block;
   overflow:hidden;border-radius:var(--r-lg);}
@@ -2668,7 +2674,7 @@ a.faculty-card{flex-direction:row;}
   transition:transform .5s cubic-bezier(.22,.61,.36,1);}
 .faculty-card:hover .faculty-card-media img{transform:scale(1.05);}
 @media(prefers-reduced-motion:reduce){
-  .faculty-card::after,.faculty-card-media img{transition:none;}
+  .faculty-card-media img{transition:none;}
 }
 @media(max-width:640px){
   a.faculty-card{flex-direction:column;}
@@ -2765,25 +2771,48 @@ a.grad-school-strip{flex-direction:row;}
   .year-dot{left:-30px;top:2px;}
 }
 
-/* Leadership: four portrait cards. The photographs are studio headshots on
-   white, so the frame keeps a surface tint behind them; hover borrows the
-   faculty cards' language — gold rule along the top, the portrait breathes. */
-.lead-grid{display:grid;gap:24px;margin-bottom:var(--s-4);
-  grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));}
-.lead-card{display:flex;flex-direction:column;padding:0 0 20px;text-align:center;
-  position:relative;overflow:hidden;}
-.lead-card::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;
-  background:var(--gold);transform:scaleX(0);transform-origin:left;
-  transition:transform .3s cubic-bezier(.22,.61,.36,1);}
-.lead-card:hover::after,.lead-card:focus-visible::after{transform:scaleX(1);}
-.lead-media{display:block;aspect-ratio:4/5;background:var(--surface);overflow:hidden;}
-.lead-media img{width:100%;height:100%;object-fit:cover;object-position:top center;
-  transition:transform .5s cubic-bezier(.22,.61,.36,1);}
-.lead-card:hover .lead-media img{transform:scale(1.05);}
-.lead-card h3{font-size:16px;margin:16px 14px 3px;}
-.lead-card p{font-size:13px;color:var(--tx2);margin:0 14px;}
+/* Leadership as medallions. A circle is the only frame that reconciles four
+   portraits shot at different crops and backgrounds, and it echoes the
+   crest-seal in the About band. The ring starts as a hairline and turns
+   gold on hover; a small navy seal rotates up from under the rim, so the
+   whole medallion answers rather than one edge of it. */
+.lead-row{display:grid;gap:34px 26px;margin-bottom:var(--s-4);
+  grid-template-columns:repeat(auto-fit,minmax(min(190px,100%),1fr));}
+.lead-medallion{display:flex;flex-direction:column;align-items:center;text-align:center;}
+.lead-frame{position:relative;display:block;width:100%;max-width:172px;}
+.lead-ring{position:relative;display:block;width:100%;aspect-ratio:1;
+  border-radius:50%;overflow:hidden;background:#fff;
+  box-shadow:0 0 0 1px var(--line),0 14px 30px -18px rgba(2,52,121,.45);
+  transition:box-shadow .28s ease,transform .28s cubic-bezier(.22,.61,.36,1);}
+.lead-ring img{width:100%;height:100%;object-fit:cover;object-position:50% 8%;
+  transition:transform .55s cubic-bezier(.22,.61,.36,1);}
+/* Hidden by opacity, not by a clip: once the seal moved outside the ring
+   (so it can overlap the rim) nothing crops it any more, and a merely
+   translated seal came to rest on top of the name below. */
+.lead-seal{position:absolute;left:50%;bottom:0;transform:translate(-50%,24%) scale(.6);
+  opacity:0;pointer-events:none;
+  width:38px;height:38px;border-radius:50%;background:var(--pri);color:var(--gold);
+  display:flex;align-items:center;justify-content:center;font-size:13px;
+  box-shadow:0 6px 16px -6px rgba(2,52,121,.6);
+  transition:transform .32s cubic-bezier(.22,.61,.36,1),opacity .24s ease;}
+/* Keyboard focus always gets the affordance; pointer hover only where hover
+   is real, so a tap on a touch screen can never leave a medallion stuck
+   wearing its ring. */
+.lead-medallion:focus-visible .lead-ring{transform:translateY(-4px);
+  box-shadow:0 0 0 2px var(--gold),0 0 0 7px var(--gold-soft),0 20px 38px -18px rgba(2,52,121,.5);}
+.lead-medallion:focus-visible .lead-seal{transform:translate(-50%,-6%) scale(1);opacity:1;}
+@media(hover:hover){
+  .lead-medallion:hover .lead-ring{transform:translateY(-4px);
+    box-shadow:0 0 0 2px var(--gold),0 0 0 7px var(--gold-soft),0 20px 38px -18px rgba(2,52,121,.5);}
+  .lead-medallion:hover .lead-ring img{transform:scale(1.06);}
+  .lead-medallion:hover .lead-seal{transform:translate(-50%,-6%) scale(1);opacity:1;}
+}
+.lead-name{display:block;font-family:var(--font-display);font-size:17px;font-weight:600;
+  color:var(--pri);line-height:1.3;margin-top:20px;}
+.lead-role{display:block;font-size:11.5px;font-weight:700;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--gold-d);margin-top:6px;}
 @media(prefers-reduced-motion:reduce){
-  .lead-card::after,.lead-media img{transition:none;}
+  .lead-ring,.lead-ring img,.lead-seal{transition:none;}
 }
 
 /* News & Events on a fixed photograph: the page scrolls, the picture holds
