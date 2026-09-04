@@ -1606,3 +1606,81 @@ registered in `DatabaseSeeder`, so a fresh install gets the real almanac rather 
 Admin CRUD extended for all three new fields. `/almanac` 200, admin 302 (auth). Menu 10/10,
 slider 14/14, audience 21/21, no horizontal overflow at 1440px or 390px (the month tables scroll
 inside their own container by design), braces 1543/1543, full suite **1134 passed, 1 skipped**.
+
+## 2026-09-04 — Phase AE: a production audit, and the four real defects it found
+
+"Make sure it is 100% ready for production" was answered with measurement rather than a read-
+through: console and network capture, request-by-request weight, heading outline, image hygiene,
+link integrity, a server-side query trace, throttled-network timing, and a new empty-database
+render. Most of it came back clean — no console errors, no failed requests, no broken images, no
+missing `alt`, no textless links, `lang`/`title`/meta-description/JSON-LD/landmarks all present,
+no heading-level skips. Four things did not.
+
+### 1. Six `<h1>` elements on one page
+
+The hero renders a heading per slide, so a six-slide carousel produced six `h1`s — a document-
+outline error for search engines and screen readers both. The first slide now carries the `h1`
+and the rest are `h2`; styling hangs off `.hs-title`, so nothing moved visually. Outline verified
+after: **h1 count 1**, no skips.
+
+### 2. Every hero photograph downloaded before first paint — 862KB
+
+`loading="lazy"` was doing nothing, and the reason is structural: all six slides are stacked
+*inside* the viewport, so the browser considers every one visible and fetches it. Measured
+without scrolling at all: six images, 862KB, of which only the first 228KB is needed to paint.
+Slides 2..n now ship with their URLs in `data-` attributes and are hydrated later, with a
+`<noscript>` copy so a scripting-free visitor still sees the photography.
+
+The first attempt at this was wrong and throttled measurement caught it. Hydrating on
+`requestIdleCallback` looked correct but idle means *CPU* idle — on a slow connection that is
+true almost immediately, so the deferred images began downloading while the LCP image was still
+in flight. On emulated Slow 3G, slide 2's photograph landed at 6.2s and slide 1's not until
+24.6s: the fix had made the important image *later*. Rebuilt on the `load` event instead, which
+fires only once first-paint resources are actually in. Re-measured on the same throttled profile:
+the LCP image now arrives **first, at 18.3s** (from 24.6s), with the deferred photograph behind
+it at 45.3s. A slide is also hydrated on activation, so a fast click can never reach an empty
+frame.
+
+### 3. Forty-five queries a page, thirty of them redundant
+
+A server-side query trace found `select exists (… table_name = 'settings' …)` running **fourteen
+times per request** — `Settings::all()` re-checking that its table exists on every one of the ~16
+lookups a homepage render makes — plus sixteen repeated cache reads. The schema check is now
+memoised in one direction only: remembered once the table is seen, but a *missing* table is
+re-checked every time, so a fresh install still works the moment migrations finish. Deliberately
+**not** memoised: the settings values themselves, because `App\Support\University` already carries
+a comment recording that a static value cache with no invalidation pinned long-lived processes
+(queue workers, the test suite) to whatever settings existed at first call. That warning was
+earned; a per-request value memo would have reintroduced exactly it.
+
+**45 queries → 17, and no query now runs more than once.**
+
+### 4. The cache driver was not the one they configured
+
+`.env` and the committed `.env.example` both set `CACHE_DRIVER=file` — the Laravel ≤10 name.
+Laravel 12 reads `CACHE_STORE`, so the variable was inert and the cache silently ran on the
+**database** store, which is why every "cached" settings read cost a SQL round trip. Corrected to
+`CACHE_STORE=file` in both, `config:clear`ed, and confirmed `config('cache.default')` now reports
+`file`. `SESSION_DRIVER` and `QUEUE_CONNECTION` were checked at the same time and are still the
+correct names for this version.
+
+### An empty-database guard, kept
+
+The homepage assembles nine independent content sources, each of which an administrator can empty
+by unpublishing rows. Rather than test that once by hand, `HomepageResilienceTest` now asserts it
+permanently: the page renders with a completely empty database and omits every section rather
+than rendering an empty one; content unpublished after the fact does not break it; a leader
+without a portrait is dropped rather than shown as a broken medallion; the year strip falls back
+when every key date has passed; and absent publications or events do not take down the bands that
+use them. The first version of that test failed on its own imprecision, not on the site — it
+asserted heading *text*, and "Four faculties" also appears in the mega-menu blurb on every page;
+it now asserts each section's own markup.
+
+### Verified
+
+Menu 10/10, slider 14/14 (re-run because the hero markup changed), audience 21/21. Nine public
+routes 200. Full suite **1139 passed, 1 skipped** — the baseline rises by the five new guards.
+Recorded but not acted on, because they are deployment decisions rather than code: the server is
+not gzip-compressing responses (`Accept-Encoding: gzip` returns identical bytes), and the
+first-load payload is dominated by `livewire.js` (379KB) and FontAwesome (155KB), both cacheable
+and both framework-level choices.

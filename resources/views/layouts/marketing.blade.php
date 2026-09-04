@@ -218,13 +218,15 @@
   $footCampuses = $footContacts['campuses'] ?? [];
 @endphp
 <footer>
-  <img class="foot-crest" src="{{ asset('images/logo-icon.png') }}" alt="" aria-hidden="true">
+  <img class="foot-crest" src="{{ asset('images/logo-icon.png') }}" alt="" aria-hidden="true"
+       width="320" height="340" loading="lazy" decoding="async">
   <div class="wrap">
 
     <div class="foot">
       <div class="foot-brand">
         <a href="{{ route('home') }}" wire:navigate class="brand">
-          <img class="crest" src="{{ asset('images/logo-icon.png') }}" alt="" width="52" height="56">
+          <img class="crest" src="{{ asset('images/logo-icon.png') }}" alt="" width="52" height="56"
+               loading="lazy" decoding="async">
           <span class="brand-name">Muteesa I Royal University<small>Seeking Greater Horizons</small></span>
         </a>
         <p class="blurb">An NCHE-accredited private university of the Buganda Kingdom, offering career-focused education rooted in cultural heritage.</p>
@@ -506,6 +508,37 @@
     var slides = [].slice.call(stage.querySelectorAll('[data-hs-slide]'));
     if (slides.length < 2) return;
 
+    /* Slides 2..n ship without a src (see hero-slider.blade.php): all six
+       photographs sit in the viewport, so the browser downloaded every one
+       before first paint. Their URLs are promoted to real attributes once
+       the page is idle — well ahead of the autoplay interval — and a slide
+       is always hydrated before it is shown, so a fast click can never
+       reach an empty frame. */
+    function hydrate(scope){
+      [].slice.call((scope || stage).querySelectorAll('img[data-hs-src]')).forEach(function(img){
+        if (img.dataset.hsSrcset) img.srcset = img.dataset.hsSrcset;
+        img.src = img.dataset.hsSrc;
+        img.removeAttribute('data-hs-src');
+        img.removeAttribute('data-hs-srcset');
+      });
+    }
+    /* Waits for `load`, not requestIdleCallback: idle means the CPU is free,
+       which on a slow connection is true almost immediately — measured on
+       throttled 3G, an idle-triggered hydration started slide 2's photograph
+       while slide 1 (the LCP image) was still downloading, and slide 2 landed
+       18 seconds ahead of it. `load` fires only once the first paint's
+       resources are actually in, so the deferred photographs can never
+       compete with the one the visitor is looking at. */
+    function hydrateWhenLoaded(){
+      var idle = window.requestIdleCallback || function (fn) { return setTimeout(fn, 200); };
+      idle(function(){ hydrate(); }, { timeout: 3000 });
+    }
+    if (document.readyState === 'complete') {
+      hydrateWhenLoaded();
+    } else {
+      window.addEventListener('load', hydrateWhenLoaded, { once: true });
+    }
+
     var dots  = [].slice.call(stage.querySelectorAll('[data-hs-dot]'));
     var live  = stage.querySelector('[data-hs-live]');
     // Reduced motion suppresses the decorative stuff (the dot's animated
@@ -527,6 +560,8 @@
     function show(next){
       next = (next + slides.length) % slides.length;
       if (next === index) return;
+
+      hydrate(slides[next]);   // never reveal a frame whose image has no src yet
 
       slides.forEach(function(slide, i){
         var on = i === next;

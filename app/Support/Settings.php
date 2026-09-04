@@ -17,11 +17,24 @@ class Settings
 {
     private const CACHE_KEY = 'app.settings';
 
+    /**
+     * Whether the table has been seen to exist. Memoised in one direction
+     * only: once the table is there it will not disappear under a running
+     * process, but a *missing* table is re-checked every time so a fresh
+     * install still works the moment migrations finish. A homepage render
+     * asks for settings ~16 times, and each was paying for its own
+     * `information_schema` round trip.
+     */
+    private static bool $tableExists = false;
+
     /** @return array<string,mixed> */
     public static function all(): array
     {
-        if (! Schema::hasTable('settings')) {
-            return [];
+        if (! self::$tableExists) {
+            if (! Schema::hasTable('settings')) {
+                return [];
+            }
+            self::$tableExists = true;
         }
 
         return Cache::rememberForever(self::CACHE_KEY, function () {

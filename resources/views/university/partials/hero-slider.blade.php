@@ -42,17 +42,43 @@
              @if($i > 0) aria-hidden="true" inert @endif>
 
       @if($img)
-        <img class="hs-media"
-             src="{{ asset('storage/'.$img.'-1600.jpg') }}"
-             srcset="{{ asset('storage/'.$img.'-700.jpg') }} 700w,
-                     {{ asset('storage/'.$img.'-1100.jpg') }} 1100w,
-                     {{ asset('storage/'.$img.'-1600.jpg') }} 1600w"
-             sizes="100vw"
-             alt="{{ $slide['alt'] ?? '' }}"
-             width="1600" height="1067"
-             loading="{{ $i === 0 ? 'eager' : 'lazy' }}"
-             fetchpriority="{{ $i === 0 ? 'high' : 'low' }}"
-             decoding="{{ $i === 0 ? 'sync' : 'async' }}">
+        @if($i === 0)
+          <img class="hs-media"
+               src="{{ asset('storage/'.$img.'-1600.jpg') }}"
+               srcset="{{ asset('storage/'.$img.'-700.jpg') }} 700w,
+                       {{ asset('storage/'.$img.'-1100.jpg') }} 1100w,
+                       {{ asset('storage/'.$img.'-1600.jpg') }} 1600w"
+               sizes="100vw"
+               alt="{{ $slide['alt'] ?? '' }}"
+               width="1600" height="1067"
+               loading="eager" fetchpriority="high" decoding="sync">
+        @else
+          {{-- Every slide sits inside the viewport, so loading="lazy" never
+               deferred anything: all six photographs downloaded before first
+               paint (862KB measured, of which only this first one is needed).
+               The rest hold their URLs in data- attributes and are hydrated
+               once the page is idle — long before autoplay reaches them —
+               with a <noscript> copy so a scripting-free visitor still sees
+               the photography. --}}
+          <img class="hs-media"
+               data-hs-src="{{ asset('storage/'.$img.'-1600.jpg') }}"
+               data-hs-srcset="{{ asset('storage/'.$img.'-700.jpg') }} 700w,
+                               {{ asset('storage/'.$img.'-1100.jpg') }} 1100w,
+                               {{ asset('storage/'.$img.'-1600.jpg') }} 1600w"
+               sizes="100vw"
+               alt="{{ $slide['alt'] ?? '' }}"
+               width="1600" height="1067"
+               loading="lazy" fetchpriority="low" decoding="async">
+          <noscript>
+            <img class="hs-media"
+                 src="{{ asset('storage/'.$img.'-1600.jpg') }}"
+                 srcset="{{ asset('storage/'.$img.'-700.jpg') }} 700w,
+                         {{ asset('storage/'.$img.'-1100.jpg') }} 1100w,
+                         {{ asset('storage/'.$img.'-1600.jpg') }} 1600w"
+                 sizes="100vw" alt="{{ $slide['alt'] ?? '' }}"
+                 width="1600" height="1067">
+          </noscript>
+        @endif
       @endif
 
       <span class="hs-scrim" aria-hidden="true"></span>
@@ -62,7 +88,16 @@
           @if(!empty($slide['eyebrow']))
             <p class="hs-eyebrow">{{ str_pad($i + 1, 2, '0', STR_PAD_LEFT) }} {{ $slide['eyebrow'] }}</p>
           @endif
-          <h1 class="hs-title">{{ $slide['title'] }}</h1>
+          {{-- One h1 per page: the first slide carries it, the rest are h2.
+               Every slide rendering an h1 gave the homepage six of them, which
+               is a document-outline error for search engines and screen
+               readers alike. Styling is on the class, not the tag, so the
+               slides still look identical. --}}
+          @if($i === 0)
+            <h1 class="hs-title">{{ $slide['title'] }}</h1>
+          @else
+            <h2 class="hs-title">{{ $slide['title'] }}</h2>
+          @endif
           @if(!empty($slide['text']))
             <p class="hs-text">{{ $slide['text'] }}</p>
           @endif
