@@ -2601,12 +2601,22 @@ a.stat-link:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
    risk) — the minmax lower bound is picked so exactly two fit the wrap
    width and one fits below it, with no width where 3 columns sneak in. */
 .faculty-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(480px,100%),1fr));gap:22px;margin-bottom:22px;}
-.faculty-card{display:flex;flex-direction:column;}
+/* a.card pins flex-direction:column at element+class specificity, so the row
+   override must match it — same trap the grad-school strip hit first. */
+a.faculty-card{flex-direction:row;}
+.faculty-card{display:flex;gap:20px;align-items:stretch;}
+.faculty-card-body{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;}
 .faculty-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:2px;}
 .faculty-card-top .ic{margin-bottom:0;}
 .faculty-card .tag-row{margin:2px 0 4px;}
 .faculty-card .tag-row .pill{font-size:12px;padding:6px 12px;}
 .faculty-card .link{margin-top:auto;padding-top:10px;font-size:13px;}
+.faculty-card-photo{flex:0 0 190px;width:190px;align-self:stretch;height:auto;
+  object-fit:cover;border-radius:var(--r-lg);}
+@media(max-width:640px){
+  a.faculty-card{flex-direction:column;}
+  .faculty-card-photo{order:-1;width:100%;flex:none;aspect-ratio:16/9;}
+}
 
 /* The Graduate School's own shape: a single horizontal strip instead of a
    fifth box identical to the other four, matching the heading's own "one
@@ -2620,11 +2630,14 @@ a.grad-school-strip{flex-direction:row;}
 .grad-school-body{flex:1 1 auto;min-width:0;}
 .grad-school-body .tag{margin-bottom:6px;}
 .grad-school-body h3{font-size:17px;margin:0 0 4px;}
-.grad-school-body p{font-size:14.5px;margin:0;}
-.grad-school-strip .link{flex:0 0 auto;font-size:13px;}
+.grad-school-body p{font-size:14.5px;margin:0 0 10px;}
+.grad-school-body .link{font-size:13px;}
+.grad-school-photo{flex:0 0 260px;width:260px;height:168px;align-self:center;
+  object-fit:cover;border-radius:var(--r-lg);}
 @media(max-width:700px){
   a.grad-school-strip{flex-direction:column;}
   .grad-school-strip{align-items:flex-start;}
+  .grad-school-photo{order:-1;width:100%;flex:none;aspect-ratio:16/9;}
 }
 
 /* Two campuses, two cards — a top accent rule tells them apart at a glance

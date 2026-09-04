@@ -256,22 +256,30 @@
     <div class="faculty-grid">
       @foreach($mainFaculties as $faculty)
         <a href="{{ route('faculties.show', $faculty) }}" wire:navigate class="card faculty-card" data-rise>
-          <div class="faculty-card-top">
-            <span class="ic"><i class="fas {{ $faculty->icon }}" aria-hidden="true"></i></span>
-            @if($faculty->short_name)<span class="tag">{{ $faculty->short_name }}</span>@endif
-          </div>
-          <h3>{{ $faculty->name }}</h3>
-          <p>{{ \Illuminate\Support\Str::limit($faculty->description ?: $faculty->tagline, 100) }}</p>
-          @if(!empty($faculty->careers))
-            <div class="tag-row">
-              @foreach(array_slice($faculty->careers, 0, 2) as $career)
-                <span class="pill">{{ $career }}</span>
-              @endforeach
+          <div class="faculty-card-body">
+            <div class="faculty-card-top">
+              <span class="ic"><i class="fas {{ $faculty->icon }}" aria-hidden="true"></i></span>
+              @if($faculty->short_name)<span class="tag">{{ $faculty->short_name }}</span>@endif
             </div>
+            <h3>{{ $faculty->name }}</h3>
+            <p>{{ \Illuminate\Support\Str::limit($faculty->description ?: $faculty->tagline, 100) }}</p>
+            @if(!empty($faculty->careers))
+              <div class="tag-row">
+                @foreach(array_slice($faculty->careers, 0, 2) as $career)
+                  <span class="pill">{{ $career }}</span>
+                @endforeach
+              </div>
+            @endif
+            <span class="link">
+              {{ $faculty->programmes_count }} {{ \Illuminate\Support\Str::plural('programme', $faculty->programmes_count) }} <i class="fas fa-arrow-right" aria-hidden="true"></i>
+            </span>
+          </div>
+          {{-- alt is intentionally empty: the link's own text already names the
+               faculty, so a described image would just be announced twice. --}}
+          @if($faculty->cover_image)
+            <img class="faculty-card-photo" src="{{ asset('storage/'.$faculty->cover_image) }}"
+                 alt="" width="800" height="1000" loading="lazy" decoding="async">
           @endif
-          <span class="link">
-            {{ $faculty->programmes_count }} {{ \Illuminate\Support\Str::plural('programme', $faculty->programmes_count) }} <i class="fas fa-arrow-right" aria-hidden="true"></i>
-          </span>
         </a>
       @endforeach
     </div>
@@ -283,10 +291,14 @@
           <span class="tag">Postgraduate</span>
           <h3>{{ $gradSchool->name }}</h3>
           <p>{{ \Illuminate\Support\Str::limit($gradSchool->description ?: $gradSchool->tagline, 130) }}</p>
+          <span class="link">
+            {{ $gradSchool->programmes_count }} {{ \Illuminate\Support\Str::plural('programme', $gradSchool->programmes_count) }} <i class="fas fa-arrow-right" aria-hidden="true"></i>
+          </span>
         </div>
-        <span class="link">
-          {{ $gradSchool->programmes_count }} {{ \Illuminate\Support\Str::plural('programme', $gradSchool->programmes_count) }} <i class="fas fa-arrow-right" aria-hidden="true"></i>
-        </span>
+        @if($gradSchool->cover_image)
+          <img class="grad-school-photo" src="{{ asset('storage/'.$gradSchool->cover_image) }}"
+               alt="" width="800" height="1000" loading="lazy" decoding="async">
+        @endif
       </a>
     @endif
   </div>

@@ -1084,3 +1084,82 @@ elements those other pages already use with their own, different styling. CSS br
 two layout fixes above, not just at the end. Menu contract 10/10, slider contract 14/14,
 audience-picker 14/17 (same three pre-diagnosed timing-assertion failures, not new), full suite
 **1134 passed, 1 skipped**, unchanged.
+
+## 2026-09-04 — Phase W: every faculty card gets a real photograph
+
+The instruction: each faculty card should carry a relevant, rounded image on its right-hand side,
+found "in our content" — not stock, not generated. That last constraint is the whole job. The
+`Faculty` model has had a `cover_image` column since the schema was written, with a complete admin
+upload path (`store('faculties', 'public')`, a form field, old-file cleanup on replace) — and no
+public view has ever rendered it, and no faculty has ever had one set. So the mechanism was already
+designed; what was missing was the content and the rendering.
+
+### Finding five real photographs, by looking at them
+
+Surveyed every image pool in the project before choosing anything: the 28 gallery records (24 turn
+out to be inherited from the model app's personal portfolio — desks, thesis nights, someone else's
+graduation — only 4 are MRU's, and all 4 already appear in the Campus Life section of this same
+page), the six hero-slider photos (already on this page, one at a time), and the ~70 news cover
+images, which is where the real material lives because each one comes with a post title that says
+what it actually shows. Every candidate was opened and looked at before being accepted or
+rejected — post titles suggested, eyes decided. Rejected for cause: the "Agriculture Programme NCHE
+Inspection" photo (title says agriculture, image is a boardroom), the World Teachers' Day photo (an
+arrival-by-car scene), the NorDev25 photo (a coffee-break mingle), two wide group photos whose
+subjects shrink to specks at card size. Chosen:
+
+- **Education** → the packed-lecture-hall photo (`DSC_9769`) — teaching, in progress, legible
+  small, and deliberately *not* the slider's own classroom photo, so the page never shows the same
+  image twice.
+- **Business & Management** → the Strategic Plan Alignment Seminar (presenter, laptops, boardroom).
+- **Social Sciences, Arts & Humanities** → the Luwalo ceremony delegation in kanzus and gomesi —
+  cultural heritage carried by the attire itself, readable at any size.
+- **FSTEAD** → students working across books and phones, the foreground textbook literally titled
+  "Data Processing" — the closest honest match to the faculty's lead department (Computer Science
+  & IT) in a pool that contains no lab or studio photography.
+- **Graduate School** → rows of graduands in MRU-sashed gowns from the 13th Graduation coverage.
+
+All five were processed with the exact ImageMagick pipeline `GalleryPhotoController::attach()`
+already uses (auto-orient, strip, quality 82), centre-cropped to a uniform 4:5 (800×1000), written
+into `storage/app/public/faculties/` — the same folder the admin uploader targets — and wired up by
+setting each faculty's `cover_image` in the database. Nothing is hardcoded in the template: the
+university can replace any photo through the existing admin form and the homepage follows. The two
+riskiest centre-crops (the Luwalo group, the seminar) were re-opened after cropping to confirm
+nobody's head got cut before anything was wired to them.
+
+### Rendering, and one lesson actually learned
+
+Cards became a media object: text column left, photo right, `border-radius:var(--r-lg)`,
+stretching to card height via `object-fit:cover`. Below 640px the photo moves to the top of the
+card full-width at 16:9 (`order:-1`) rather than squeezing beside phone-width text. The Graduate
+School strip got the same treatment at its right end — sized as a fixed landscape thumb
+(260×168) after the first attempt let the portrait crop's intrinsic height inflate the whole
+strip. The `alt` on every card photo is deliberately empty: the link's own text already names the
+faculty, and a described image inside it would be announced twice by a screen reader.
+
+Phase V's specificity bug did not get to happen twice: `a.card` pins `flex-direction:column` at
+element+class specificity, so the row layout was written as `a.faculty-card{flex-direction:row}`
+from the start, with the same-specificity override in the mobile media query. Verified with
+`getComputedStyle` the first time, not the third.
+
+### A 2-failure test run that this round did not cause
+
+The full suite came back **2 failed, 1132 passed** against an all-session baseline of 1134 — on
+two analytics rollup tests that nothing in a Blade/CSS/image change plausibly touches. Rather than
+argue plausibility, ran the decisive control: `git stash` (pristine committed tree), re-run the
+failing file — **still 2 failed** — `git stash pop`. The mechanism, confirmed rather than guessed:
+the app clock is UTC, the fixtures stamp visits `started_at: now()->subMinutes(30)`, and the run
+happened at 00:06 UTC (03:06 EAT), so every fixture visit landed on *yesterday* and today's rollup
+correctly summed to zero against assertions expecting 3 and 2. A pre-existing time-of-day flake
+with a daily 00:00–00:30 UTC window — every earlier green run this session simply ran outside it.
+Left unfixed in this round on purpose (test-suite surgery doesn't belong in a homepage commit),
+flagged for a follow-up.
+
+### Verified
+
+Homepage 200, CSS braces 1420/1420. All five photos confirmed loading on the live page
+(`img.complete && naturalWidth > 0` for every `.faculty-card-photo` and the strip's). No
+horizontal overflow at 1440px or 390px. Menu 10/10, slider 14/14, audience-picker 14/17 (the same
+pre-diagnosed three). `/faculties` and two faculty show pages still 200 — the new CSS is all
+`.faculty-card`/`.grad-school-*` scoped and `cover_image` is still rendered by no other public
+view, so nothing else changed appearance. Screenshotted desktop and mobile, including the
+mobile strip with its photo-on-top collapse.
