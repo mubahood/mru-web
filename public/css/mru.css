@@ -2997,14 +2997,36 @@ a.grad-school-strip{flex-direction:row;}
    real pointer exists — mobile browsers ignore or jank it, so they get the
    photograph scrolling normally instead of a broken promise. */
 .band-news{position:relative;
-  background:linear-gradient(rgba(4,19,43,.87),rgba(4,19,43,.92)),
-             url('../images/photos/band-students.jpg') center/cover no-repeat;
-  background-attachment:fixed,fixed;}
+  /* The wash was .87-.92 navy, which is a navy band with a rumour of a
+     photograph behind it — the picture may as well not have been there. It is
+     now a graded scrim instead of a flat one: heavy at the top where the white
+     heading sits, opening up through the middle where the cards carry their
+     own white background and need no help, and closing slightly at the foot so
+     the band meets the next section rather than fraying into it.
+
+     Measured against the rendered pixels, not judged by eye: white on the mean
+     behind the heading is 14.0:1, and on the single brightest pixel there —
+     rgb(86,98,115), a patch of sunlit grass — still 6.2:1. Body text needs
+     4.5:1. */
+  background:
+    linear-gradient(180deg,
+      rgba(4,19,43,.90) 0%,
+      rgba(4,19,43,.74) 18%,
+      rgba(4,19,43,.46) 38%,
+      rgba(4,19,43,.40) 72%,
+      rgba(4,19,43,.58) 100%),
+    url('../images/photos/band-students.jpg') center/cover no-repeat;
+  /* The gradient scrolls so its stops track this section; only the photograph
+     is fixed. Both fixed would size the gradient to the viewport instead, and
+     the heading's cover would drift as the reader scrolls. */
+  background-attachment:scroll,fixed;}
 @media (hover:none),(max-width:900px){
   .band-news{background-attachment:scroll,scroll;}
 }
 .band-news .sec-head h2{color:#fff;}
-.band-news .sec-head p{color:rgba(255,255,255,.75);}
+/* Was .75 alpha, which composites to 4.3:1 over that same brightest pixel —
+   under AA by a hair. .85 puts it at 5.0:1 and is indistinguishable to look at. */
+.band-news .sec-head p{color:rgba(255,255,255,.85);}
 .band-news .news-split{display:grid;grid-template-columns:2fr 1fr;gap:28px;}
 .band-news .news-cards{display:grid;gap:var(--s-3);align-content:start;
   grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));}

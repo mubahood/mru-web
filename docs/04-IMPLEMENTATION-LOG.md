@@ -1822,3 +1822,31 @@ section stays away rather than filling itself.
 Slider contract 14/14, menu 10/10. The slider test had been asserting a literal *five* inert
 slides; with eight slides that failed on the site being **edited**, not on the site being wrong,
 so the check now derives the count. Suite **1211 passed, 1 skipped**.
+
+### Phase AH.2 — the picture desk moves to the close, and the news band opens up
+
+**The gallery now closes the page,** below the partner strip and above the standing call to
+action. Everything above it is told in words and numbers — faculties, schemes, dates, names — so it
+lands as the same university with the words taken away, rather than interrupting the academic
+block. On a phone it is one column with the full caption under each frame; two columns to 900px,
+three above.
+
+**The news band's photograph is now visible.** The wash was a flat `.87–.92` navy, which is a navy
+band with a rumour of a photograph behind it. It is now a graded scrim: heavy at the top where the
+white heading sits, opening to `.40–.46` through the middle where the cards carry their own white
+background and need no help, closing to `.58` at the foot so the band meets the next section rather
+than fraying into it. Only the photograph is `background-attachment:fixed`; the gradient scrolls,
+so its stops track the section instead of the viewport — with both fixed, the heading's cover
+drifts as the reader scrolls.
+
+The photograph itself was re-encoded. It had been built at quality 76 and 1600px on the assumption
+nothing would ever see it; it is now 1900px at quality 84.
+
+Contrast was measured against the rendered pixels rather than judged by eye. White on the mean
+behind the heading is **14.0:1**; on the single brightest pixel in that region — rgb(86,98,115), a
+patch of sunlit grass — still **6.2:1**. The lead line under it was `rgba(255,255,255,.75)`, which
+composites to **4.3:1** over that same pixel, under AA by a hair; at `.85` it is 5.0:1 and looks
+identical. A first draft of the CSS comment claimed 8.9:1 before any of this was measured; the
+figure in the file is now the measured one.
+
+No overflow at 390px or 1440px. Slider 14/14, menu 10/10, suite 1211 passed, 1 skipped.

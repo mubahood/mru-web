@@ -327,53 +327,6 @@
 </section>
 @endif
 
-@if($galleryPicks->isNotEmpty())
-{{-- The picture desk. The faculty grid above says what is taught; this says
-     what it looks like — a structural model tested to failure, a wired solar
-     bench, a poster session, the farm, the building going up, a trophy.
-
-     Captions are printed under each frame rather than hidden behind a hover,
-     which is the only way they exist at all on a phone, and the only way a
-     photograph carries any information to someone skimming. The selection is
-     the gallery's own is_featured flag, so an editor changes what the home
-     page shows without touching this file. --}}
-<section class="home-gallery">
-  <div class="wrap">
-    <div class="sec-head left">
-      <p class="eyebrow">In Pictures</p>
-      <h2>The work, as it actually looks</h2>
-      <p>Photographs from our faculties, our farm and our field — taken here, on our own campuses.</p>
-    </div>
-
-    <div class="home-gal">
-      @foreach($galleryPicks as $photo)
-        <figure data-rise>
-          <a href="{{ route('gallery.index', $photo->category ? ['category' => $photo->category] : []) }}"
-             wire:navigate class="hg-frame" aria-label="{{ $photo->title }} — see more in the gallery">
-            <picture>
-              @if($photo->webpUrl())<source srcset="{{ $photo->webpUrl() }}" type="image/webp">@endif
-              <img src="{{ $photo->thumbUrl() }}" alt="{{ $photo->altText() }}"
-                   width="800" height="600" loading="lazy" decoding="async">
-            </picture>
-          </a>
-          <figcaption>
-            @if($photo->category)<span class="hg-cat">{{ $photo->category }}</span>@endif
-            <span class="hg-title">{{ $photo->title }}</span>
-            @if($photo->caption)<span class="hg-note">{{ $photo->caption }}</span>@endif
-          </figcaption>
-        </figure>
-      @endforeach
-    </div>
-
-    <div style="text-align:center;margin-top:var(--s-5);" data-rise>
-      <a href="{{ route('gallery.index') }}" wire:navigate class="btn ghost">
-        The full gallery <i class="fas fa-arrow-right" aria-hidden="true"></i>
-      </a>
-    </div>
-  </div>
-</section>
-@endif
-
 @if($scholarships->isNotEmpty())
 {{-- Six real schemes from the Scholarship model, arranged as a bento: the
      Kabaka's Scholarship — the one no other university can offer — holds
@@ -633,6 +586,54 @@
           <span>{{ $partner->name }}</span>
         @endif
       @endforeach
+    </div>
+  </div>
+</section>
+@endif
+
+@if($galleryPicks->isNotEmpty())
+{{-- The picture desk, closing the page. Everything above is told in words and
+     numbers — faculties, schemes, dates, names; this is the same university
+     with the words taken away. A structural model tested to failure, a wired
+     solar bench, a poster session, the farm, the building going up, a trophy.
+
+     Captions are printed under each frame rather than hidden behind a hover,
+     which is the only way they exist at all on a phone, and the only way a
+     photograph carries any information to someone skimming. The selection is
+     the gallery's own is_featured flag, so an editor changes what the home
+     page shows without touching this file. --}}
+<section class="home-gallery">
+  <div class="wrap">
+    <div class="sec-head left">
+      <p class="eyebrow">In Pictures</p>
+      <h2>The work, as it actually looks</h2>
+      <p>Photographs from our faculties, our farm and our field — taken here, on our own campuses.</p>
+    </div>
+
+    <div class="home-gal">
+      @foreach($galleryPicks as $photo)
+        <figure data-rise>
+          <a href="{{ route('gallery.index', $photo->category ? ['category' => $photo->category] : []) }}"
+             wire:navigate class="hg-frame" aria-label="{{ $photo->title }} — see more in the gallery">
+            <picture>
+              @if($photo->webpUrl())<source srcset="{{ $photo->webpUrl() }}" type="image/webp">@endif
+              <img src="{{ $photo->thumbUrl() }}" alt="{{ $photo->altText() }}"
+                   width="800" height="600" loading="lazy" decoding="async">
+            </picture>
+          </a>
+          <figcaption>
+            @if($photo->category)<span class="hg-cat">{{ $photo->category }}</span>@endif
+            <span class="hg-title">{{ $photo->title }}</span>
+            @if($photo->caption)<span class="hg-note">{{ $photo->caption }}</span>@endif
+          </figcaption>
+        </figure>
+      @endforeach
+    </div>
+
+    <div style="text-align:center;margin-top:var(--s-5);" data-rise>
+      <a href="{{ route('gallery.index') }}" wire:navigate class="btn ghost">
+        The full gallery <i class="fas fa-arrow-right" aria-hidden="true"></i>
+      </a>
     </div>
   </div>
 </section>
