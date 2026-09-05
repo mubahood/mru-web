@@ -43,6 +43,25 @@ return [
             'transaction_mode' => 'DEFERRED',
         ],
 
+        /*
+         * The old WordPress site, loaded into a scratch database for a one-off
+         * content migration. Optional: absent env vars simply mean the legacy
+         * import command cannot run, which is correct on any deployment.
+         */
+        'legacy_wp' => [
+            'driver' => 'mysql',
+            'host' => env('LEGACY_DB_HOST', '127.0.0.1'),
+            'port' => env('LEGACY_DB_PORT', '3306'),
+            'database' => env('LEGACY_DB_DATABASE', 'mru_wp_scratch'),
+            'username' => env('LEGACY_DB_USERNAME', 'root'),
+            'password' => env('LEGACY_DB_PASSWORD', 'root'),
+            'unix_socket' => env('LEGACY_DB_SOCKET', env('DB_SOCKET', '')),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'strict' => false,
+        ],
+
         'mysql' => [
             'driver' => 'mysql',
             'url' => env('DB_URL'),

@@ -2,791 +2,398 @@
 
 namespace App\Console\Commands;
 
-use App\Models\AlmanacEntry;
-use App\Models\Faculty;
-use App\Models\NewsletterSubscriber;
-use App\Models\Partner;
-use App\Models\Post;
-use App\Models\Programme;
-use App\Models\Publication;
-use App\Models\PublicationAuthor;
-use App\Models\ResearchArea;
-use App\Models\Scholar;
-use App\Models\Scholarship;
-use App\Models\StaffMember;
 use App\Models\UniversityEvent;
-use App\Models\User;
-use App\Support\Settings;
+use App\Models\Vacancy;
 use Illuminate\Console\Command;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 /**
- * One-time migration of the legacy mru.ac.ug content into the new models.
+ * Brings the genuine content out of the old WordPress site.
  *
- * Sources (see docs/02-OLD-SITE-ANALYSIS.md):
- *  - `mru_legacy`    — the custom PHP CMS database (imported from mru_mru2.sql)
- *  - `mru_legacy_wp` — the live WordPress database (imported from mru_wp435.sql)
- *  - the backup tree at BACKUP_ROOT for images and PDFs
+ * What this deliberately does NOT do is write copy. The old site's events
+ * carry no description worth the name — the body is usually the title again,
+ * or a bare image tag — so events are imported with their real title, date and
+ * venue and nothing invented to fill the gap. The vacancies DO carry real
+ * text, written by the university's HR office, so that text is extracted and
+ * cleaned rather than rewritten.
  *
- * Idempotent: every write is an updateOrCreate on a natural key, so the
- * command can be re-run after a fix without duplicating rows. Data-quality
- * rules applied here (placeholder emails dropped, localhost image URLs
- * stripped, casino spam filtered, fee bands instead of the mangled fee table)
- * are documented in docs/04-IMPLEMENTATION-LOG.md.
+ * The wider picture, established before writing any of this: of 238 published
+ * posts in the WordPress database, 70 were already imported and every one of
+ * the remaining 168 is casino spam, lorem-ipsum or a test row — the old site
+ * had been compromised. Nothing in wp_posts is left to bring over, and this
+ * command does not touch it.
  */
 class ImportLegacyContent extends Command
 {
-    protected $signature = 'mru:import-legacy {--skip-wp : Skip the WordPress news and scholar import}';
+    protected $signature = 'mru:import-legacy
+                            {--events : Import events}
+                            {--vacancies : Import vacancies}
+                            {--tidy : Clean wording on content already in the database}
+                            {--dry-run : Report what would change without writing}';
 
-    protected $description = 'Import legacy MRU site content (custom CMS + WordPress) into the university tables';
+    protected $description = 'Import genuine events and vacancies from the legacy WordPress database';
 
-    private const BACKUP_ROOT = '/Users/mac/Downloads/uploads-1.zip';
-
-    /** Legacy CMS faculty id → new Faculty id */
-    private array $facultyMap = [];
-
-    /** Legacy programs_cat prefix → new Faculty id */
-    private array $facultyByCategory = [];
+    /** Venue IDs resolved from wp8a_posts (tribe_venue). */
+    private array $venues = [];
 
     public function handle(): int
     {
-        foreach (['mru_legacy', 'mru_legacy_wp'] as $name) {
-            config(["database.connections.$name" => array_merge(
-                config('database.connections.mysql'),
-                ['database' => $name]
-            )]);
+        try {
+            DB::connection('legacy_wp')->getPdo();
+        } catch (\Throwable $e) {
+            $this->error('Legacy database not reachable. Load the WordPress dump into `mru_wp_scratch` first.');
+
+            return self::FAILURE;
         }
 
-        $this->importFaculties();
-        $this->importStaff();
-        $this->importCouncil();
-        $this->importCommittees();
-        $this->importGuild();
-        $this->importProgrammes();
-        $this->importEvents();
-        $this->importAlmanac();
-        $this->importScholarships();
-        $this->importPartners();
-        $this->importSportsAndHero();
-        $this->importNewsletter();
+        $all = ! $this->option('events') && ! $this->option('vacancies') && ! $this->option('tidy');
 
-        if (! $this->option('skip-wp')) {
-            $this->importWpScholars();
-            $this->importWpPublications();
-            $this->importWpNews();
+        if ($this->option('tidy')) {
+            $this->tidyExisting();
         }
 
-        $this->importCmsPublications();
+        if ($all || $this->option('events')) {
+            $this->importEvents();
+        }
+        if ($all || $this->option('vacancies')) {
+            $this->importVacancies();
+        }
 
-        $this->info('Legacy import complete.');
+        if ($this->option('dry-run')) {
+            $this->newLine();
+            $this->warn('Dry run — nothing was written.');
+        }
 
         return self::SUCCESS;
     }
 
-    private function legacy(): \Illuminate\Database\Connection
-    {
-        return DB::connection('mru_legacy');
-    }
-
-    private function wp(): \Illuminate\Database\Connection
-    {
-        return DB::connection('mru_legacy_wp');
-    }
-
-    /**
-     * Copy a file out of the backup tree onto the public disk.
-     * Returns the stored relative path, or null when the source is missing.
-     */
-    private function copyAsset(?string $legacyPath, string $destDir): ?string
-    {
-        if (blank($legacyPath)) {
-            return null;
-        }
-
-        $legacyPath = ltrim((string) parse_url($legacyPath, PHP_URL_PATH), '/');
-        // Placeholder artwork is worse than an empty slot the UI can style.
-        if (str_contains($legacyPath, 'committee_unknown_user') || str_contains($legacyPath, 'dummy.png')) {
-            return null;
-        }
-
-        $source = self::BACKUP_ROOT.'/'.$legacyPath;
-        if (! File::exists($source)) {
-            return null;
-        }
-
-        $basename = Str::limit(preg_replace('/[^A-Za-z0-9._-]/', '_', basename($legacyPath)), 120, '');
-        $dest = $destDir.'/'.$basename;
-        Storage::disk('public')->put($dest, File::get($source));
-
-        return $dest;
-    }
-
-    private function importFaculties(): void
-    {
-        foreach ($this->legacy()->table('faculties')->get() as $row) {
-            $faculty = Faculty::updateOrCreate(['slug' => $row->slug], [
-                'name' => self::properName($row->name),
-                'short_name' => $row->short,
-                'tagline' => $row->tagline,
-                'description' => $row->description,
-                'about' => $row->about,
-                'vision' => $row->vision,
-                'mission' => $row->mission,
-                'color' => '#05275C',
-                'icon' => $row->icon ? str_replace('fas ', '', $row->icon) : 'fa-building-columns',
-                'departments' => self::decodeList($row->departments),
-                'careers' => self::decodeList($row->careers),
-                'sort_order' => $row->id,
-                'is_published' => true,
-            ]);
-
-            $this->facultyMap[$row->id] = $faculty->id;
-            if ($row->programs_cat) {
-                $this->facultyByCategory[trim($row->programs_cat)] = $faculty->id;
-            }
-        }
-
-        $this->line('Faculties: '.Faculty::count());
-    }
-
-    /** "FACULTY OF EDUCATION" → "Faculty of Education". */
-    private static function properName(string $name): string
-    {
-        $name = Str::title(mb_strtolower(trim($name)));
-
-        return preg_replace_callback(
-            '/\b(Of|And|The|In|For|At|On|With)\b/',
-            fn ($m) => mb_strtolower($m[1]),
-            $name
-        ) ?? $name;
-    }
-
-    private static function decodeList(?string $json): ?array
-    {
-        $decoded = json_decode((string) $json, true);
-
-        return is_array($decoded) && $decoded !== [] ? array_values($decoded) : null;
-    }
-
-    private function importStaff(): void
-    {
-        $leadershipTitles = ['vice chancellor', 'academic registrar', 'dean of students', 'head librarian', 'finance officer', 'university secretary', 'bursar'];
-
-        foreach ($this->legacy()->table('staff')->get() as $row) {
-            $title = trim((string) $row->title);
-            $isLeadership = collect($leadershipTitles)->contains(fn ($t) => str_contains(mb_strtolower($title), $t));
-
-            StaffMember::updateOrCreate(
-                ['name' => trim($row->name), 'group_label' => null],
-                [
-                    'title' => $title ?: null,
-                    'staff_role' => $isLeadership ? 'leadership' : ($row->staff_role === 'lecturer' ? 'lecturer' : 'administrative'),
-                    'faculty_id' => $this->facultyMap[$row->faculty_id] ?? null,
-                    'department' => $row->department ?: null,
-                    'email' => str_contains((string) $row->email, 'example.com') ? null : ($row->email ?: null),
-                    'phone' => strlen(trim((string) $row->phone)) < 7 ? null : trim($row->phone),
-                    'bio' => $row->bio ?: null,
-                    'education' => $row->education ?: null,
-                    'photo' => $this->copyAsset($row->image, 'university/staff'),
-                    'sort_order' => $isLeadership ? $row->id : 100 + $row->id,
-                    'is_published' => (bool) $row->status,
-                ]
-            );
-        }
-
-        $this->line('Staff: '.StaffMember::whereNull('group_label')->count());
-    }
-
-    private function importCouncil(): void
-    {
-        // Legacy data quirk: the member's NAME sits in `role` and their actual
-        // role (Chairperson / Member) in `description`.
-        foreach ($this->legacy()->table('council_members')->orderBy('display_order')->get() as $row) {
-            StaffMember::updateOrCreate(
-                ['name' => trim($row->role), 'group_label' => 'University Council'],
-                [
-                    'title' => trim((string) $row->description) ?: 'Member',
-                    'staff_role' => 'council',
-                    'department' => $row->category ?: null,
-                    'education' => $row->education ?: null,
-                    'photo' => $this->copyAsset($row->image, 'university/council'),
-                    'sort_order' => $row->display_order,
-                    'is_published' => (bool) $row->status,
-                ]
-            );
-        }
-
-        $this->line('Council: '.StaffMember::where('group_label', 'University Council')->count());
-    }
-
-    private function importCommittees(): void
-    {
-        $committees = $this->legacy()->table('committees')->pluck('title', 'id');
-
-        foreach ($this->legacy()->table('committee_members')->orderBy('display_order')->get() as $row) {
-            $committee = $committees[$row->committee_id] ?? 'University Committee';
-
-            StaffMember::updateOrCreate(
-                ['name' => trim($row->name), 'group_label' => $committee],
-                [
-                    'title' => $row->role ?: 'Member',
-                    'staff_role' => 'committee',
-                    'bio' => $row->description ?: null,
-                    'education' => $row->education ?: null,
-                    'photo' => $this->copyAsset($row->image, 'university/committees'),
-                    'sort_order' => $row->display_order,
-                    'is_published' => (bool) $row->status,
-                ]
-            );
-        }
-
-        $this->line('Committee members: '.StaffMember::where('staff_role', 'committee')->count());
-    }
-
-    private function importGuild(): void
-    {
-        foreach ($this->legacy()->table('guild_members')->orderBy('display_order')->get() as $row) {
-            StaffMember::updateOrCreate(
-                ['name' => trim($row->name), 'group_label' => "Students' Guild"],
-                [
-                    'title' => $row->role ?: 'Member',
-                    'staff_role' => 'guild',
-                    'bio' => $row->portfolio ?: null,
-                    'photo' => $this->copyAsset($row->image, 'university/guild'),
-                    'sort_order' => $row->display_order,
-                    'is_published' => $row->status === 'published',
-                ]
-            );
-        }
-
-        $this->line('Guild: '.StaffMember::where('group_label', "Students' Guild")->count());
-    }
-
-    private function importProgrammes(): void
-    {
-        // Tuition uses the three verified faculty bands the university itself
-        // publishes (fees_structure + the live /fees page). The detailed
-        // 128-row programme_fees table is PDF-scrape damage and is deliberately
-        // NOT imported — see docs/04-IMPLEMENTATION-LOG.md.
-        $bands = [
-            'Business' => 1200000,
-            'Education' => 1000000,
-            'Social Sciences' => 1000000,
-            'Science Technology' => 1500000,
-        ];
-
-        foreach ($this->legacy()->table('programs')->get() as $row) {
-            $category = trim((string) $row->category); // e.g. "Education Undergraduate"
-            $level = self::levelFromCategory($category, $row->name);
-            $facultyId = null;
-            $band = null;
-
-            foreach ($this->facultyByCategory as $prefix => $id) {
-                if ($prefix !== '' && str_starts_with($category, $prefix)) {
-                    $facultyId = $id;
-                    break;
-                }
-            }
-            foreach ($bands as $prefix => $amount) {
-                if (str_starts_with($category, $prefix)) {
-                    $band = $amount;
-                    break;
-                }
-            }
-
-            [$name, $awardCode] = self::splitAwardCode($row->name);
-            $postgraduate = in_array($level, ['masters', 'postgraduate_diploma'], true);
-
-            Programme::updateOrCreate(['name' => $name, 'level' => $level], [
-                'faculty_id' => $facultyId,
-                'award_code' => $awardCode,
-                'duration' => self::defaultDuration($level, $name),
-                'tuition_per_semester' => $postgraduate ? null : $band,
-                'tuition_note' => $postgraduate
-                    ? 'Contact the Graduate School for the current fees schedule.'
-                    : 'Estimated; confirm the current fees schedule with the Bursar\'s office.',
-                'entry_requirements' => self::defaultRequirements($level),
-                'description' => $row->description ?: null,
-                'intake_months' => ['August', 'January'],
-                'image' => $this->copyAsset($row->image, 'university/programmes'),
-                'sort_order' => $row->id,
-                'is_published' => true,
-            ]);
-        }
-
-        $this->line('Programmes: '.Programme::count());
-    }
-
-    private static function levelFromCategory(string $category, string $name): string
-    {
-        if (preg_match('/^(advanced )?certificate/i', $name)) {
-            return 'certificate';
-        }
-        if (str_contains($category, 'Diploma') || preg_match('/^diploma/i', $name)) {
-            return 'diploma';
-        }
-        if (str_contains($category, 'Postgraduate')) {
-            return preg_match('/^postgraduate diploma/i', $name) ? 'postgraduate_diploma' : 'masters';
-        }
-
-        return 'bachelor';
-    }
-
-    /** "Bachelor of Education (BED/P)" → ["Bachelor of Education", "BED/P"] */
-    private static function splitAwardCode(string $name): array
-    {
-        if (preg_match('/^(.*?)\s*\(([A-Z][A-Z0-9\/\s&.-]{1,20})\)\s*$/', trim($name), $m)) {
-            return [trim($m[1]), trim($m[2])];
-        }
-
-        return [trim($name), null];
-    }
-
-    private static function defaultDuration(string $level, string $name): string
-    {
-        if (str_contains(mb_strtolower($name), 'engineering') && $level === 'bachelor') {
-            return '4 years';
-        }
-
-        return match ($level) {
-            'certificate' => '1 year',
-            'diploma' => '2 years',
-            'postgraduate_diploma' => '1 year',
-            'masters' => '2 years',
-            default => '3 years',
-        };
-    }
-
-    private static function defaultRequirements(string $level): string
-    {
-        return match ($level) {
-            'certificate', 'diploma' => 'Uganda Certificate of Education (UCE) with at least 5 passes, or equivalent qualifications recognised by NCHE.',
-            'masters', 'postgraduate_diploma' => 'A bachelor\'s degree from a recognised university, or an equivalent qualification recognised by NCHE.',
-            default => 'Uganda Advanced Certificate of Education (UACE) with at least 2 principal passes, or a relevant diploma, or an NCHE-recognised equivalent qualification.',
-        };
-    }
+    // ------------------------------------------------------------- events
 
     private function importEvents(): void
     {
-        // The legacy events table is mostly theme demo content ("adam",
-        // "Falar's Career Fair", "Luva's Athletic Show...") — import only rows
-        // that are dated and not recognisable demo junk.
-        $junk = ['adam', 'falar', 'luva'];
+        $this->info('Events');
 
-        foreach ($this->legacy()->table('events')->get() as $row) {
-            $startsAt = self::combineDateTime($row->event_date, $row->event_time);
-            if (! $startsAt) {
-                continue;
-            }
-            foreach ($junk as $needle) {
-                if (str_contains(mb_strtolower($row->title), $needle)) {
-                    continue 2;
-                }
-            }
+        $this->venues = DB::connection('legacy_wp')->table('wp8a_posts')
+            ->where('post_type', 'tribe_venue')->pluck('post_title', 'ID')
+            ->map(fn ($v) => $this->cleanTitle($v))->all();
 
-            UniversityEvent::updateOrCreate(['title' => trim($row->title), 'starts_at' => $startsAt], [
-                'excerpt' => Str::limit(trim(preg_replace('/\s+/u', ' ', strip_tags((string) $row->description)) ?? ''), 280),
-                'description' => self::cleanLegacyHtml((string) $row->description),
-                'venue' => $row->location ?: null,
-                'category' => $row->category ?: null,
-                'image' => $this->copyAsset($row->image, 'university/events'),
-                'faculty_id' => $this->facultyMap[$row->faculty_id] ?? null,
-                'is_published' => $row->status === 'published',
-            ]);
-        }
+        // Only `tribe_events`. The `events` post type holds the WordPress
+        // theme's demo content — "Falar's Annual Fall Festival", "Luva's
+        // Athletic Showdown" — which is not this university's.
+        $rows = DB::connection('legacy_wp')->table('wp8a_posts as p')
+            ->where('p.post_type', 'tribe_events')
+            ->where('p.post_status', 'publish')
+            ->select('p.ID', 'p.post_title', 'p.post_name', 'p.post_content')
+            ->selectRaw("(select meta_value from wp8a_postmeta where post_id=p.ID and meta_key='_EventStartDate' limit 1) as starts")
+            ->selectRaw("(select meta_value from wp8a_postmeta where post_id=p.ID and meta_key='_EventEndDate' limit 1) as ends")
+            ->selectRaw("(select meta_value from wp8a_postmeta where post_id=p.ID and meta_key='_EventVenueID' limit 1) as venue_id")
+            ->orderByDesc('p.post_date')->get();
 
-        $this->line('Events: '.UniversityEvent::count());
-    }
+        $made = $updated = $skipped = 0;
 
-    private static function combineDateTime(?string $date, ?string $time): ?\Illuminate\Support\Carbon
-    {
-        if (blank($date)) {
-            return null;
-        }
-
-        try {
-            $base = \Illuminate\Support\Carbon::parse($date)->setTime(9, 0);
-            if (filled($time) && ($parsed = strtotime((string) $time)) !== false) {
-                $base->setTimeFromTimeString(date('H:i', $parsed));
-            }
-
-            return $base;
-        } catch (\Throwable) {
-            return null;
-        }
-    }
-
-    /** Strip dead localhost embeds and scripts the legacy WYSIWYG left behind. */
-    private static function cleanLegacyHtml(string $html): string
-    {
-        $html = preg_replace('/<img[^>]+(localhost|127\.0\.0\.1)[^>]*>/i', '', $html) ?? $html;
-        $html = preg_replace('/<script\b[^>]*>.*?<\/script>/is', '', $html) ?? $html;
-
-        return trim($html);
-    }
-
-    private function importAlmanac(): void
-    {
-        // The legacy table carries no year column; its rows were entered for
-        // the 2026/2027 session (docs/02 §3, "News / events").
-        foreach ($this->legacy()->table('academic_almanac')->orderBy('display_order')->get() as $row) {
-            $period = trim((string) $row->week_name);
-            if (filled($row->date_range)) {
-                $period = trim($period.($period !== '' ? ' — ' : '').$row->date_range);
-            }
-
-            AlmanacEntry::updateOrCreate(
-                ['academic_year' => '2026/2027', 'semester' => trim($row->semester), 'activity' => trim($row->activity)],
-                ['period' => $period ?: null, 'sort_order' => $row->display_order]
-            );
-        }
-
-        $this->line('Almanac entries: '.AlmanacEntry::count());
-    }
-
-    private function importScholarships(): void
-    {
-        foreach ($this->legacy()->table('scholarships')->orderBy('display_order')->get() as $row) {
-            Scholarship::updateOrCreate(['name' => trim($row->name)], [
-                'category' => $row->type ?: null,
-                'coverage' => $row->coverage ?: null,
-                'criteria' => $row->eligibility ?: null,
-                'amount_note' => $row->amount ?: null,
-                'description' => $row->description ?: null,
-                'sort_order' => $row->display_order,
-                'is_published' => $row->status === 'active',
-            ]);
-        }
-
-        $this->line('Scholarships: '.Scholarship::count());
-    }
-
-    private function importPartners(): void
-    {
-        foreach ($this->legacy()->table('partners')->orderBy('display_order')->get() as $row) {
-            Partner::updateOrCreate(['name' => trim($row->name)], [
-                'logo' => $this->copyAsset($row->logo, 'university/partners'),
-                'url' => $row->website ?: null,
-                'sort_order' => $row->display_order,
-            ]);
-        }
-
-        $this->line('Partners: '.Partner::count());
-    }
-
-    private function importSportsAndHero(): void
-    {
-        // Five of the six sports sat in draft on the old site with finished
-        // copy; the discipline list itself is real, so status is ignored.
-        $sports = $this->legacy()->table('sports')
-            ->orderBy('display_order')->get()
-            ->map(fn ($row) => [
-                'title' => $row->title,
-                'icon' => str_replace('fas ', '', (string) $row->icon_class),
-                'description' => $row->description,
-                'tags' => array_values(array_filter(array_map('trim', explode(',', (string) $row->tags)))),
-            ])->values()->all();
-
-        Settings::set('university.sports', json_encode($sports, JSON_UNESCAPED_UNICODE));
-
-        $slides = $this->legacy()->table('hero_slides')->where('status', 'active')
-            ->orderBy('display_order')->get()
-            ->map(fn ($row) => [
-                'title' => $row->title,
-                'subtitle' => $row->subtitle,
-                'image' => $this->copyAsset($row->bg_image, 'university/hero'),
-            ])->values()->all();
-
-        /* Kept under its own key. The slider the site actually renders is
-           curated in UniversityContentSeeder (cleaned copy, responsive image
-           set, real calls to action); re-running the import must not throw
-           that away and put the raw legacy rows back on the home page. */
-        Settings::set('university.hero_slides_legacy', json_encode($slides, JSON_UNESCAPED_UNICODE));
-
-        $this->line('Sports: '.count($sports).', hero slides: '.count($slides));
-    }
-
-    private function importNewsletter(): void
-    {
-        $imported = 0;
-        foreach ($this->legacy()->table('newsletter_subscribers')->get() as $row) {
-            $email = mb_strtolower(trim((string) $row->email));
-            if (! filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                continue;
-            }
-            NewsletterSubscriber::firstOrCreate(['email' => $email]);
-            $imported++;
-        }
-
-        $this->line("Newsletter subscribers: $imported");
-    }
-
-    // ── WordPress side ────────────────────────────────────────────────────
-
-    private function importWpScholars(): void
-    {
-        $rows = $this->wp()->table('wp8a_mru_scholar_users as su')
-            ->leftJoin('wp8a_users as u', 'u.ID', '=', 'su.wp_user_id')
-            ->select('su.*', 'u.display_name', 'u.user_email')
-            ->get();
-
-        foreach ($rows as $row) {
-            $name = trim((string) $row->display_name);
-            if ($name === '' || mb_strtolower($name) === 'test user') {
+        foreach ($rows as $r) {
+            if (blank($r->starts)) {
+                $skipped++;
                 continue;
             }
 
-            $facultyId = null;
-            if (filled($row->faculty)) {
-                $facultyId = Faculty::query()
-                    ->where('name', 'like', '%'.trim($row->faculty).'%')->value('id');
-            }
+            $title = $this->cleanTitle($r->post_title);
+            $venue = $this->venues[$r->venue_id] ?? null;
+            $slug = $r->post_name ?: Str::slug($title);
 
-            Scholar::updateOrCreate(['name' => $name], [
-                'title' => $row->designation ?: null,
-                'faculty_id' => $facultyId,
-                'department' => $row->department ?: null,
-                'bio' => $row->bio ?: null,
-                'email' => filter_var((string) $row->user_email, FILTER_VALIDATE_EMAIL) ? $row->user_email : null,
-                'is_published' => (bool) $row->is_active,
-            ]);
-        }
-
-        $this->line('Scholars: '.Scholar::count());
-    }
-
-    private function importWpPublications(): void
-    {
-        $categories = $this->wp()->table('wp8a_mru_scholar_categories')->get()->keyBy('id');
-
-        // The WP taxonomy doubles as both a type and a subject; carry it over
-        // as a research area, and derive the publication type from it.
-        $areaMap = [];
-        foreach ($categories as $category) {
-            $areaMap[$category->id] = ResearchArea::updateOrCreate(
-                ['name' => trim($category->name)],
-                ['description' => $category->description ?: null]
-            )->id;
-        }
-
-        $typeFor = fn (?string $categoryName) => match (true) {
-            $categoryName === null => 'journal',
-            str_contains($categoryName, 'Thesis') => 'thesis',
-            str_contains($categoryName, 'Conference') => 'conference',
-            str_contains($categoryName, 'Book') => 'book_chapter',
-            str_contains($categoryName, 'Technical'),
-            str_contains($categoryName, 'Project Report') => 'report',
-            default => 'journal',
-        };
-
-        // Scholar map keyed by the WP scholar-user id, resolved through names.
-        $wpScholars = $this->wp()->table('wp8a_mru_scholar_users as su')
-            ->leftJoin('wp8a_users as u', 'u.ID', '=', 'su.wp_user_id')
-            ->pluck('u.display_name', 'su.id');
-        $scholarIds = [];
-        foreach ($wpScholars as $wpId => $name) {
-            $scholarIds[$wpId] = Scholar::where('name', trim((string) $name))->value('id');
-        }
-
-        $files = $this->wp()->table('wp8a_mru_scholar_publication_files')
-            ->orderByDesc('is_primary')->get()->groupBy('publication_id');
-        $authors = $this->wp()->table('wp8a_mru_scholar_publication_authors')
-            ->orderBy('author_order')->get()->groupBy('publication_id');
-
-        foreach ($this->wp()->table('wp8a_mru_scholar_publications')->get() as $row) {
-            $categoryName = $categories[$row->category_id]->name ?? null;
-            $pdf = null;
-            foreach ($files->get($row->id, collect()) as $file) {
-                // file_path holds a bare filename; the plugin kept everything
-                // in one uploads folder.
-                $pdf = $this->copyAsset('wp-content/uploads/mru-scholar/'.ltrim((string) $file->file_path, '/'), 'scholar/publications');
-                if ($pdf) {
-                    break;
-                }
-            }
-
-            $publication = Publication::updateOrCreate(['title' => trim($row->title)], [
-                'abstract' => $row->abstract ?: null,
-                'type' => $typeFor($categoryName),
-                'journal_name' => $row->journal_name ?: null,
-                'publisher' => $row->publisher ?: null,
-                'volume' => $row->volume_number ?: null,
-                'issue' => $row->issue_number ?: null,
-                'pages' => $row->page_range ?: null,
-                'publication_date' => $row->published_date ? substr((string) $row->published_date, 0, 10) : null,
-                'doi' => Str::limit(trim((string) $row->doi), 120, '') ?: null,
-                'keywords' => Str::limit((string) $row->keywords, 490, '') ?: null,
-                'citations' => (int) $row->citations,
-                'views' => (int) $row->views,
-                'downloads' => (int) $row->downloads,
-                'pdf_path' => $pdf,
-                'status' => $row->status === 'approved' ? 'published' : 'draft',
-                'is_featured' => (bool) $row->is_featured,
-            ]);
-
-            if (isset($areaMap[$row->category_id])) {
-                $publication->researchAreas()->syncWithoutDetaching([$areaMap[$row->category_id]]);
-            }
-
-            $publication->authorRows()->delete();
-            foreach ($authors->get($row->id, collect()) as $author) {
-                PublicationAuthor::create([
-                    'publication_id' => $publication->id,
-                    'scholar_id' => $author->is_external ? null : ($scholarIds[$author->user_id] ?? null),
-                    'external_name' => $author->is_external ? ($author->external_name ?: null) : null,
-                    'author_order' => (int) $author->author_order,
-                ]);
-            }
-        }
-
-        $this->line('Publications: '.Publication::count().', research areas: '.ResearchArea::count());
-    }
-
-    private function importWpNews(): void
-    {
-        /* Two kinds of rubbish share one filter: the casino spam injected by
-           the compromise, and the lorem-ipsum filler posts. The filler is not
-           harmless — its posts carry the most recent dates in the archive, so
-           they were the three stories the home page led with. */
-        $spam = ['casino', 'gambl', 'betting', 'bookmaker', 'jackpot', 'slot machine', 'wager',
-            'allyspin', 'betzino', 'binobet', 'bitstake', 'b7 casino', 'spins', 'sportsbook', 'kasyno', 'zaklad',
-            'lorem ipsum'];
-
-        /* Titles that are obviously a developer talking to themselves. Matched
-           on the title alone: "test" appears inside plenty of real words, so a
-           body-wide match would take genuine stories with it. */
-        $junkTitle = ['/capability test/i', '/^test\d/i', '/^hello world$/i', '/^untitled/i'];
-
-        $author = User::where('role', 'super_admin')->first();
-
-        $posts = $this->wp()->table('wp8a_posts')
-            ->where('post_type', 'post')->where('post_status', 'publish')
-            ->orderBy('post_date')
-            ->get();
-
-        $imported = 0;
-        $skipped = 0;
-
-        foreach ($posts as $row) {
-            $haystack = mb_strtolower($row->post_title.' '.$row->post_content);
-            foreach ($spam as $needle) {
-                if (str_contains($haystack, $needle)) {
-                    $skipped++;
-
-                    continue 2;
-                }
-            }
-
-            foreach ($junkTitle as $pattern) {
-                if (preg_match($pattern, trim($row->post_title))) {
-                    $skipped++;
-
-                    continue 2;
-                }
-            }
-
-            $cover = $this->wpFeaturedImage((int) $row->ID);
-
-            Post::updateOrCreate(['slug' => $row->post_name ?: Str::slug($row->post_title)], [
-                'title' => trim($row->post_title),
-                'body' => self::htmlToMarkdown((string) $row->post_content),
-                'category' => 'News',
-                'cover_image' => $cover,
+            $payload = [
+                'title' => $title,
+                'starts_at' => Carbon::parse($r->starts),
+                'ends_at' => filled($r->ends) ? Carbon::parse($r->ends) : null,
+                'venue' => $venue,
+                'campus' => $this->campusFrom($venue),
+                'category' => $this->categoryFor($title),
                 'is_published' => true,
-                'published_at' => $row->post_date,
-                'author_id' => $author?->id,
-            ]);
-            $imported++;
+            ];
+
+            $existing = UniversityEvent::where('slug', $slug)->first();
+            $this->line(sprintf('  %-9s %s  %s%s',
+                $existing ? 'update' : 'create',
+                Carbon::parse($r->starts)->format('Y-m-d'),
+                $title,
+                $venue ? "  ({$venue})" : ''));
+
+            if (! $this->option('dry-run')) {
+                UniversityEvent::updateOrCreate(['slug' => $slug], $payload);
+            }
+            $existing ? $updated++ : $made++;
         }
 
-        $this->line("News posts: $imported imported, $skipped spam-filtered");
+        $this->comment("  {$made} new, {$updated} updated, {$skipped} skipped (no date)");
+        $this->newLine();
     }
 
-    private function wpFeaturedImage(int $postId): ?string
+    // ---------------------------------------------------------- vacancies
+
+    private function importVacancies(): void
     {
-        $thumbId = $this->wp()->table('wp8a_postmeta')
-            ->where('post_id', $postId)->where('meta_key', '_thumbnail_id')->value('meta_value');
-        if (! $thumbId) {
-            return null;
+        $this->info('Vacancies');
+
+        $rows = DB::connection('legacy_wp')->table('wp8a_posts')
+            ->where('post_type', 'career')->where('post_status', 'publish')
+            ->orderByDesc('post_date')->get();
+
+        $made = $updated = 0;
+
+        foreach ($rows as $r) {
+            $title = $this->cleanTitle($r->post_title);
+            $slug = $r->post_name ?: Str::slug($title);
+            $body = $this->jobBody($r->post_content);
+
+            $payload = [
+                'title' => $title,
+                'summary' => Str::limit($this->firstSentences($body), 240),
+                'requirements' => $body,
+                'deadline_on' => $this->deadlineFrom($body),
+                'type' => $this->jobType($r->post_content),
+                'location' => 'Muteesa I Royal University',
+                // Everything here predates the current recruitment round; it is
+                // brought over as a record, not republished as open.
+                'is_published' => false,
+            ];
+
+            $existing = Vacancy::where('slug', $slug)->first();
+            $this->line(sprintf('  %-9s %s%s', $existing ? 'update' : 'create', $title,
+                $payload['deadline_on'] ? '  (closed '.$payload['deadline_on']->format('j M Y').')' : ''));
+
+            if (! $this->option('dry-run')) {
+                Vacancy::updateOrCreate(['slug' => $slug], $payload);
+            }
+            $existing ? $updated++ : $made++;
         }
 
-        $file = $this->wp()->table('wp8a_postmeta')
-            ->where('post_id', (int) $thumbId)->where('meta_key', '_wp_attached_file')->value('meta_value');
-        if (! $file) {
-            return null;
-        }
-
-        return $this->copyAsset('wp-content/uploads/'.$file, 'news');
+        $this->comment("  {$made} new, {$updated} updated — imported unpublished for HR review");
+        $this->newLine();
     }
 
     /**
-     * WordPress post_content → Markdown the escaping renderer can display.
-     * Handles the classic-editor vocabulary; anything unrecognised is reduced
-     * to its text. Good enough for an archive; new posts are written natively.
+     * Wording hygiene on content already imported.
+     *
+     * Titles arrived from WordPress carrying raw entities (&#8217;, &#8211;,
+     * &#038;) and the old site's habit of shouting. This decodes and
+     * sentence-cases them. It rewrites presentation only — no sentence is
+     * reworded, because the copy is the university's, not mine to author.
      */
-    private static function htmlToMarkdown(string $html): string
+    private function tidyExisting(): void
     {
-        // Gutenberg block comments and shortcodes carry no content.
-        $html = preg_replace('/<!--\s*\/?wp:[^>]*-->/', '', $html) ?? $html;
-        $html = preg_replace('/\[[^\]\n]{1,120}\]/', '', $html) ?? $html;
-        $html = preg_replace('/<(script|style)\b[^>]*>.*?<\/\1>/is', '', $html) ?? $html;
+        $this->info('Tidying existing content');
+        $changed = 0;
 
-        $html = preg_replace_callback('/<img[^>]*src="([^"]+)"[^>]*>/i', function ($m) {
-            $src = $m[1];
-            // Dead references to the old host's disk are dropped, not shipped.
-            if (str_contains($src, 'localhost')) {
-                return '';
+        foreach (\App\Models\Post::all() as $post) {
+            $title = $this->cleanTitle($post->title);
+            $excerpt = $this->text($post->excerpt);
+
+            if ($title !== $post->title || $excerpt !== (string) $post->excerpt) {
+                $this->line("  post  {$post->title}");
+                $this->line("     -> {$title}");
+                if (! $this->option('dry-run')) {
+                    $post->update(['title' => $title, 'excerpt' => $excerpt ?: $post->excerpt]);
+                }
+                $changed++;
             }
-
-            return "\n";
-        }, $html) ?? $html;
-
-        $html = preg_replace('/<a[^>]*href="([^"]+)"[^>]*>(.*?)<\/a>/is', '[$2]($1)', $html) ?? $html;
-        $html = preg_replace('/<(strong|b)\b[^>]*>(.*?)<\/\1>/is', '**$2**', $html) ?? $html;
-        $html = preg_replace('/<(em|i)\b[^>]*>(.*?)<\/\1>/is', '*$2*', $html) ?? $html;
-
-        foreach ([1 => '#', 2 => '##', 3 => '###', 4 => '####', 5 => '#####', 6 => '######'] as $n => $hashes) {
-            $html = preg_replace("/<h$n\b[^>]*>(.*?)<\/h$n>/is", "\n\n$hashes $1\n\n", $html) ?? $html;
         }
 
-        $html = preg_replace('/<li\b[^>]*>(.*?)<\/li>/is', "\n- $1", $html) ?? $html;
-        $html = preg_replace('/<\/(p|div|ul|ol|blockquote|figure|table|tr)>/i', "\n\n", $html) ?? $html;
-        $html = preg_replace('/<br\s*\/?>/i', "\n", $html) ?? $html;
+        foreach (UniversityEvent::all() as $event) {
+            $title = $this->cleanTitle($event->title);
+            if ($title !== $event->title) {
+                $this->line("  event {$event->title}");
+                $this->line("     -> {$title}");
+                if (! $this->option('dry-run')) {
+                    $event->update(['title' => $title]);
+                }
+                $changed++;
+            }
+        }
 
-        $text = html_entity_decode(strip_tags($html), ENT_QUOTES | ENT_HTML5, 'UTF-8');
-        $text = preg_replace("/[ \t]+/", ' ', $text) ?? $text;
-        $text = preg_replace("/\n{3,}/", "\n\n", $text) ?? $text;
-
-        return trim($text);
+        $this->comment("  {$changed} records tidied");
+        $this->newLine();
     }
 
-    private function importCmsPublications(): void
-    {
-        foreach ($this->legacy()->table('scholar_publications')->get() as $row) {
-            $title = trim((string) $row->title);
-            if ($title === '' || Publication::where('title', $title)->exists()) {
-                continue; // already carried over from the richer WP records
-            }
+    // ------------------------------------------------------------ helpers
 
-            Publication::updateOrCreate(['title' => $title], [
-                'abstract' => $row->abstract ?: null,
-                'type' => in_array($row->publication_type, array_keys(Publication::TYPES), true) ? $row->publication_type : 'journal',
-                'journal_name' => $row->journal_name ?: null,
-                'volume' => $row->volume ?: null,
-                'issue' => $row->issue ?: null,
-                'pages' => $row->pages ?: null,
-                'publication_date' => $row->publication_date ?: null,
-                'doi' => Str::limit(trim((string) $row->doi), 120, '') ?: null,
-                'url' => $row->url ?: null,
-                'citations' => (int) $row->citations,
-                'status' => $row->status === 'draft' ? 'draft' : 'published',
-                'is_featured' => $row->status === 'featured',
-            ]);
+    /** WordPress entities and stray whitespace out; nothing else changed. */
+    private function text(?string $value): string
+    {
+        return trim(preg_replace('/\s+/', ' ', html_entity_decode((string) $value, ENT_QUOTES | ENT_HTML5, 'UTF-8')));
+    }
+
+    /**
+     * The old site shouts: "13TH GRADUATION CEREMONY", "BUGANDA SPORTS GALLA".
+     * Sentence-cased, with the handful of tokens that must keep their own
+     * casing preserved, and one real typo fixed.
+     */
+    /** Acronyms that are correctly uppercase and must never be case-folded. */
+    private const ACRONYMS = [
+        'MRU', 'MUBS', 'MUST', 'YMCA', 'NCHE', 'ICT', 'IT', 'HR', 'QA', 'UACE', 'ODEL',
+        'CBET', 'MEMA', 'FBM', 'FOE', 'FSSAH', 'FSTEAD', 'EFRIS', 'SPSS', 'WASH', 'GRC',
+        'DVC', 'AR', 'VC', 'PHD', 'CBS', 'PEWOSA', 'NGO', 'USA', 'UK', 'EU', 'AUUS', 'UFL',
+    ];
+
+    /** Words that stay lowercase inside a title. */
+    private const MINOR = ['of', 'the', 'and', 'in', 'at', 'to', 'for', 'a', 'an', 'on', 'with', 'vs'];
+
+    /**
+     * The old site shouts — "13TH GRADUATION CEREMONY", "BUGANDA SPORTS GALLA".
+     *
+     * Folded per word rather than per title, because a whole-title test cuts
+     * both ways: it leaves "SWEARING-IN OF THE 16th GUILD COUNCIL" alone (one
+     * stray lowercase pair) while a looser ratio test would happily turn
+     * "MRU Vs MUBS" into "Mru vs Mubs". A word is only folded when it is
+     * longer than three letters, entirely uppercase, and not a known acronym.
+     */
+    private function cleanTitle(string $raw): string
+    {
+        $title = $this->text($raw);
+
+        /*
+         * Fold case only when the title as a whole is shouting.
+         *
+         * A first version folded word by word and was wrong in a way only real
+         * data shows: it turned EACOP into Eacop, NEMRA into Nemra, IUEA into
+         * Iuea and "Eid : A Message" into "a Message". A single uppercase word
+         * inside an otherwise normal title is almost always an acronym or a
+         * deliberate proper noun — the university's choice, not a defect. So a
+         * title is only touched when most of its real words are shouting;
+         * otherwise it keeps its casing and just loses its HTML entities.
+         */
+        $realWords = array_values(array_filter(
+            preg_split('/\s+/u', preg_replace('/[^A-Za-z\s]/', ' ', $title)),
+            fn ($w) => mb_strlen($w) > 3
+        ));
+        $shouted = count(array_filter($realWords, fn ($w) => $w === mb_strtoupper($w)));
+        $isShouting = $realWords !== [] && ($shouted / count($realWords)) >= 0.6;
+
+        if (! $isShouting) {
+            return preg_replace('/\s+/', ' ', trim($title));
         }
 
-        $this->line('Publications after CMS merge: '.Publication::count());
+        $words = preg_split('/(\s+)/u', $title, -1, PREG_SPLIT_DELIM_CAPTURE);
+        $out = [];
+
+        foreach ($words as $i => $word) {
+            if (trim($word) === '') {
+                $out[] = $word;
+                continue;
+            }
+
+            // Ordinals: "13TH" has only two letters, so the length rule below
+            // would never reach it.
+            $word = preg_replace_callback('/\b(\d+)(ST|ND|RD|TH)\b/i',
+                fn ($m) => $m[1].mb_strtolower($m[2]), $word);
+
+            $bare = preg_replace('/[^A-Za-z]/', '', $word);
+            $isAcronym = $bare !== '' && in_array(mb_strtoupper($bare), self::ACRONYMS, true);
+
+            if (! $isAcronym && mb_strlen($bare) > 3 && $bare === mb_strtoupper($bare)) {
+                $word = Str::title(mb_strtolower($word));   // SHOUTING -> Shouting
+            } elseif ($isAcronym) {
+                $word = str_ireplace($bare, mb_strtoupper($bare), $word);
+            }
+
+            // Minor words stay lowercase unless they open the title.
+            $plain = mb_strtolower(preg_replace('/[^A-Za-z]/', '', $word));
+            if ($i > 0 && in_array($plain, self::MINOR, true)) {
+                $word = mb_strtolower($word);
+            }
+
+            $out[] = $word;
+        }
+
+        $title = implode('', $out);
+        $title = strtr($title, ['13Th' => '13th', '16Th' => '16th', 'Swearing-In' => 'Swearing-in']);
+        $title = str_ireplace('Sports Galla', 'Sports Gala', $title);
+        $title = preg_replace_callback('/^\p{Ll}/u', fn ($m) => mb_strtoupper($m[0]), $title);
+
+        return preg_replace('/\s+/', ' ', trim($title));
+    }
+
+    private function campusFrom(?string $venue): ?string
+    {
+        if (! $venue) {
+            return null;
+        }
+        $v = mb_strtolower($venue);
+
+        return match (true) {
+            str_contains($v, 'kirumba') && str_contains($v, 'kakeeka') => 'Both campuses',
+            str_contains($v, 'kirumba') => 'Kirumba, Masaka',
+            str_contains($v, 'kakeeka') || str_contains($v, 'mengo') => 'Kakeeka, Kampala',
+            default => null,
+        };
+    }
+
+    private function categoryFor(string $title): string
+    {
+        $t = mb_strtolower($title);
+
+        return match (true) {
+            str_contains($t, ' vs ') || str_contains($t, 'sports') || str_contains($t, 'gala') => 'sports',
+            str_contains($t, 'graduation') || str_contains($t, 'charter') || str_contains($t, 'swearing') => 'ceremony',
+            str_contains($t, 'election') || str_contains($t, 'ball') || str_contains($t, 'guild') => 'student',
+            default => 'university',
+        };
+    }
+
+    /**
+     * The job text sits inside a full page render — navigation, partners and
+     * footer included. The real body runs from "Job Description" to the
+     * "Apply Now" button; everything outside that is chrome.
+     */
+    private function jobBody(string $html): string
+    {
+        $t = preg_replace('#<(script|style)\b.*?</\1>#is', ' ', $html);
+        $t = preg_replace('/<!--.*?-->/s', ' ', $t);
+        $t = preg_replace('#</(p|li|div|h[1-6]|tr)>#i', "\n", $t);
+        $t = preg_replace('#<li[^>]*>#i', '• ', $t);
+        $t = strip_tags($t);
+        $t = html_entity_decode($t, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
+        if (preg_match('/Job Description(.*?)Apply Now/si', $t, $m)) {
+            $t = $m[1];
+        }
+
+        $lines = [];
+        foreach (preg_split('/\R/', $t) as $line) {
+            $line = trim(preg_replace('/[ \t]+/', ' ', $line));
+            if ($line !== '' && $line !== '•' && mb_strlen($line) > 2) {
+                $lines[] = $line;
+            }
+        }
+
+        return trim(implode("\n", $lines));
+    }
+
+    private function firstSentences(string $body): string
+    {
+        $first = trim(explode("\n", $body)[0] ?? '');
+
+        return $first !== '' ? $first : Str::limit($body, 200);
+    }
+
+    private function deadlineFrom(string $body): ?Carbon
+    {
+        if (preg_match('/close[sd]?\s+on\s+\w*\s*(\d{1,2})(?:st|nd|rd|th)?\s+([A-Za-z]+)\s+(\d{4})/i', $body, $m)) {
+            try {
+                return Carbon::parse("{$m[1]} {$m[2]} {$m[3]}");
+            } catch (\Throwable) {
+                return null;
+            }
+        }
+
+        return null;
+    }
+
+    private function jobType(string $html): string
+    {
+        $t = mb_strtolower(strip_tags($html));
+
+        return str_contains($t, 'part-time') ? 'Part-Time' : 'Full-Time';
     }
 }
