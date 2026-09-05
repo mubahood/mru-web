@@ -14,6 +14,8 @@
   'title' => 'Sports & Lifestyle',
   'lead' => 'Six disciplines, two campuses, one Royals spirit.',
   'mark' => 'Royals',
+  'photo' => asset('images/page-sports.jpg'),
+  'photoAlt' => 'The Muteesa I Royal University football team lifting the 2025/26 University Football League trophy',
 ])
 
 @if(!empty($sports))

@@ -16,6 +16,8 @@
     ['fa-crown', 'A university of the Buganda Kingdom'],
     ['fa-location-dot', 'Kampala & Masaka'],
   ],
+  'photo' => asset('images/page-about.jpg'),
+  'photoAlt' => "A speaker at the Buganda Partnership Symposium holding the Kingdom's Social Transformation booklet",
 ])
 
 {{-- The founding story, told beside the crest it produced. --}}

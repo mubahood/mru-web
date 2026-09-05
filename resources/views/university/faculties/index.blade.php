@@ -14,7 +14,16 @@
   <div class="wrap">
     <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px;">
       @foreach($faculties as $faculty)
-        <a href="{{ route('faculties.show', $faculty) }}" wire:navigate class="proj-card" data-rise>
+        <a href="{{ route('faculties.show', $faculty) }}" wire:navigate class="proj-card faculty-index-card" data-rise>
+          {{-- Each faculty already carries a cover photograph, set through the
+               admin uploader and used on the homepage; this page had been
+               ignoring it and showing an icon instead. --}}
+          @if($faculty->cover_image)
+            <span class="fi-media">
+              <img src="{{ asset('storage/'.$faculty->cover_image) }}" alt=""
+                   width="800" height="1000" loading="lazy" decoding="async">
+            </span>
+          @endif
           <div style="display:flex;align-items:center;gap:12px;">
             <span class="ic" style="width:44px;height:44px;background:var(--pri);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:18px;">
               <i class="fas {{ $faculty->icon }}" aria-hidden="true"></i>

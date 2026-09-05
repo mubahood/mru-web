@@ -12,6 +12,8 @@
   'eyebrow' => 'Alumni',
   'title' => 'Once a Royal, always a Royal',
   'lead' => 'Graduates of MRU join a growing alumni network that stretches across Uganda and beyond — and keeps a seat at the University\'s table.',
+  'photo' => asset('storage/university/hero/hero-graduation-1100.jpg'),
+  'photoAlt' => 'Graduands seated at a Muteesa I Royal University graduation ceremony',
 ])
 
 <section>

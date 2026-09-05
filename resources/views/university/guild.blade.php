@@ -12,6 +12,8 @@
   'title' => "The Students' Guild",
   'lead' => 'Your elected student government — the voice of every MRU student.',
   'mark' => 'Guild',
+  'photo' => asset('images/page-guild.jpg'),
+  'photoAlt' => "Students registering at an outdoor desk during Students' Guild elections",
 ])
 
 <section style="padding-bottom:0;">
