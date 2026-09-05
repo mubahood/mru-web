@@ -59,7 +59,6 @@
       <a href="{{ route('scholar.home') }}" wire:navigate class="tb-desktop-only"><i class="fas fa-flask" aria-hidden="true"></i> MRU Scholar</a>
       <span class="tb-right tb-desktop-only">
         <a href="tel:+256200903000"><i class="fas fa-phone" aria-hidden="true"></i> +256 200 903 000</a>
-        <a href="{{ $uniLinks['eadmin'] ?? 'https://eadmin.mru.ac.ug/' }}" rel="external"><i class="fas fa-user-shield" aria-hidden="true"></i> Staff Login</a>
       </span>
     </div>
   </div>
@@ -159,9 +158,11 @@
             </form>
           </div>
         </div>
-      @else
-        <a href="{{ route('login') }}" wire:navigate class="signin desk">Sign in</a>
       @endauth
+      {{-- No "Sign in" here. The header carries what a prospective student
+           needs; signing in is a staff and student errand, and its doors are
+           gathered in the footer instead. The @auth menu above stays, so
+           somebody already signed in is never stranded without a way out. --}}
 
       <button class="burger" id="burger" aria-label="Menu" aria-expanded="false" aria-controls="mmenu"><i class="fas fa-bars"></i></button>
     </div>
@@ -200,8 +201,6 @@
         @csrf
         <button type="submit" class="btn ghost" style="width:100%;justify-content:center;">Sign out</button>
       </form>
-    @else
-      <a href="{{ route('login') }}" wire:navigate class="btn ghost">Sign in</a>
     @endauth
   </div>
 </div>
@@ -312,6 +311,11 @@
         <a href="{{ $eportalUrl }}" rel="external">Student E-Portal</a>
         <a href="{{ route('courses.index') }}" wire:navigate>e-Learning</a>
         <a href="{{ $uniLinks['eadmin'] ?? 'https://eadmin.mru.ac.ug/' }}" rel="external">Staff Login</a>
+        @auth
+          <a href="{{ route('dashboard') }}" wire:navigate>Dashboard</a>
+        @else
+          <a href="{{ route('login') }}" wire:navigate>Sign in</a>
+        @endauth
       </div>
     </div>
 

@@ -474,8 +474,6 @@ html:not(.js-nav) .nav-item:focus-within > .mega{opacity:1;visibility:visible;tr
     .acct-who{padding:8px 10px 6px;border-bottom:1px solid var(--line);margin-bottom:4px;}
     .acct-who .nm{display:block;font-size:12.5px;font-weight:600;color:var(--tx);}
     .acct-who .rl{display:block;font-size:11px;font-weight:450;color:var(--tx2);margin-top:1px;}
-    .signin{font-size:12.5px;font-weight:600;color:var(--tx2);white-space:nowrap;padding:6px 2px;}
-    .signin:hover{color:var(--gold-d);}
 
     /* Mobile sheet */
     .mm-group{border-bottom:1px solid var(--line);}
@@ -1611,8 +1609,6 @@ html:not(.js-nav) .nav-item:focus-within > .mega{opacity:1;visibility:visible;tr
 .btn:hover i{transform:translateX(3px);}
 .ctas{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
 
-.signin{font-size:14.5px;font-weight:600;color:var(--tx2);white-space:nowrap;padding:8px 6px;border-radius:var(--r-sm);}
-.signin:hover{color:var(--pri);}
 .hd-r{margin-left:auto;display:flex;align-items:center;gap:12px;}
 
 /* Text links that draw their own underline. */
@@ -2592,8 +2588,6 @@ body.has-hero .nav-link:hover,
 body.has-hero .nav-link.on,
 body.has-hero .nav-item:hover .nav-link,
 body.has-hero .nav-item.is-open .nav-link{color:var(--hdr-fg-on);}
-body.has-hero .signin{color:rgba(255,255,255,.88);}
-body.has-hero .signin:hover{color:#fff;}
 body.has-hero .burger{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.4);color:#fff;}
 body.has-hero .acct-av{border:1px solid rgba(255,255,255,.4);}
 
@@ -2610,8 +2604,6 @@ html.is-scrolled body.has-hero .brand .brand-name small,
 html.menu-open body.has-hero .brand .brand-name small{color:var(--gold-d);}
 html.is-scrolled body.has-hero .topbar,
 html.menu-open body.has-hero .topbar{background:var(--pri);}
-html.is-scrolled body.has-hero .signin,
-html.menu-open body.has-hero .signin{color:var(--tx2);}
 html.is-scrolled body.has-hero .burger,
 html.menu-open body.has-hero .burger{background:#fff;border-color:var(--line-2);color:var(--pri);}
 
