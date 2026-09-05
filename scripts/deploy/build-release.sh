@@ -70,6 +70,20 @@ echo "==> production dependencies (no dev)"
   && "$PHP" "$COMPOSER" install \
     --no-dev --prefer-dist --no-interaction --no-progress --optimize-autoloader --classmap-authoritative >/dev/null )
 
+# public/.htaccess sends requests to `../index.php`, which suits the layout the
+# platform this codebase came from is deployed under. Here the document root IS
+# public_html and index.php sits beside .htaccess, so `../index.php` escapes the
+# root and Apache answers 400 Bad Request to every path except `/`. The local
+# file is left alone; only the shipped copy is corrected.
+echo "==> correcting the rewrite target for a public_html document root"
+sed -i.bak 's|RewriteRule \^ \.\./index\.php \[L\]|RewriteRule ^ index.php [L]|' "$OUT/public_html/.htaccess"
+rm -f "$OUT/public_html/.htaccess.bak"
+grep -q 'RewriteRule \^ index\.php \[L\]' "$OUT/public_html/.htaccess" \
+  || { echo "    !! front-controller rule missing from .htaccess" >&2; exit 1; }
+grep -q '\.\./index\.php' "$OUT/public_html/.htaccess" \
+  && { echo "    !! an ../index.php rule survived" >&2; exit 1; }
+echo "    .htaccess front controller -> index.php"
+
 echo "==> repointing index.php at ../laravel"
 python3 - "$OUT/public_html/index.php" <<'PY'
 import sys, re
