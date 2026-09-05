@@ -39,7 +39,7 @@
 
 <section class="page-hero tex-glow">
   <div class="wrap page vf-wrap" style="text-align:center;">
-    <div class="sec-idx">Verification</div>
+    <p class="eyebrow">Verification</p>
     <h1 style="font-size:30px;margin-top:8px;">Check a certificate</h1>
     <p class="muted" style="font-size:14px;line-height:1.65;margin-top:8px;">
       Every certificate the University issues carries a number and a QR code. Enter the number

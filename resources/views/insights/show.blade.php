@@ -83,7 +83,7 @@
 <section class="band-surface">
   <div class="wrap">
     <div class="sec-head left" data-rise>
-      <div class="sec-idx">More <span>reading</span></div>
+      <p class="eyebrow">More reading</p>
       <h2>Other articles</h2>
     </div>
     <div class="work-grid">

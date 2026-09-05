@@ -23,6 +23,12 @@
         <env name="ONBOARDING_GATE" value="false"/>
         <env name="APP_URL" value="http://localhost"/>
         <env name="APP_MAINTENANCE_DRIVER" value="file"/>
+        <!-- One codebase serves two products. The commercial surface is off by
+             default so a university deployment is correct without anyone
+             remembering to disable it; the suite turns it on because it also
+             covers the portfolio platform, where those pages are the product.
+             CommerceGateTest asserts the off state separately. -->
+        <env name="FEATURE_COMMERCE" value="true"/>
         <env name="BCRYPT_ROUNDS" value="4"/>
         <env name="BROADCAST_CONNECTION" value="null"/>
         <env name="CACHE_STORE" value="array"/>

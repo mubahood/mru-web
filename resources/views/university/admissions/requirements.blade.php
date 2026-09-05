@@ -5,8 +5,6 @@
 @section('content')
 
 @php
-  $n = 0;
-  $idx = function () use (&$n) { return str_pad((string) ++$n, 2, '0', STR_PAD_LEFT); };
   $req = $admissions['requirements'] ?? [];
   /* One band per level, alternating surfaces so the page reads as four clear
      answers rather than one long list. */
@@ -33,7 +31,7 @@
   <section @if($level['band']) class="{{ $level['band'] }}" @endif>
     <div class="wrap">
       <div class="sec-head left">
-        <div class="sec-idx">{{ $idx() }} <span>{{ $level['label'] }}</span></div>
+        <p class="eyebrow">{{ $level['label'] }}</p>
         <h2>{{ $level['title'] }}</h2>
       </div>
       <div class="feature-box" data-rise>

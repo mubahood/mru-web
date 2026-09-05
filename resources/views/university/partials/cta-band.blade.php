@@ -9,7 +9,7 @@
 <section class="band-deep">
   <div class="wrap" style="text-align:center;">
     <div class="sec-head">
-      <div class="sec-idx">&nbsp;<span>Join Us</span></div>
+      <p class="eyebrow">Join Us</p>
       <h2>Ready to join MRU?</h2>
       <p>Applications are open for the next intake. Apply on the E-Portal in under twenty minutes,
          or talk to the admissions team first — whichever helps you more.</p>

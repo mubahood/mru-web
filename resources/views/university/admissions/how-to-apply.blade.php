@@ -5,8 +5,6 @@
 @section('content')
 
 @php
-  $n = 0;
-  $idx = function () use (&$n) { return str_pad((string) ++$n, 2, '0', STR_PAD_LEFT); };
   $applyUrl = \App\Support\University::applyUrl();
   $wa = $contacts['whatsapp_link'] ?? '#';
 @endphp
@@ -26,7 +24,7 @@
 <section>
   <div class="wrap">
     <div class="sec-head left">
-      <div class="sec-idx">{{ $idx() }} <span>The Steps</span></div>
+      <p class="eyebrow">The Steps</p>
       <h2>Seven steps, start to admission</h2>
       <p>The whole application happens on the E-Portal — most applicants finish in under twenty minutes.</p>
     </div>
@@ -46,7 +44,7 @@
 <section class="band-surface tex-glow">
   <div class="wrap">
     <div class="sec-head left">
-      <div class="sec-idx">{{ $idx() }} <span>Fees &amp; Payment</span></div>
+      <p class="eyebrow">Fees &amp; Payment</p>
       <h2>What it costs, and how to pay</h2>
     </div>
     <div class="apply-fees-split" style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:stretch;">
@@ -81,7 +79,7 @@
 <section>
   <div class="wrap" style="text-align:center;">
     <div class="sec-head">
-      <div class="sec-idx">{{ $idx() }} <span>Start Now</span></div>
+      <p class="eyebrow">Start Now</p>
       <h2>Ready? The portal is open</h2>
     </div>
     <div class="ctas" data-rise style="justify-content:center;">

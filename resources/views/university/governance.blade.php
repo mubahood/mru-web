@@ -5,8 +5,6 @@
 @section('content')
 
 @php
-  $n = 0;
-  $idx = function () use (&$n) { return str_pad((string) ++$n, 2, '0', STR_PAD_LEFT); };
 @endphp
 
 @include('university.partials.page-hero', [
@@ -19,7 +17,7 @@
 <section>
   <div class="wrap">
     <div class="sec-head left">
-      <div class="sec-idx">{{ $idx() }} <span>Principal Officers</span></div>
+      <p class="eyebrow">Principal Officers</p>
       <h2>Principal officers</h2>
       <p>The officers responsible for the day-to-day academic and administrative life of the University.</p>
     </div>
@@ -36,7 +34,7 @@
 <section class="{{ $loop->odd ? 'band-surface tex-grid' : '' }}">
   <div class="wrap">
     <div class="sec-head left">
-      <div class="sec-idx">{{ $idx() }} <span>Committee</span></div>
+      <p class="eyebrow">Committee</p>
       <h2>{{ $name }}</h2>
     </div>
     <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr));">

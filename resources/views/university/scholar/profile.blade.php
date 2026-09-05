@@ -33,7 +33,7 @@
     <div class="course-layout">
       <div class="main">
         @if($scholar->bio)
-          <div class="sec-idx">About</div>
+          <p class="eyebrow">About</p>
           <div class="page" style="max-width:none;margin:0 0 28px;">
             @foreach(preg_split('/\n{2,}/', trim(strip_tags($scholar->bio))) as $paragraph)
               @if(trim($paragraph) !== '')<p>{{ trim($paragraph) }}</p>@endif
@@ -42,7 +42,7 @@
         @endif
 
         @if($scholar->research_interests)
-          <div class="sec-idx">Research interests</div>
+          <p class="eyebrow">Research interests</p>
           <div class="pill-row" style="margin-bottom:28px;">
             @foreach(array_filter(array_map('trim', preg_split('/[,;\n]/', $scholar->research_interests))) as $interest)
               <span class="pill">{{ $interest }}</span>
@@ -50,7 +50,7 @@
           </div>
         @endif
 
-        <div class="sec-idx">Publications</div>
+        <p class="eyebrow">Publications</p>
         @forelse($scholar->publications as $publication)
           <article style="padding:14px 4px;border-bottom:1px solid var(--line);">
             <div class="tag-row" style="margin-bottom:5px;">

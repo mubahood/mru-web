@@ -5,8 +5,6 @@
 @section('content')
 
 @php
-  $n = 0;
-  $idx = function () use (&$n) { return str_pad((string) ++$n, 2, '0', STR_PAD_LEFT); };
   /* Institutional first, policies last; a group not named here still renders,
      after the named ones, rather than disappearing. */
   $order = ['Institutional', 'Academic', 'Admissions', 'Students', 'Research', 'Culture', 'Policies'];
@@ -36,7 +34,7 @@
 <section class="{{ $loop->even ? 'band-surface tex-grid' : '' }}" style="padding:34px 0;">
   <div class="wrap">
     <div class="sec-head left" style="margin-bottom:16px;">
-      <div class="sec-idx">{{ $idx() }} <span>{{ $docs->count() }} {{ \Illuminate\Support\Str::plural('document', $docs->count()) }}</span></div>
+      <p class="eyebrow">{{ $docs->count() }} {{ \Illuminate\Support\Str::plural('document', $docs->count()) }}</p>
       <h2>{{ $group }}</h2>
     </div>
     <div data-rise style="border:1px solid var(--line);background:var(--surface);">

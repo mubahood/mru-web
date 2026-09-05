@@ -5,8 +5,6 @@
 @section('content')
 
 @php
-  $n = 0;
-  $idx = function () use (&$n) { return str_pad((string) ++$n, 2, '0', STR_PAD_LEFT); };
   $accEmail = $contacts['accommodation_email'] ?? 'accommodation@mru.ac.ug';
 @endphp
 
@@ -21,7 +19,7 @@
 <section>
   <div class="wrap">
     <div class="sec-head left">
-      <div class="sec-idx">{{ $idx() }} <span>Halls of Residence</span></div>
+      <p class="eyebrow">Halls of Residence</p>
       <h2>Choose your hall</h2>
     </div>
     <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr));">
@@ -46,7 +44,7 @@
 <section class="band-surface tex-glow">
   <div class="wrap">
     <div class="sec-head left">
-      <div class="sec-idx">{{ $idx() }} <span>Booking</span></div>
+      <p class="eyebrow">Booking</p>
       <h2>How to book a room</h2>
       <p>Rooms are allocated to admitted students, in three steps.</p>
     </div>

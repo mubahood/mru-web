@@ -173,17 +173,27 @@ Route::get('/gallery', [\App\Http\Controllers\GalleryController::class, 'index']
 | have an account. Everything from the review screen on requires sign-in,
 | because an order has to belong to somebody.
 */
-Route::get('/source-code', [\App\Http\Controllers\Shop\ShopController::class, 'index'])->name('shop.index');
-Route::get('/source-code/{product:slug}', [\App\Http\Controllers\Shop\ShopController::class, 'show'])->name('shop.show');
-$movedPermanently('/projects-for-sale', '/source-code');
-$movedPermanently('/projects-for-sale/{product}', '/source-code/{product}');
-$movedPermanently('/shop', '/source-code');
-$movedPermanently('/shop/{product}', '/source-code/{product}');
+/* Gated by config('features.commerce'): registered so route() never throws
+   for the shared views that link here, but 404 on the university domain. */
+Route::middleware(\App\Http\Middleware\EnsureCommerceEnabled::class)->group(function () {
+    Route::get('/source-code', [\App\Http\Controllers\Shop\ShopController::class, 'index'])->name('shop.index');
+    Route::get('/source-code/{product:slug}', [\App\Http\Controllers\Shop\ShopController::class, 'show'])->name('shop.show');
+});
+/* Gated with their target: redirecting to a page that 404s is worse than
+   404ing outright, and tells a crawler the wrong thing. */
+Route::middleware(\App\Http\Middleware\EnsureCommerceEnabled::class)->group(function () use ($movedPermanently) {
+    $movedPermanently('/projects-for-sale', '/source-code');
+    $movedPermanently('/projects-for-sale/{product}', '/source-code/{product}');
+    $movedPermanently('/shop', '/source-code');
+    $movedPermanently('/shop/{product}', '/source-code/{product}');
+});
 
-Route::get('/cart', [\App\Http\Controllers\Shop\CartController::class, 'show'])->name('cart.show');
-Route::post('/cart/add', [\App\Http\Controllers\Shop\CartController::class, 'add'])->name('cart.add');
-Route::patch('/cart', [\App\Http\Controllers\Shop\CartController::class, 'update'])->name('cart.update');
-Route::delete('/cart', [\App\Http\Controllers\Shop\CartController::class, 'remove'])->name('cart.remove');
+Route::middleware(\App\Http\Middleware\EnsureCommerceEnabled::class)->group(function () {
+    Route::get('/cart', [\App\Http\Controllers\Shop\CartController::class, 'show'])->name('cart.show');
+    Route::post('/cart/add', [\App\Http\Controllers\Shop\CartController::class, 'add'])->name('cart.add');
+    Route::patch('/cart', [\App\Http\Controllers\Shop\CartController::class, 'update'])->name('cart.update');
+    Route::delete('/cart', [\App\Http\Controllers\Shop\CartController::class, 'remove'])->name('cart.remove');
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/checkout', [\App\Http\Controllers\Shop\CheckoutController::class, 'review'])->name('checkout.review');
@@ -224,11 +234,14 @@ Route::post('/_a', \App\Http\Controllers\Analytics\BeaconController::class)->nam
  * proposed at their portal. A button cannot get this wrong because a button
  * does not decide it.
  */
-Route::get('/hire', \App\Http\Controllers\HireController::class)->name('hire');
+Route::get('/hire', \App\Http\Controllers\HireController::class)->name('hire')
+    ->middleware(\App\Http\Middleware\EnsureCommerceEnabled::class);
 
 // /contact is a real university page again (declared above); only the old
 // project-brief entry point still forwards to the hire journey.
-$movedPermanently('/start-a-project', '/hire');
+Route::middleware(\App\Http\Middleware\EnsureCommerceEnabled::class)->group(function () use ($movedPermanently) {
+    $movedPermanently('/start-a-project', '/hire');
+});
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/propose', [\App\Http\Controllers\ProjectInquiryController::class, 'create'])->name('propose');

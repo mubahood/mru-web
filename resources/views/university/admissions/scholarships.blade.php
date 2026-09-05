@@ -5,8 +5,6 @@
 @section('content')
 
 @php
-  $n = 0;
-  $idx = function () use (&$n) { return str_pad((string) ++$n, 2, '0', STR_PAD_LEFT); };
   $admissionsEmail = $contacts['admissions_email'] ?? ($contacts['email'] ?? 'admissions@mru.ac.ug');
 @endphp
 
@@ -23,7 +21,7 @@
 <section>
   <div class="wrap">
     <div class="sec-head left">
-      <div class="sec-idx">{{ $idx() }} <span>The Schemes</span></div>
+      <p class="eyebrow">The Schemes</p>
       <h2>Support that follows the student</h2>
     </div>
     <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr));">

@@ -19,8 +19,6 @@
 @section('content')
 
 @php
-  $n = 0;
-  $idx = function () use (&$n) { return str_pad((string) ++$n, 2, '0', STR_PAD_LEFT); };
 @endphp
 
 @include('university.partials.page-hero', [
@@ -39,7 +37,7 @@
   <section @if($loop->iteration % 2 === 0) class="band-surface tex-glow" @endif>
     <div class="wrap">
       <div class="sec-head left">
-        <div class="sec-idx">{{ $idx() }} <span>Faculty</span></div>
+        <p class="eyebrow">Faculty</p>
         <h2>{{ $faculty->name }}</h2>
       </div>
       <div class="fees-scroll" data-rise>
@@ -69,7 +67,7 @@
 <section class="band-surface tex-grid">
   <div class="wrap">
     <div class="sec-head left">
-      <div class="sec-idx">{{ $idx() }} <span>Payment</span></div>
+      <p class="eyebrow">Payment</p>
       <h2>How to pay</h2>
     </div>
     <div class="pay-split" style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:stretch;">

@@ -5,8 +5,6 @@
 @section('content')
 
 @php
-  $n = 0;
-  $idx = function () use (&$n) { return str_pad((string) ++$n, 2, '0', STR_PAD_LEFT); };
 @endphp
 
 @include('university.partials.page-hero', [
@@ -47,7 +45,7 @@
 <section class="band-surface tex-glow">
   <div class="wrap">
     <div class="sec-head left">
-      <div class="sec-idx">{{ $idx() }} <span>Sports</span></div>
+      <p class="eyebrow">Sports</p>
       <h2>Play for the Royals</h2>
       <p>From the football pitch to the chessboard — varsity teams, inter-faculty leagues and the annual sports gala.</p>
     </div>
@@ -72,7 +70,7 @@
 <section>
   <div class="wrap">
     <div class="sec-head left">
-      <div class="sec-idx">{{ $idx() }} <span>On Campus</span></div>
+      <p class="eyebrow">On Campus</p>
       <h2>What's happening, and where you'll live</h2>
     </div>
     <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr));align-items:stretch;">
@@ -110,7 +108,7 @@
 <section class="band-surface tex-grid">
   <div class="wrap">
     <div class="sec-head left">
-      <div class="sec-idx">{{ $idx() }} <span>Gallery</span></div>
+      <p class="eyebrow">Gallery</p>
       <h2>Campus in pictures</h2>
     </div>
     <div class="gal-grid">

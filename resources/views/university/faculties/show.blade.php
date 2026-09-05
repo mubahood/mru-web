@@ -5,8 +5,6 @@
 @section('content')
 
 @php
-  $n = 0;
-  $idx = function () use (&$n) { return str_pad((string) ++$n, 2, '0', STR_PAD_LEFT); };
 @endphp
 
 <section class="page-hero">
@@ -28,7 +26,7 @@
   <div class="wrap">
     <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:36px;align-items:start;" class="fac-split">
       <div>
-        <div class="sec-idx">{{ $idx() }} <span>About the faculty</span></div>
+        <p class="eyebrow">About the faculty</p>
         <div class="page" style="max-width:none;margin:0;">
           @foreach(preg_split('/\n{2,}|\r\n\r\n/', trim(strip_tags($faculty->about ?: $faculty->description))) as $paragraph)
             @if(trim($paragraph) !== '')<p>{{ trim($paragraph) }}</p>@endif
@@ -59,7 +57,7 @@
 <section class="band-surface tex-grid">
   <div class="wrap">
     <div class="sec-head left">
-      <div class="sec-idx">{{ $idx() }} <span>Departments</span></div>
+      <p class="eyebrow">Departments</p>
       <h2>Inside the faculty</h2>
     </div>
     <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr));">
@@ -77,7 +75,7 @@
 <section>
   <div class="wrap">
     <div class="sec-head left">
-      <div class="sec-idx">{{ $idx() }} <span>Programmes</span></div>
+      <p class="eyebrow">Programmes</p>
       <h2>Study in this faculty</h2>
       <p>Grouped by award level. Every programme page carries its requirements, fees and intakes.</p>
     </div>
@@ -98,7 +96,7 @@
 <section class="band-surface">
   <div class="wrap">
     <div class="sec-head left">
-      <div class="sec-idx">{{ $idx() }} <span>Careers</span></div>
+      <p class="eyebrow">Careers</p>
       <h2>Where this faculty takes you</h2>
     </div>
     <div class="pill-row" data-rise>
@@ -114,7 +112,7 @@
 <section>
   <div class="wrap">
     <div class="sec-head left">
-      <div class="sec-idx">{{ $idx() }} <span>People</span></div>
+      <p class="eyebrow">People</p>
       <h2>Staff of the faculty</h2>
     </div>
     <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(210px,1fr));">

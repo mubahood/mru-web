@@ -5,8 +5,6 @@
 @section('content')
 
 @php
-  $n = 0;
-  $idx = function () use (&$n) { return str_pad((string) ++$n, 2, '0', STR_PAD_LEFT); };
   $libraryUrl = $links['library'] ?? null;
 @endphp
 
@@ -19,7 +17,7 @@
 <section>
   <div class="wrap">
     <div class="sec-head left">
-      <div class="sec-idx">{{ $idx() }} <span>Services</span></div>
+      <p class="eyebrow">Services</p>
       <h2>What the library does for you</h2>
     </div>
     <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr));">

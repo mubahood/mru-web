@@ -81,8 +81,6 @@
 @section('content')
 
 @php
-  $n = 0;
-  $idx = function () use (&$n) { return str_pad((string) ++$n, 2, '0', STR_PAD_LEFT); };
 @endphp
 
 @include('university.partials.page-hero', [
@@ -98,7 +96,7 @@
 <section>
   <div class="wrap">
     <div class="sec-head left">
-      <div class="sec-idx">{{ $idx() }} <span>FAQs</span></div>
+      <p class="eyebrow">FAQs</p>
       <h2>Before you ask — it's probably here</h2>
     </div>
     <div style="max-width:760px;" data-rise>
@@ -115,7 +113,7 @@
 <section class="band-surface tex-glow">
   <div class="wrap" style="text-align:center;">
     <div class="sec-head">
-      <div class="sec-idx">{{ $idx() }} <span>Dig Deeper</span></div>
+      <p class="eyebrow">Dig Deeper</p>
       <h2>The full guides behind these answers</h2>
     </div>
     <div class="ctas" data-rise style="justify-content:center;">

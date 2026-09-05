@@ -746,22 +746,13 @@ html:not(.js-nav) .nav-item:focus-within > .mega{opacity:1;visibility:visible;tr
     .band-deep h2,.band-deep h3{color:#fff;}
     .band-deep .lead,.band-deep p{color:rgba(255,255,255,.68);}
     .band-deep .eyebrow{color:var(--gold);}
-    .band-deep .sec-idx{color:rgba(255,255,255,.35);}
-    .band-deep .sec-idx::after{background:rgba(255,255,255,.18);}
 
     /* Indexed section headers
        "01, SELECTED WORK". Numbering the sections is how a schematic or a
        syllabus is laid out, which is exactly what this person does for a
        living, and it gives the eye an anchor other than another centred
        heading. */
-    .sec-idx{display:flex;align-items:center;gap:10px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
-      font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-d);margin-bottom:12px;}
-    .sec-idx::after{content:'';flex:1;height:1px;background:var(--line-2);max-width:120px;}
     .sec-head.left{text-align:left;margin-left:0;max-width:640px;}
-    .sec-head.left .sec-idx{justify-content:flex-start;}
-    .sec-head:not(.left) .sec-idx{justify-content:center;}
-    .sec-head:not(.left) .sec-idx::after{display:none;}
-    .sec-head:not(.left) .sec-idx::before{content:'';flex:0 0 26px;height:1px;background:var(--line-2);}
 
     /* Cards: the offset-plate motif from the hero, made interactive */
     .proj-card{position:relative;isolation:isolate;}
@@ -1480,17 +1471,6 @@ h4{font-family:var(--font);font-size:15px;font-weight:700;color:var(--pri);}
 .lead{font-size:17.5px;font-weight:400;color:var(--tx2);line-height:1.75;}
 .eyebrow{font-size:11.5px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--gold-d);}
 
-/* The section label. Was a monospace index; now a small amber marker that
-   reads as a label rather than as a line number. */
-.sec-idx{display:inline-flex;align-items:center;gap:10px;font-family:var(--font);
-  font-size:11.5px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;
-  color:var(--gold-d);margin-bottom:14px;}
-.sec-idx::before{content:'';flex:0 0 26px;height:3px;border-radius:var(--r-pill);background:var(--gold);}
-.sec-idx::after{display:none;}
-.sec-head:not(.left) .sec-idx{justify-content:center;}
-.sec-head:not(.left) .sec-idx::before{flex-basis:26px;}
-.band-deep .sec-idx{color:var(--gold-l);}
-.band-deep .sec-idx::before{background:var(--gold);}
 
 /* ------------------------------------------------------- 2. Page rhythm */
 
@@ -2326,9 +2306,9 @@ html.menu-open::after{content:'';position:fixed;inset:0;z-index:48;
 .hs-copy{position:relative;height:100%;display:flex;align-items:center;
   padding-top:var(--hdr-total,120px);padding-bottom:120px;}
 /* A slim gold spine anchors the whole text column to something other than
-   the photo underneath it — the same rounded-gold-bar language as .sec-idx's
-   own marker, just turned vertical. Fades at both ends rather than running
-   edge to edge, so it reads as a deliberate accent, not a ruled-off margin. */
+   the photo underneath it: the site's rounded gold bar, turned vertical.
+   Fades at both ends rather than running edge to edge, so it reads as a
+   deliberate accent, not a ruled-off margin. */
 .hs-copy .wrap{width:100%;position:relative;padding-left:58px;}
 .hs-copy .wrap::before{content:'';position:absolute;left:32px;top:6px;bottom:6px;width:3px;
   border-radius:var(--r-pill);transform-origin:top;transform:scaleY(0);opacity:0;
@@ -2345,10 +2325,10 @@ html.menu-open::after{content:'';position:fixed;inset:0;z-index:48;
 .hs-eyebrow{display:flex;align-items:center;gap:12px;
   font-size:12px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;
   color:var(--gold);margin-bottom:20px;text-shadow:0 2px 14px rgba(0,0,0,.6);}
-/* Echoes .sec-idx's own leading marker so the hero — the one place on the
-   site that never used the site's own numbered-section language — finally
-   speaks it too, instead of reading like a generic template hero bolted on
-   the front of a site that has its own visual signature everywhere else. */
+/* The same short gold rule that marks an eyebrow elsewhere, so the hero
+   speaks the site's own language instead of reading like a generic template
+   hero bolted on the front. (It once echoed the numbered-section marker;
+   that motif was retired sitewide — the gold rule outlived it.) */
 .hs-eyebrow::before{content:'';flex:0 0 28px;height:3px;border-radius:var(--r-pill);
   transform-origin:left;transform:scaleX(0);
   background:var(--gold);box-shadow:0 1px 8px rgba(0,0,0,.45);}

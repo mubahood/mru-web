@@ -5,8 +5,6 @@
 @section('content')
 
 @php
-  $n = 0;
-  $idx = function () use (&$n) { return str_pad((string) ++$n, 2, '0', STR_PAD_LEFT); };
 @endphp
 
 @include('university.partials.page-hero', [
@@ -20,7 +18,7 @@
 <section class="{{ $loop->even ? 'band-surface tex-grid' : '' }}">
   <div class="wrap">
     <div class="sec-head left">
-      <div class="sec-idx">{{ $idx() }} <span>Council</span></div>
+      <p class="eyebrow">Council</p>
       <h2>{{ $group }}</h2>
     </div>
     <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr));">

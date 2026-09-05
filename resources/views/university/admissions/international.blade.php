@@ -5,8 +5,6 @@
 @section('content')
 
 @php
-  $n = 0;
-  $idx = function () use (&$n) { return str_pad((string) ++$n, 2, '0', STR_PAD_LEFT); };
   $admissionsEmail = $contacts['admissions_email'] ?? ($contacts['email'] ?? 'admissions@mru.ac.ug');
   $intlRequirements = collect($admissions['requirements']['international'] ?? []);
   $english = $intlRequirements->first(fn ($item) => \Illuminate\Support\Str::startsWith($item, 'English'));
@@ -27,7 +25,7 @@
 <section>
   <div class="wrap">
     <div class="sec-head left">
-      <div class="sec-idx">{{ $idx() }} <span>Requirements</span></div>
+      <p class="eyebrow">Requirements</p>
       <h2>What international applicants need</h2>
     </div>
     <div class="feature-box" data-rise>
@@ -51,7 +49,7 @@
 <section class="band-surface tex-glow">
   <div class="wrap">
     <div class="sec-head left">
-      <div class="sec-idx">{{ $idx() }} <span>Support</span></div>
+      <p class="eyebrow">Support</p>
       <h2>You won't land here alone</h2>
       <p>From your first email to your first night on campus, there is an office answering.</p>
     </div>

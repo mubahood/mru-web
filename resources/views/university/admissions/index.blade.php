@@ -5,8 +5,6 @@
 @section('content')
 
 @php
-  $n = 0;
-  $idx = function () use (&$n) { return str_pad((string) ++$n, 2, '0', STR_PAD_LEFT); };
   $applyUrl = \App\Support\University::applyUrl();
   $wa = $contacts['whatsapp_link'] ?? '#';
   $admissionsEmail = $contacts['admissions_email'] ?? ($contacts['email'] ?? 'admissions@mru.ac.ug');
@@ -29,7 +27,7 @@
 <section>
   <div class="wrap">
     <div class="sec-head left">
-      <div class="sec-idx">{{ $idx() }} <span>Getting In</span></div>
+      <p class="eyebrow">Getting In</p>
       <h2>Three steps to a submitted application</h2>
     </div>
     <div class="steps" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr));margin-top:0;">
@@ -59,7 +57,7 @@
 <section class="band-surface tex-glow">
   <div class="wrap">
     <div class="sec-head left">
-      <div class="sec-idx">{{ $idx() }} <span>Timeline</span></div>
+      <p class="eyebrow">Timeline</p>
       <h2>The admissions year at a glance</h2>
       <p>From opening day to orientation — where each stage of the cycle falls.</p>
     </div>
@@ -82,7 +80,7 @@
 <section>
   <div class="wrap">
     <div class="sec-head left">
-      <div class="sec-idx">{{ $idx() }} <span>Guides</span></div>
+      <p class="eyebrow">Guides</p>
       <h2>Go straight to what you need</h2>
     </div>
     <div class="icon-row">
@@ -119,7 +117,7 @@
     <div class="adm-contact-split" style="display:grid;grid-template-columns:1.2fr 1fr;gap:36px;align-items:center;">
       <div>
         <div class="sec-head left" style="margin-bottom:14px;">
-          <div class="sec-idx">{{ $idx() }} <span>Talk To Us</span></div>
+          <p class="eyebrow">Talk To Us</p>
           <h2>The admissions office is a message away</h2>
         </div>
         <p class="lead" data-rise>Not sure which programme fits, or stuck on a portal step? Ask — the team answers by email, phone and WhatsApp.</p>

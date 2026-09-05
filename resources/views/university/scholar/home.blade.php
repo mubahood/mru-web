@@ -5,8 +5,6 @@
 @section('content')
 
 @php
-  $n = 0;
-  $idx = function () use (&$n) { return str_pad((string) ++$n, 2, '0', STR_PAD_LEFT); };
 @endphp
 
 <section class="page-hero">
@@ -43,7 +41,7 @@
 <section class="band-surface tex-glow" style="padding-top:34px;">
   <div class="wrap">
     <div class="sec-head left">
-      <div class="sec-idx">{{ $idx() }} <span>Featured</span></div>
+      <p class="eyebrow">Featured</p>
       <h2>Featured research</h2>
     </div>
     <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr));">
@@ -66,7 +64,7 @@
 <section>
   <div class="wrap">
     <div class="sec-head left">
-      <div class="sec-idx">{{ $idx() }} <span>Latest</span></div>
+      <p class="eyebrow">Latest</p>
       <h2>Latest publications</h2>
     </div>
     <div style="display:flex;flex-direction:column;gap:0;">
@@ -99,7 +97,7 @@
 <section class="band-surface">
   <div class="wrap">
     <div class="sec-head left">
-      <div class="sec-idx">{{ $idx() }} <span>Research areas</span></div>
+      <p class="eyebrow">Research areas</p>
       <h2>Browse by area</h2>
     </div>
     <div class="pill-row" data-rise>

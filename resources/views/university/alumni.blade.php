@@ -5,8 +5,6 @@
 @section('content')
 
 @php
-  $n = 0;
-  $idx = function () use (&$n) { return str_pad((string) ++$n, 2, '0', STR_PAD_LEFT); };
   $social = \App\Support\University::get('social');
 @endphp
 
@@ -19,7 +17,7 @@
 <section>
   <div class="wrap">
     <div class="sec-head left">
-      <div class="sec-idx">{{ $idx() }} <span>The Network</span></div>
+      <p class="eyebrow">The Network</p>
       <h2>What the network gives you</h2>
       <p>An alumni representative sits on the University Council, so graduates keep a voice in how the University is governed.</p>
     </div>

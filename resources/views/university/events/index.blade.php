@@ -5,8 +5,6 @@
 @section('content')
 
 @php
-  $n = 0;
-  $idx = function () use (&$n) { return str_pad((string) ++$n, 2, '0', STR_PAD_LEFT); };
 @endphp
 
 @include('university.partials.page-hero', [
@@ -22,7 +20,7 @@
 <section>
   <div class="wrap">
     <div class="sec-head left">
-      <div class="sec-idx">{{ $idx() }} <span>Coming Up</span></div>
+      <p class="eyebrow">Coming Up</p>
       <h2>Upcoming events</h2>
     </div>
     @forelse($upcoming as $event)
@@ -63,7 +61,7 @@
 <section class="band-surface tex-glow">
   <div class="wrap">
     <div class="sec-head left">
-      <div class="sec-idx">{{ $idx() }} <span>Archive</span></div>
+      <p class="eyebrow">Archive</p>
       <h2>Past events</h2>
     </div>
     <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr));">

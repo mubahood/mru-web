@@ -38,7 +38,7 @@
   <div class="wrap">
     <div class="course-layout">
       <div class="main">
-        <div class="sec-idx">Authors</div>
+        <p class="eyebrow">Authors</p>
         <div style="display:flex;flex-wrap:wrap;gap:10px;margin:0 0 28px;">
           @foreach($publication->authorRows as $author)
             @if($author->scholar && $author->scholar->is_published)
@@ -53,7 +53,7 @@
         </div>
 
         @if($publication->abstract)
-          <div class="sec-idx">Abstract</div>
+          <p class="eyebrow">Abstract</p>
           <div class="page" style="max-width:none;margin:0 0 28px;">
             @foreach(preg_split('/\n{2,}/', trim(strip_tags($publication->abstract))) as $paragraph)
               @if(trim($paragraph) !== '')<p>{{ trim($paragraph) }}</p>@endif
@@ -62,7 +62,7 @@
         @endif
 
         @if($publication->keywords)
-          <div class="sec-idx">Keywords</div>
+          <p class="eyebrow">Keywords</p>
           <div class="pill-row" style="margin-bottom:28px;">
             @foreach(array_filter(array_map('trim', explode(',', $publication->keywords))) as $keyword)
               <span class="pill">{{ $keyword }}</span>
@@ -71,7 +71,7 @@
         @endif
 
         @if($publication->researchAreas->isNotEmpty())
-          <div class="sec-idx">Research areas</div>
+          <p class="eyebrow">Research areas</p>
           <div class="pill-row">
             @foreach($publication->researchAreas as $area)
               <a href="{{ route('scholar.publications', ['area' => $area->id]) }}" wire:navigate class="pill" style="color:var(--pri);">{{ $area->name }}</a>

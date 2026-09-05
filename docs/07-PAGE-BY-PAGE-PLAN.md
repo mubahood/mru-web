@@ -29,9 +29,17 @@ listing items at UGX 650,000 / 450,000 / 800,000 — the inherited portfolio pla
 marketplace, live under the Muteesa I Royal University brand. `/hire`, `/start-a-project` and
 `/propose` likewise resolve to that platform's account and enquiry flows.
 
-**Seven of these URLs are in `sitemap.xml`**, which has 220 entries — so they are being actively
-advertised to search engines as university pages. This is a brand and credibility problem before
-it is a technical one, and it is the first thing to resolve.
+They were publicly reachable and linked from the sign-in page and the news index.
+
+**Correction to an earlier draft of this document:** it claimed seven of these URLs were in
+`sitemap.xml`. That was wrong — a grep for `shop|hire` had matched news slugs
+(`…-workshop-…`, `hosted-the-arch-bishop`) and an e-learning course called "Build a complete
+online shop". The sitemap is generated from an explicit allow-list of university routes and never
+contained the commercial pages. The reachability was real; the indexing claim was not.
+
+**Resolved** (see `04-IMPLEMENTATION-LOG.md`, Phase AF): gated behind
+`config('features.commerce')`, off by default, so these URLs now return 404 on the university
+domain while the same code still serves them on the portfolio domain.
 
 ---
 

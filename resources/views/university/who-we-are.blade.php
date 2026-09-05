@@ -5,8 +5,6 @@
 @section('content')
 
 @php
-  $n = 0;
-  $idx = function () use (&$n) { return str_pad((string) ++$n, 2, '0', STR_PAD_LEFT); };
   /* One icon per core value, mapped by position; anything unexpected gets a star. */
   $valueIcons = ['fa-award', 'fa-scale-balanced', 'fa-drum', 'fa-hands-holding-circle', 'fa-lightbulb', 'fa-hand-holding-heart'];
 @endphp
@@ -20,7 +18,7 @@
 <section>
   <div class="wrap">
     <div class="sec-head left">
-      <div class="sec-idx">{{ $idx() }} <span>Mission &amp; Vision</span></div>
+      <p class="eyebrow">Mission &amp; Vision</p>
       <h2>What drives {{ $identity['short'] ?? 'MRU' }}</h2>
     </div>
     <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr));">
@@ -40,7 +38,7 @@
 <section class="band-surface tex-grid">
   <div class="wrap">
     <div class="sec-head left">
-      <div class="sec-idx">{{ $idx() }} <span>Core Values</span></div>
+      <p class="eyebrow">Core Values</p>
       <h2>Six values we live by</h2>
       <p>Every classroom, office and playing field at the University is held to the same standard.</p>
     </div>
@@ -62,7 +60,7 @@
   <div class="wrap">
     <div class="page" style="margin:0;">
       <div class="sec-head left">
-        <div class="sec-idx">{{ $idx() }} <span>Our Story</span></div>
+        <p class="eyebrow">Our Story</p>
         <h2>How the University came to be</h2>
       </div>
       @foreach($identity['history'] as $paragraph)

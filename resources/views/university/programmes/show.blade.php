@@ -52,7 +52,7 @@
     <div class="course-layout">
       <div class="main">
         @if($programme->description)
-          <div class="sec-idx">01 <span>About the programme</span></div>
+          <p class="eyebrow">About the programme</p>
           <div class="page" style="max-width:none;margin:0 0 30px;">
             @foreach(preg_split('/\n{2,}|\r\n\r\n/', trim(strip_tags($programme->description))) as $paragraph)
               @if(trim($paragraph) !== '')<p>{{ trim($paragraph) }}</p>@endif
@@ -60,13 +60,13 @@
           </div>
         @endif
 
-        <div class="sec-idx">{{ $programme->description ? '02' : '01' }} <span>Entry requirements</span></div>
+        <p class="eyebrow">Entry requirements</p>
         <div class="feature-box" style="margin-bottom:30px;">
           <p style="margin-bottom:0;">{{ $programme->entry_requirements ?: 'Contact the admissions office for the entry requirements of this programme.' }}</p>
         </div>
 
         @if($programme->career_prospects)
-          <div class="sec-idx">03 <span>Career prospects</span></div>
+          <p class="eyebrow">Career prospects</p>
           <div class="page" style="max-width:none;margin:0 0 30px;">
             <p>{{ $programme->career_prospects }}</p>
           </div>

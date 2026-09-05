@@ -5,8 +5,6 @@
 @section('content')
 
 @php
-  $n = 0;
-  $idx = function () use (&$n) { return str_pad((string) ++$n, 2, '0', STR_PAD_LEFT); };
 @endphp
 
 @include('university.partials.page-hero', [
@@ -26,7 +24,7 @@
     <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:40px;align-items:center;" class="about-split">
       <div>
         <div class="sec-head left" style="margin-bottom:18px;">
-          <div class="sec-idx">{{ $idx() }} <span>Our History</span></div>
+          <p class="eyebrow">Our History</p>
           <h2>{{ $identity['namesake'] ?? 'Named for Kabaka Muteesa I of Buganda' }}</h2>
         </div>
         @foreach($identity['history'] ?? [] as $paragraph)
@@ -57,7 +55,7 @@
 <section>
   <div class="wrap">
     <div class="sec-head left">
-      <div class="sec-idx">{{ $idx() }} <span>Vision &amp; Mission</span></div>
+      <p class="eyebrow">Vision &amp; Mission</p>
       <h2>Where we are going, and how we get there</h2>
     </div>
     <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr));">
@@ -84,7 +82,7 @@
 <section class="band-surface tex-grid">
   <div class="wrap">
     <div class="sec-head left">
-      <div class="sec-idx">{{ $idx() }} <span>Leadership</span></div>
+      <p class="eyebrow">Leadership</p>
       <h2>University leadership</h2>
       <p>The principal officers responsible for the University's academic and administrative life.</p>
     </div>
@@ -105,7 +103,7 @@
 <section>
   <div class="wrap">
     <div class="sec-head left">
-      <div class="sec-idx">{{ $idx() }} <span>Campuses</span></div>
+      <p class="eyebrow">Campuses</p>
       <h2>Two campuses, one university</h2>
     </div>
     <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr));">

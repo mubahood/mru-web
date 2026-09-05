@@ -5,8 +5,6 @@
 @section('content')
 
 @php
-  $n = 0;
-  $idx = function () use (&$n) { return str_pad((string) ++$n, 2, '0', STR_PAD_LEFT); };
 @endphp
 
 @include('university.partials.page-hero', [
@@ -30,7 +28,7 @@
 <section>
   <div class="wrap">
     <div class="sec-head left">
-      <div class="sec-idx">{{ $idx() }} <span>Guild Cabinet</span></div>
+      <p class="eyebrow">Guild Cabinet</p>
       <h2>The Guild cabinet</h2>
       <p>Each office-holder carries a portfolio — this is who to talk to, and about what.</p>
     </div>

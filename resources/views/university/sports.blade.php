@@ -5,8 +5,6 @@
 @section('content')
 
 @php
-  $n = 0;
-  $idx = function () use (&$n) { return str_pad((string) ++$n, 2, '0', STR_PAD_LEFT); };
   /* The flagship football club gets its own callout below the grid. */
   $football = collect($sports)->first(fn ($s) => str_contains($s['title'] ?? '', 'Royals FC'));
 @endphp
@@ -22,7 +20,7 @@
 <section>
   <div class="wrap">
     <div class="sec-head left">
-      <div class="sec-idx">{{ $idx() }} <span>Disciplines</span></div>
+      <p class="eyebrow">Disciplines</p>
       <h2>Pick your game</h2>
       <p>Varsity teams, inter-faculty leagues and recreational play — every student finds a place on a team.</p>
     </div>
@@ -50,7 +48,7 @@
 <section class="band-deep">
   <div class="wrap" style="text-align:center;">
     <div class="sec-head">
-      <div class="sec-idx">&nbsp;<span>The Flagship</span></div>
+      <p class="eyebrow">The Flagship</p>
       <h2><i class="fas fa-futbol" aria-hidden="true" style="color:var(--gold);"></i> Royals FC</h2>
       <p>{{ $football['description'] }}</p>
     </div>
