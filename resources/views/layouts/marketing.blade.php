@@ -23,7 +23,7 @@
   <link rel="stylesheet" href="{{ asset('vendor/fa/css/all.min.css') }}" media="print" onload="this.media='all'">
   <noscript><link rel="stylesheet" href="{{ asset('vendor/fa/css/all.min.css') }}"></noscript>
   @livewireStyles
-  <link rel="stylesheet" href="{{ asset('css/mru.css') }}?v={{ filemtime(public_path('css/mru.css')) }}">
+  <link rel="stylesheet" href="{{ \App\Support\Asset::versioned('css/mru.css') }}">
   @stack('styles')
 </head>
 <body>

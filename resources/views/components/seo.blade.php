@@ -25,7 +25,7 @@
     $seoTitle = \Illuminate\Support\Str::limit($decode($title), 60, '');
     $seoDescription = \Illuminate\Support\Str::limit($decode($description), 155, '');
     $seoCanonical = $canonical ?? url()->current();
-    $seoImage = $image ?? asset('images/og.png');
+    $seoImage = $image ?? asset('images/og.jpg');
 @endphp
 <title>{{ $seoTitle }}</title>
 <meta name="description" content="{{ $seoDescription }}">
