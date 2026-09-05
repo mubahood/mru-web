@@ -13,6 +13,8 @@
   'title' => 'University Library',
   'lead' => 'Books, journals, databases and quiet places to work — with librarians who help you find what your coursework and research need.',
   'trail' => [['label' => 'Academics', 'url' => route('programmes.index')], ['label' => 'Library']],
+  'photo' => asset('images/page-guild.jpg'),
+  'photoAlt' => "Students at work on the Muteesa I Royal University campus",
 ])
 
 <section>

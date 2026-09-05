@@ -1682,6 +1682,15 @@ a.pill:hover{border-color:var(--pri);color:var(--pri);background:var(--pri-soft)
 .page-hero .eyebrow{margin-bottom:13px;}
 .page-hero .trust-chips,.page-hero .subnav{margin-top:24px;}
 
+/* Departmental contacts: a label and the address it routes to, so a visitor
+   picks the right inbox instead of defaulting to the general one. */
+.contact-depts{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:9px;}
+.contact-depts li{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px;
+  padding-bottom:8px;border-bottom:1px solid var(--line);font-size:13.5px;}
+.contact-depts li:last-child{border-bottom:0;padding-bottom:0;}
+.contact-depts span{color:var(--tx2);}
+.contact-depts a{font-weight:600;color:var(--pri);}
+
 /* Breadcrumbs sit above the page title, quiet by default: they are wayfinding
    and a search-result trail, not a headline. */
 .crumbs{margin-bottom:18px;}

@@ -13,6 +13,8 @@
   'title' => 'Contact Us',
   'lead' => 'By phone, WhatsApp, email or in person on either campus — and messages sent here reach a person, not a mailbox nobody reads.',
   'trail' => [['label' => 'About MRU', 'url' => route('about')], ['label' => 'Contact us']],
+  'photo' => asset('storage/university/hero/hero-international-1100.jpg'),
+  'photoAlt' => 'Visitors with Muteesa I Royal University staff outside a campus building',
 ])
 
 <section>
@@ -45,6 +47,27 @@
                target="_blank" rel="noopener">{{ $contacts['whatsapp'] }}</a>
           </div>
         @endisset
+
+        {{-- careers@ and accommodation@ exist in the contact settings and were
+             never surfaced: someone asking about a job or a hall of residence
+             was being pointed at the general inbox. --}}
+        <div class="item" data-rise>
+          <h4><i class="fas fa-user-tie" aria-hidden="true"></i> Who to write to</h4>
+          <ul class="contact-depts">
+            <li><span>Admissions &amp; applications</span>
+              <a href="mailto:{{ $contacts['admissions_email'] ?? 'admissions@mru.ac.ug' }}">{{ $contacts['admissions_email'] ?? 'admissions@mru.ac.ug' }}</a></li>
+            @isset($contacts['accommodation_email'])
+              <li><span>Halls &amp; accommodation</span>
+                <a href="mailto:{{ $contacts['accommodation_email'] }}">{{ $contacts['accommodation_email'] }}</a></li>
+            @endisset
+            @isset($contacts['careers_email'])
+              <li><span>Jobs &amp; recruitment</span>
+                <a href="mailto:{{ $contacts['careers_email'] }}">{{ $contacts['careers_email'] }}</a></li>
+            @endisset
+            <li><span>Anything else</span>
+              <a href="mailto:{{ $contacts['email'] ?? 'info@mru.ac.ug' }}">{{ $contacts['email'] ?? 'info@mru.ac.ug' }}</a></li>
+          </ul>
+        </div>
 
         @isset($contacts['pobox'])
           <div class="item" data-rise>

@@ -14,6 +14,8 @@
   'title' => $identity['strapline'] ?? 'Rooted in Heritage. Focused on the Future.',
   'lead' => $identity['motto'] ?? 'Seeking Greater Horizons in Thought and Action',
   'trail' => [['label' => 'About MRU', 'url' => route('about')], ['label' => 'Who we are']],
+  'photo' => asset('storage/university/hero/hero-heritage-1100.jpg'),
+  'photoAlt' => "University and Buganda Kingdom officials with trophies at the 2025 Ommanyi inter-institutional games",
 ])
 
 <section>

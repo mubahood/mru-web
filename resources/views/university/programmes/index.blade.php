@@ -10,6 +10,8 @@
   'lead' => 'Filter the full directory by level, faculty or name. Every programme page carries entry requirements, tuition and intakes.',
   'chips' => [['fa-book-open', $programmes->count().' programmes shown'], ['fa-school', 'Five faculties + Graduate School'], ['fa-calendar-days', 'August & January intakes']],
   'trail' => [['label' => 'Academics']],
+  'photo' => asset('storage/university/hero/hero-classroom-1100.jpg'),
+  'photoAlt' => "Students seated in a full Muteesa I Royal University lecture hall",
 ])
 
 <section style="padding-top:30px;">
