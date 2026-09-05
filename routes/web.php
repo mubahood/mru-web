@@ -460,6 +460,12 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(fun
 
     // Users & settings
     Route::resource('users', UserController::class)->middleware('permission:manage-users');
+    /* The website's own copy: ten settings blobs that drive most of the
+       public site and previously had no editor at all. */
+    Route::get('site-content', [\App\Http\Controllers\Admin\SiteContentController::class, 'index'])->name('site-content.index');
+    Route::get('site-content/{section}', [\App\Http\Controllers\Admin\SiteContentController::class, 'edit'])->name('site-content.edit');
+    Route::put('site-content/{section}', [\App\Http\Controllers\Admin\SiteContentController::class, 'update'])->name('site-content.update');
+
     Route::get('settings', [\App\Http\Controllers\Admin\SettingController::class, 'index'])->name('settings.index');
     Route::post('settings', [\App\Http\Controllers\Admin\SettingController::class, 'update'])->name('settings.update');
 });

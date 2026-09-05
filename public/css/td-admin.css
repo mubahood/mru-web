@@ -856,3 +856,24 @@ h1,h2,h3,h4,.tb-page-header h1{font-family:var(--font);letter-spacing:-.01em;}
 .tb-avatar,.tb-thumb{border-radius:var(--r-sm);}
 .tb-nav a,.tb-nav-link{border-radius:var(--r-sm);}
 img.tb-thumb,.tb-table img{border-radius:var(--r-sm);}
+
+/* ---------------------------------------------------------------- Website content
+   The editor for the public site's own copy. Ten settings blobs drove most of
+   the marketing site and none of them had a screen; these are the few classes
+   that editor needs beyond the existing admin kit. */
+.sc-intro{color:var(--mt2);font-size:13.5px;margin:0 0 16px;max-width:70ch;}
+.sc-grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(min(270px,100%),1fr));}
+.sc-card{display:flex;flex-direction:column;padding:18px;text-decoration:none;
+  transition:border-color .15s ease,transform .15s ease;}
+.sc-card:hover{border-color:var(--accent);transform:translateY(-2px);}
+.sc-ic{width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;
+  background:var(--surface);color:var(--accent);font-size:15px;margin-bottom:10px;}
+.sc-card h3{font-size:15px;margin:0 0 4px;}
+.sc-card p{font-size:12.5px;color:var(--mt2);line-height:1.55;margin:0 0 12px;}
+.sc-meta{margin-top:auto;display:inline-flex;align-items:center;gap:7px;
+  font-size:12px;font-weight:700;color:var(--accent);}
+.sc-row{border:1px solid var(--line);border-radius:10px;padding:16px 18px 8px;margin-bottom:14px;}
+.sc-row legend{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
+  color:var(--mt2);padding:0 6px;}
+.sc-row-new{border-style:dashed;}
+.sc-help{font-size:11.5px;color:var(--mt2);margin:4px 0 0;}

@@ -16,19 +16,24 @@
       return $u->can($gate);
   };
 
+  // The portfolio and commerce back office belongs to the other product this
+  // codebase serves. It follows the same switch as its public pages, so a
+  // university administrator is not shown screens for selling source code.
+  $commerce = (bool) config('features.commerce');
+
   $groups = [
       // Capability groups first, for a student or client these ARE their menu.
       ['key' => 'learning', 'label' => 'Learning', 'icon' => 'fa-graduation-cap', 'gate' => 'is:student', 'items' => [
           ['label' => 'My Courses', 'icon' => 'fa-book-open', 'route' => 'learn.index', 'match' => ['learn.index']],
           ['label' => 'Browse Courses', 'icon' => 'fa-magnifying-glass', 'route' => 'courses.index', 'match' => ['courses.index']],
       ]],
-      ['key' => 'myprojects', 'label' => 'My Projects', 'icon' => 'fa-briefcase', 'gate' => 'is:client', 'items' => [
+      ['key' => 'myprojects', 'commerce' => true, 'label' => 'My Projects', 'icon' => 'fa-briefcase', 'gate' => 'is:client', 'items' => [
           ['label' => 'Projects', 'icon' => 'fa-diagram-project', 'route' => 'portal.index', 'match' => ['portal.index', 'portal.project']],
           ['label' => 'Invoices', 'icon' => 'fa-file-invoice-dollar', 'route' => 'portal.invoices', 'match' => ['portal.invoices']],
           ['label' => 'Start a project', 'icon' => 'fa-plus', 'route' => 'hire', 'match' => ['hire', 'propose']],
       ]],
       // Everyone who can buy anything can owe for it, so this is ungated.
-      ['key' => 'orders', 'label' => 'Orders', 'icon' => 'fa-receipt', 'gate' => null, 'items' => [
+      ['key' => 'orders', 'commerce' => true, 'label' => 'Orders', 'icon' => 'fa-receipt', 'gate' => null, 'items' => [
           ['label' => 'My orders', 'icon' => 'fa-receipt', 'route' => 'payments.index', 'match' => ['payments.index', 'payments.show']],
           ['label' => 'My downloads', 'icon' => 'fa-download', 'route' => 'shop.downloads', 'match' => ['shop.downloads', 'shop.download']],
       ]],
@@ -40,22 +45,25 @@
           ['label' => 'Notifications', 'icon' => 'fa-bell', 'route' => 'notifications.index', 'match' => ['notifications.index']],
       ]],
       // Work first: this is the screen the owner opens the back office to see.
-      ['key' => 'today', 'label' => 'My work', 'icon' => 'fa-sun', 'gate' => ['clients.manage', 'projects.manage'], 'items' => [
+      ['key' => 'today', 'commerce' => true, 'label' => 'My work', 'icon' => 'fa-sun', 'gate' => ['clients.manage', 'projects.manage'], 'items' => [
           ['label' => 'Today', 'icon' => 'fa-sun', 'route' => 'admin.today', 'match' => ['admin.today']],
           ['label' => 'Projects', 'icon' => 'fa-diagram-project', 'route' => 'admin.projects.index', 'match' => ['admin.projects.*'], 'can' => 'projects.manage'],
           ['label' => 'Clients', 'icon' => 'fa-address-book', 'route' => 'admin.clients.index', 'match' => ['admin.clients.*'], 'can' => 'clients.manage'],
       ]],
-      ['key' => 'portfolio', 'label' => 'Portfolio', 'icon' => 'fa-id-card', 'gate' => 'portfolio.manage', 'items' => [
+      ['key' => 'portfolio', 'commerce' => true, 'label' => 'Portfolio', 'icon' => 'fa-id-card', 'gate' => 'portfolio.manage', 'items' => [
           ['label' => 'Projects', 'icon' => 'fa-diagram-project', 'route' => 'admin.portfolio-projects.index', 'match' => ['admin.portfolio-projects.*']],
           ['label' => 'Skills', 'icon' => 'fa-star', 'route' => 'admin.skills.index', 'match' => ['admin.skills.*']],
           ['label' => 'Experience', 'icon' => 'fa-briefcase', 'route' => 'admin.experience.index', 'match' => ['admin.experience.*']],
           ['label' => 'Education', 'icon' => 'fa-graduation-cap', 'route' => 'admin.education.index', 'match' => ['admin.education.*']],
           ['label' => 'Services', 'icon' => 'fa-list-check', 'route' => 'admin.services.index', 'match' => ['admin.services.*']],
-          ['label' => 'Blog', 'icon' => 'fa-pen-nib', 'route' => 'admin.posts.index', 'match' => ['admin.posts.*']],
-          ['label' => 'Gallery', 'icon' => 'fa-images', 'route' => 'admin.gallery.index', 'match' => ['admin.gallery.*']],
           ['label' => 'Source code', 'icon' => 'fa-code', 'route' => 'admin.products.index', 'match' => ['admin.products.*']],
           ['label' => 'Testimonials', 'icon' => 'fa-quote-left', 'route' => 'admin.testimonials.index', 'match' => ['admin.testimonials.*']],
-          ['label' => 'Messages', 'icon' => 'fa-envelope', 'route' => 'admin.messages.index', 'match' => ['admin.messages.*']],
+      ]],
+      ['key' => 'content', 'label' => 'Website content', 'icon' => 'fa-pen-fancy', 'gate' => ['manage-settings', 'portfolio.manage'], 'items' => [
+          ['label' => 'Pages & copy', 'icon' => 'fa-pen-fancy', 'route' => 'admin.site-content.index', 'match' => ['admin.site-content.*']],
+          ['label' => 'News', 'icon' => 'fa-newspaper', 'route' => 'admin.posts.index', 'match' => ['admin.posts.*']],
+          ['label' => 'Gallery', 'icon' => 'fa-images', 'route' => 'admin.gallery.index', 'match' => ['admin.gallery.*']],
+          ['label' => 'Enquiries', 'icon' => 'fa-envelope', 'route' => 'admin.messages.index', 'match' => ['admin.messages.*']],
       ]],
       ['key' => 'university', 'label' => 'University', 'icon' => 'fa-building-columns', 'gate' => 'portfolio.manage', 'items' => [
           ['label' => 'Faculties', 'icon' => 'fa-school', 'route' => 'admin.faculties.index', 'match' => ['admin.faculties.*']],
@@ -79,12 +87,12 @@
           ['label' => 'Reviews', 'icon' => 'fa-star', 'route' => 'admin.reviews.index', 'match' => ['admin.reviews.*']],
           ['label' => 'Waitlist', 'icon' => 'fa-bell', 'route' => 'admin.waitlist', 'match' => ['admin.waitlist']],
       ]],
-      ['key' => 'work', 'label' => 'Clients & Projects', 'icon' => 'fa-handshake', 'gate' => ['clients.manage', 'projects.manage'], 'items' => [
+      ['key' => 'work', 'commerce' => true, 'label' => 'Clients & Projects', 'icon' => 'fa-handshake', 'gate' => ['clients.manage', 'projects.manage'], 'items' => [
           ['label' => 'Clients', 'icon' => 'fa-address-book', 'route' => 'admin.clients.index', 'match' => ['admin.clients.*'], 'can' => 'clients.manage'],
           ['label' => 'Projects', 'icon' => 'fa-diagram-project', 'route' => 'admin.projects.index', 'match' => ['admin.projects.*'], 'can' => 'projects.manage'],
           ['label' => 'Project Inquiries', 'icon' => 'fa-inbox', 'route' => 'admin.project-inquiries.index', 'match' => ['admin.project-inquiries.*'], 'can' => 'clients.manage'],
       ]],
-      ['key' => 'billing', 'label' => 'Billing', 'icon' => 'fa-file-invoice-dollar', 'gate' => 'billing.manage', 'items' => [
+      ['key' => 'billing', 'commerce' => true, 'label' => 'Billing', 'icon' => 'fa-file-invoice-dollar', 'gate' => 'billing.manage', 'items' => [
           ['label' => 'Invoices', 'icon' => 'fa-file-invoice-dollar', 'route' => 'admin.invoices.index', 'match' => ['admin.invoices.*']],
           ['label' => 'Coupons', 'icon' => 'fa-tag', 'route' => 'admin.coupons.index', 'match' => ['admin.coupons.*']],
       ]],
@@ -105,6 +113,7 @@
   $rendered = [];
   $activeGroup = '';
   foreach ($groups as $g) {
+      if (! empty($g['commerce']) && ! $commerce) continue;
       if (! $allow($g['gate'])) continue;
       $items = [];
       $groupActive = false;
