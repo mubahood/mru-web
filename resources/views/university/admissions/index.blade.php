@@ -6,7 +6,7 @@
 
 @php
   $applyUrl = \App\Support\University::applyUrl();
-  $wa = $contacts['whatsapp_link'] ?? '#';
+  $wa = ($contacts['whatsapp_link'] ?? null) ?: \App\Support\University::WHATSAPP_GROUP;
   $admissionsEmail = $contacts['admissions_email'] ?? ($contacts['email'] ?? 'admissions@mru.ac.ug');
   $phone = $contacts['phone'] ?? null;
 @endphp

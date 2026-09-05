@@ -107,7 +107,7 @@
         <a href="{{ $applyUrl }}" rel="external" class="btn gold lg" style="width:100%;justify-content:center;">
           Apply on the E-Portal <i class="fas fa-arrow-right" aria-hidden="true"></i>
         </a>
-        <a href="{{ \App\Support\University::contacts()['whatsapp_link'] ?? '#' }}" target="_blank" rel="noopener"
+        <a href="{{ (\App\Support\University::contacts()['whatsapp_link'] ?? null) ?: \App\Support\University::WHATSAPP_GROUP }}" target="_blank" rel="noopener"
            class="btn ghost" style="width:100%;justify-content:center;margin-top:10px;">
           <i class="fab fa-whatsapp" aria-hidden="true"></i> Ask about this programme
         </a>

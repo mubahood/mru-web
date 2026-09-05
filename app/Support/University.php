@@ -20,6 +20,16 @@ namespace App\Support;
  */
 class University
 {
+    /**
+     * The University's public WhatsApp group.
+     *
+     * The last resort behind the admin-editable `whatsapp_link` contact
+     * setting. It lived as a different hard-coded wa.me number in four
+     * templates and the seeder, which is exactly how five places end up
+     * disagreeing about one phone number.
+     */
+    public const WHATSAPP_GROUP = 'https://chat.whatsapp.com/JeS0v2R0UV6Dy4TJCtgj7d';
+
     public static function get(string $section): array
     {
         $decoded = json_decode((string) Settings::get("university.$section", '[]'), true);

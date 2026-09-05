@@ -6,7 +6,7 @@
 
 @php
   $applyUrl = \App\Support\University::applyUrl();
-  $wa = $contacts['whatsapp_link'] ?? '#';
+  $wa = ($contacts['whatsapp_link'] ?? null) ?: \App\Support\University::WHATSAPP_GROUP;
 @endphp
 
 @include('university.partials.page-hero', [

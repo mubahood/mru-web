@@ -43,7 +43,7 @@
         @isset($contacts['whatsapp'])
           <div class="item" data-rise>
             <h4><i class="fab fa-whatsapp" aria-hidden="true"></i> WhatsApp</h4>
-            <a href="{{ $contacts['whatsapp_link'] ?? 'https://wa.me/'.str_replace([' ', '+'], '', $contacts['whatsapp']) }}"
+            <a href="{{ ($contacts['whatsapp_link'] ?? null) ?: \App\Support\University::WHATSAPP_GROUP }}"
                target="_blank" rel="noopener">{{ $contacts['whatsapp'] }}</a>
           </div>
         @endisset

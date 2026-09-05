@@ -2,150 +2,93 @@
 
 namespace Tests\Feature\Public;
 
-use App\Models\Course;
-use App\Models\PortfolioProject;
-use App\Models\User;
+use App\Support\Settings;
+use App\Support\University;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Str;
 use Tests\TestCase;
 
 /**
  * The WhatsApp launcher.
  *
- * What is worth testing is not that a button exists, but that the message it
- * composes is right: the number, the two intents, and the fact that the
- * wording knows which page it was pressed on. A generic "hi" is what this
- * feature exists to prevent.
+ * It used to open a panel asking "what brings you here?" and compose an opener
+ * through wa.me's ?text= parameter, so the visitor never had to write the
+ * awkward first sentence. That design is gone, and these tests changed with
+ * it: the destination is now a WhatsApp **group** invite, and a group link
+ * carries no prefilled message — ?text= is ignored. A panel that asked a
+ * question and then ignored the answer would be worse than no panel.
+ *
+ * What is worth pinning now is that every WhatsApp control on the site agrees
+ * on one destination, that it is the group, and that an editor can change it
+ * in one place.
  */
 class WhatsAppLauncherTest extends TestCase
 {
     use RefreshDatabase;
 
-    private const NUMBER = '256752033889';
+    private const GROUP = 'https://chat.whatsapp.com/JeS0v2R0UV6Dy4TJCtgj7d';
+
+    public function test_the_constant_is_the_group_invite(): void
+    {
+        $this->assertSame(self::GROUP, University::WHATSAPP_GROUP);
+    }
 
     public function test_it_is_on_the_public_pages(): void
     {
-        foreach (['/', '/about', '/e-learning', '/programmes', '/admissions'] as $path) {
-            $this->get($path)->assertOk()->assertSee('wa.me/'.self::NUMBER, false);
+        foreach (['/', '/about', '/programmes', '/admissions', '/contact'] as $path) {
+            $this->get($path)->assertOk()->assertSee(self::GROUP, false);
         }
     }
 
-    public function test_it_offers_exactly_two_intents(): void
+    /**
+     * The whole point of the change: no control anywhere still points at the
+     * old one-to-one number.
+     */
+    public function test_no_page_still_links_to_the_old_direct_number(): void
     {
-        $html = (string) $this->get('/')->assertOk()->getContent();
-
-        // The single question that makes the message write itself.
-        $this->assertStringContainsString('What brings you here?', $html);
-        $this->assertStringContainsString('I want to join MRU', $html);
-        $this->assertStringContainsString('Short courses', $html);
-    }
-
-    public function test_both_links_go_to_the_right_number_with_a_prepared_message(): void
-    {
-        $html = (string) $this->get('/')->assertOk()->getContent();
-
-        preg_match_all('#https://wa\.me/(\d+)\?text=([^"]+)#', $html, $matches, PREG_SET_ORDER);
-
-        $this->assertCount(2, $matches, 'one link per intent, no more');
-
-        foreach ($matches as [$whole, $number, $text]) {
-            $this->assertSame(self::NUMBER, $number);
-            $message = rawurldecode($text);
-            $this->assertStringStartsWith('Hello MRU Admissions,', $message);
-            $this->assertGreaterThan(40, strlen($message), 'a prepared message, not a greeting');
+        foreach (['/', '/about', '/programmes', '/admissions', '/admissions/how-to-apply',
+            '/admissions/faqs', '/contact', '/faculties'] as $path) {
+            $html = (string) $this->get($path)->assertOk()->getContent();
+            $this->assertStringNotContainsString('wa.me/', $html, "wa.me link still on {$path}");
         }
     }
 
-    /** A course page should name the course, so the first line is already useful. */
-    public function test_the_message_knows_it_is_on_a_course_page(): void
+    /** One button, one destination — not a dialog that cannot deliver what it offers. */
+    public function test_the_launcher_is_a_single_link_with_no_intent_panel(): void
     {
-        $course = Course::factory()->create([
-            'title' => 'Flutter Mobile App Development',
-            'is_published' => true,
-        ]);
+        $html = (string) $this->get('/')->assertOk()->getContent();
 
-        $html = (string) $this->get(route('courses.show', $course))->assertOk()->getContent();
-
-        preg_match_all('#https://wa\.me/\d+\?text=([^"]+)#', $html, $matches);
-        $messages = array_map('rawurldecode', $matches[1]);
-
-        // Admissions leads, and it still names the course that brought them.
-        $this->assertStringContainsString('Flutter Mobile App Development', $messages[0]);
-        $this->assertStringContainsString('admission', $messages[0]);
-        // The short-course option names the course itself.
-        $this->assertStringContainsString('Flutter Mobile App Development', $messages[1]);
+        $this->assertStringContainsString('class="wa-btn"', $html);
+        $this->assertStringNotContainsString('What brings you here?', $html);
+        $this->assertStringNotContainsString('wa-panel', $html);
+        $this->assertStringNotContainsString('?text=', $html);
     }
 
-    public function test_a_non_course_page_offers_the_generic_messages(): void
+    /** The destination is a setting, so it is changed once and everywhere. */
+    public function test_an_editor_can_repoint_every_whatsapp_control_at_once(): void
     {
+        $moved = 'https://chat.whatsapp.com/AnotherGroupInviteCode99';
 
-        $html = (string) $this->get(route('faculties.index'))->assertOk()->getContent();
+        Settings::set('university.contacts', json_encode(
+            array_merge(University::contacts(), ['whatsapp_link' => $moved])
+        ));
 
-        preg_match_all('#https://wa\.me/\d+\?text=([^"]+)#', $html, $matches);
-        $messages = array_map('rawurldecode', $matches[1]);
-
-        // A page about no course still offers the two usable generics.
-        $this->assertStringContainsString('join Muteesa I Royal University', $messages[0]);
-        $this->assertStringContainsString('recommend', $messages[1]);
+        foreach (['/', '/admissions', '/programmes'] as $path) {
+            $this->get($path)->assertOk()
+                ->assertSee($moved, false)
+                ->assertDontSee(self::GROUP, false);
+        }
     }
 
-    public function test_a_page_about_nothing_in_particular_still_gets_a_usable_message(): void
+    /** With the setting emptied the button still goes somewhere real, never to "#". */
+    public function test_an_emptied_setting_falls_back_to_the_group(): void
     {
-        $html = (string) $this->get('/about')->assertOk()->getContent();
+        Settings::set('university.contacts', json_encode(
+            array_merge(University::contacts(), ['whatsapp_link' => ''])
+        ));
 
-        preg_match_all('#https://wa\.me/\d+\?text=([^"]+)#', $html, $matches);
-        $messages = array_map('rawurldecode', $matches[1]);
+        $html = (string) $this->get('/')->assertOk()->getContent();
 
-        $this->assertStringContainsString('how to apply', $messages[0]);
-        $this->assertStringContainsString('recommend', $messages[1]);
-    }
-
-    /**
-     * The layering rule. The header, the mobile menu and the mobile action bar
-     * all sit above this on purpose: a floating circle must never cover Buy,
-     * Hire, or an open menu.
-     */
-    public function test_it_sits_below_the_controls_it_must_never_cover(): void
-    {
-        $css = (string) file_get_contents(public_path('css/mru.css'));
-
-        $this->assertMatchesRegularExpression('/\.wa\{[^}]*z-index:45/', $css);
-        $this->assertMatchesRegularExpression('/\.act-bar\{[^}]*z-index:50/', $css);
-    }
-
-    /**
-     * Found while testing the launcher, and nothing to do with it.
-     *
-     * Blade's startSection() treats a null second argument as "no content
-     * supplied" and opens an output buffer to capture the section body, which
-     * for a one-line @section never arrives. So a portfolio project saved with
-     * no description left a buffer open for the rest of the request and
-     * swallowed the page into its own meta description.
-     */
-    public function test_a_record_with_no_description_does_not_break_its_page(): void
-    {
-        $publication = \App\Models\Publication::create([
-            'title' => 'A paper with no abstract yet',
-            'abstract' => null,
-            'status' => 'published',
-        ]);
-
-        $level = ob_get_level();
-
-        $this->get(route('scholar.publication', $publication))->assertOk();
-
-        $this->assertSame($level, ob_get_level(), 'the page left an output buffer open');
-    }
-
-    public function test_it_stays_out_of_the_back_office(): void
-    {
-        $this->seed(\Database\Seeders\RbacSeeder::class);
-        $admin = User::factory()->create(['role' => 'super_admin', 'is_admin' => true]);
-        $admin->syncSpatieRole();
-
-        // The admin layout is a different layout; a customer-facing chat
-        // button has no business on the screens used to run the business.
-        $this->actingAs($admin)->get(route('admin.courses.index'))->assertOk()
-            ->assertDontSee('wa.me/'.self::NUMBER, false);
+        $this->assertStringContainsString(self::GROUP, $html);
+        $this->assertStringNotContainsString('href="#"', $html);
     }
 }

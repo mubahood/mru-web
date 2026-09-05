@@ -4,7 +4,7 @@
 --}}
 @php
   $applyUrl = \App\Support\University::applyUrl();
-  $wa = \App\Support\University::contacts()['whatsapp_link'] ?? 'https://wa.me/256752033889';
+  $wa = (\App\Support\University::contacts()['whatsapp_link'] ?? null) ?: \App\Support\University::WHATSAPP_GROUP;
 @endphp
 <section class="band-deep">
   <div class="wrap" style="text-align:center;">

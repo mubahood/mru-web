@@ -44,7 +44,7 @@
       <div class="feature-box" style="text-align:center;">
         <h3>No matching programmes found</h3>
         <p>Try a broader search — or ask us on WhatsApp and we will point you to the right programme.</p>
-        <a href="{{ \App\Support\University::contacts()['whatsapp_link'] ?? '#' }}" target="_blank" rel="noopener" class="btn gold">
+        <a href="{{ (\App\Support\University::contacts()['whatsapp_link'] ?? null) ?: \App\Support\University::WHATSAPP_GROUP }}" target="_blank" rel="noopener" class="btn gold">
           <i class="fab fa-whatsapp" aria-hidden="true"></i> Ask Admissions
         </a>
       </div>

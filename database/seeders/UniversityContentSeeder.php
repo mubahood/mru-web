@@ -54,7 +54,7 @@ class UniversityContentSeeder extends Seeder
             'phone' => '+256 200 903 000',
             'phone_alt' => '+256 414 670 109',
             'whatsapp' => '+256 752 033 889',
-            'whatsapp_link' => 'https://wa.me/256752033889?text=Hello%2C+I+have+an+inquiry+about+Muteesa+I+Royal+University.',
+            'whatsapp_link' => \App\Support\University::WHATSAPP_GROUP,
             'email' => 'info@mru.ac.ug',
             'admissions_email' => 'admissions@mru.ac.ug',
             'careers_email' => 'careers@mru.ac.ug',

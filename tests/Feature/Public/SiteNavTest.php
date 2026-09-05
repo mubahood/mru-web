@@ -101,13 +101,29 @@ class SiteNavTest extends TestCase
         $this->assertStringNotContainsString('Sign out', $beforeMenu);
     }
 
-    public function test_a_guest_is_offered_the_actions_and_a_quiet_way_in(): void
+    /**
+     * The header offers a prospective student the one action they came for.
+     * Signing in is a staff and student errand and now lives in the footer, so
+     * this asserts both halves: the action is there, and the sign-in doors are
+     * not — including "Staff Login", which used to sit in the utility bar as a
+     * second copy of the footer's own link.
+     */
+    public function test_a_guest_is_offered_the_action_and_no_sign_in_door(): void
     {
-        $header = $this->headerOf($this->get(route('home')));
+        $response = $this->get(route('home'));
+        $header = $this->headerOf($response);
 
         $this->assertStringContainsString('Apply Now', $header);
-        // Sign in is a link, not a button. It must not compete with the actions.
-        $this->assertStringContainsString('class="signin desk"', $header);
+        $this->assertStringNotContainsString('Sign in', $header);
+        $this->assertStringNotContainsString('Staff Login', $header);
+        $this->assertStringNotContainsString('class="signin', $header);
+
+        // Gone from the header, but still reachable — in the footer strip.
+        $html = (string) $response->getContent();
+        $footer = substr($html, (int) strpos($html, '<footer'));
+        $this->assertStringContainsString('Sign in', $footer);
+        $this->assertStringContainsString('Staff Login', $footer);
+        $this->assertStringContainsString(route('login'), $footer);
     }
 
     public function test_no_destination_appears_twice_in_one_menu(): void
