@@ -12,8 +12,8 @@
   'title' => "The Students' Guild",
   'lead' => 'Your elected student government — the voice of every MRU student.',
   'mark' => 'Guild',
-  'photo' => asset('images/page-guild.jpg'),
-  'photoAlt' => "Students registering at an outdoor desk during Students' Guild elections",
+  'photo' => asset('images/photos/hero-guild.jpg'),
+  'photoAlt' => 'An incoming Guild office-holder receiving his instrument of office at the swearing-in ceremony',
   'trail' => [['label' => 'Student Life', 'url' => route('campus-life')], ['label' => 'Students\' Guild']],
 ])
 

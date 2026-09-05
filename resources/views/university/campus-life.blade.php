@@ -112,9 +112,9 @@
       <p class="eyebrow">Gallery</p>
       <h2>Campus in pictures</h2>
     </div>
-    <div class="gal-grid">
+    <div class="gal-strip">
       @foreach($gallery as $i => $photo)
-        <div class="gal-item" data-rise style="aspect-ratio:{{ $photo->ratio() }};">
+        <div class="gal-item" data-rise>
           <picture>
             @if($photo->webpUrl())<source srcset="{{ $photo->webpUrl() }}" type="image/webp">@endif
             <img src="{{ $photo->thumbUrl() }}" alt="{{ $photo->altText() }}"

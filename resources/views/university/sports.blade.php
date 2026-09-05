@@ -71,6 +71,37 @@
 </section>
 @endif
 
+@if($photos->isNotEmpty())
+<section class="band-surface tex-grid">
+  <div class="wrap">
+    <div class="sec-head left">
+      <p class="eyebrow">In Pictures</p>
+      <h2>A season on the field</h2>
+      <p>Football, volleyball and beach soccer — the Royals at play.</p>
+    </div>
+    <div class="gal-strip">
+      @foreach($photos as $photo)
+        <div class="gal-item" data-rise>
+          <picture>
+            @if($photo->webpUrl())<source srcset="{{ $photo->webpUrl() }}" type="image/webp">@endif
+            <img src="{{ $photo->thumbUrl() }}" alt="{{ $photo->altText() }}" loading="lazy" decoding="async">
+          </picture>
+          <span class="gal-cap">
+            <span class="gal-t">{{ $photo->title }}</span>
+            @if($photo->category)<span class="gal-c">{{ $photo->category }}</span>@endif
+          </span>
+        </div>
+      @endforeach
+    </div>
+    <div style="text-align:center;margin-top:26px;" data-rise>
+      <a href="{{ route('gallery.index', ['category' => 'Sport']) }}" wire:navigate class="btn ghost">
+        More sporting pictures <i class="fas fa-arrow-right" aria-hidden="true"></i>
+      </a>
+    </div>
+  </div>
+</section>
+@endif
+
 @include('university.partials.cta-band')
 
 @endsection

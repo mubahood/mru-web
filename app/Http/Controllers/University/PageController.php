@@ -145,7 +145,14 @@ class PageController extends Controller
         return view('university.campus-life', [
             'contacts' => University::contacts(),
             'sports' => University::get('sports'),
-            'gallery' => GalleryPhoto::query()->where('is_published', true)->limit(8)->get(),
+            // Ordered: an unordered limit() returns whichever rows the engine
+            // reaches first, so the strip could change between two loads of the
+            // same page and never honoured the order set in the admin gallery.
+            // Portraits are excluded because the heading promises the campus,
+            // and a head-and-shoulders of one person is not that.
+            'gallery' => GalleryPhoto::published()
+                ->whereNotIn('category', ['Portrait', 'Leadership'])
+                ->orderBy('sort_order')->orderBy('id')->limit(6)->get(),
             'events' => UniversityEvent::published()->upcoming()->limit(3)->get(),
         ]);
     }
@@ -160,7 +167,14 @@ class PageController extends Controller
 
     public function sports(): View
     {
-        return view('university.sports', ['sports' => University::get('sports')]);
+        return view('university.sports', [
+            'sports' => University::get('sports'),
+            // The sporting photographs, taken from the gallery rather than
+            // hard-coded, so the page follows whatever the admin publishes and
+            // empties cleanly when nothing is categorised this way.
+            'photos' => GalleryPhoto::published()->where('category', 'Sport')
+                ->orderBy('sort_order')->orderBy('id')->limit(6)->get(),
+        ]);
     }
 
     public function guild(): View

@@ -20,12 +20,25 @@ use Symfony\Component\Process\Process;
  *
  * Re-running is safe. A photo already imported under the same source name is
  * skipped unless --force is given.
+ *
+ * Two modes. Without --manifest the whole folder comes in and each title is
+ * derived from its filename, which suits a bulk drop of already-named files.
+ * With --manifest only the listed files are imported, under the slug, title,
+ * caption, alt text and category the manifest gives them — the way a folder of
+ * camera filenames (460A4341.JPG) becomes a curated set. The manifest is a
+ * JSON array of {file, slug, title, caption, alt, category, sort} objects and
+ * lives in the repository, so the selection is reviewable in a diff.
+ *
+ * The manifest supplies the copy on first import only. After that the record
+ * belongs to whoever edits it in the admin gallery, and a re-run leaves their
+ * wording alone unless --force says otherwise.
  */
 class ImportGalleryPhotos extends Command
 {
     protected $signature = 'gallery:import
         {source : Folder holding the original photographs}
         {--force : Re-process and overwrite photos already imported}
+        {--manifest= : JSON file naming and describing the photographs to import}
         {--max=1600 : Longest edge, in pixels, of the full-size image}
         {--quality=82 : JPEG quality}';
 
@@ -38,6 +51,12 @@ class ImportGalleryPhotos extends Command
         if (! is_dir($source)) {
             $this->error("Not a folder: {$source}");
 
+            return self::FAILURE;
+        }
+
+        $manifest = $this->manifest();
+
+        if ($manifest === false) {
             return self::FAILURE;
         }
 
@@ -55,6 +74,20 @@ class ImportGalleryPhotos extends Command
             ->filter(fn ($f) => is_file("{$source}/{$f}"))
             ->values();
 
+        if ($manifest !== null) {
+            $missing = collect($manifest)->keys()->reject(fn ($f) => $files->contains($f));
+
+            if ($missing->isNotEmpty()) {
+                $this->error('Named in the manifest but not in the folder: '.$missing->implode(', '));
+
+                return self::FAILURE;
+            }
+
+            // Manifest order, not directory order, so sort_order and the
+            // progress bar both follow the curation.
+            $files = collect($manifest)->keys()->values();
+        }
+
         if ($files->isEmpty()) {
             $this->warn('No files found.');
 
@@ -71,7 +104,8 @@ class ImportGalleryPhotos extends Command
         $bar->start();
 
         foreach ($files as $index => $filename) {
-            $slug = Str::slug(pathinfo($filename, PATHINFO_FILENAME)) ?: 'photo-'.$index;
+            $entry = $manifest[$filename] ?? null;
+            $slug = $entry['slug'] ?? (Str::slug(pathinfo($filename, PATHINFO_FILENAME)) ?: 'photo-'.$index);
             $existing = GalleryPhoto::where('path', "gallery/{$slug}.jpg")->first();
 
             if ($existing && ! $this->option('force')) {
@@ -112,21 +146,27 @@ class ImportGalleryPhotos extends Command
             $newBytes = (int) filesize($jpeg);
             $savedBytes += max(0, $originalBytes - $newBytes);
 
-            GalleryPhoto::updateOrCreate(
-                ['path' => "gallery/{$slug}.jpg"],
-                [
-                    'title' => $existing->title ?? Str::headline($slug),
-                    'caption' => $existing->caption ?? null,
-                    'alt' => $existing->alt ?? null,
-                    'category' => $existing->category ?? null,
-                    'webp_path' => is_file($webp) ? "gallery/{$slug}.webp" : null,
-                    'thumb_path' => is_file($thumb) ? "gallery/thumbs/{$slug}.jpg" : null,
-                    'width' => $width,
-                    'height' => $height,
-                    'bytes' => $newBytes,
-                    'sort_order' => $existing->sort_order ?? $index,
-                ]
-            );
+            $attributes = [
+                'title' => $existing->title ?? $entry['title'] ?? Str::headline($slug),
+                'caption' => $existing->caption ?? $entry['caption'] ?? null,
+                'alt' => $existing->alt ?? $entry['alt'] ?? null,
+                'category' => $existing->category ?? $entry['category'] ?? null,
+                'webp_path' => is_file($webp) ? "gallery/{$slug}.webp" : null,
+                'thumb_path' => is_file($thumb) ? "gallery/thumbs/{$slug}.jpg" : null,
+                'width' => $width,
+                'height' => $height,
+                'bytes' => $newBytes,
+                'sort_order' => $existing->sort_order ?? $entry['sort'] ?? $index,
+            ];
+
+            // A photograph named in the manifest was picked to be seen, so it
+            // arrives published. A bulk drop keeps the column's own default and
+            // whatever an editor has since decided about it.
+            if ($entry !== null && ! $existing) {
+                $attributes['is_published'] = true;
+            }
+
+            GalleryPhoto::updateOrCreate(['path' => "gallery/{$slug}.jpg"], $attributes);
 
             $imported++;
             $bar->advance();
@@ -138,6 +178,51 @@ class ImportGalleryPhotos extends Command
         $this->line('Saved '.round($savedBytes / 1048576, 2).' MB against the originals.');
 
         return self::SUCCESS;
+    }
+
+    /**
+     * The curation, keyed by source filename.
+     *
+     * @return array<string, array<string, mixed>>|null|false  null when no
+     *   manifest was asked for, false when the one asked for cannot be used.
+     */
+    private function manifest(): array|null|false
+    {
+        $path = (string) $this->option('manifest');
+
+        if ($path === '') {
+            return null;
+        }
+
+        if (! is_file($path)) {
+            $this->error("No such manifest: {$path}");
+
+            return false;
+        }
+
+        $rows = json_decode((string) file_get_contents($path), true);
+
+        if (! is_array($rows) || $rows === []) {
+            $this->error("Manifest is not a non-empty JSON array: {$path}");
+
+            return false;
+        }
+
+        $keyed = [];
+
+        foreach ($rows as $i => $row) {
+            foreach (['file', 'slug', 'title', 'alt'] as $required) {
+                if (empty($row[$required])) {
+                    $this->error("Manifest entry {$i} has no {$required}.");
+
+                    return false;
+                }
+            }
+
+            $keyed[$row['file']] = $row;
+        }
+
+        return $keyed;
     }
 
     private function hasImageMagick(): bool

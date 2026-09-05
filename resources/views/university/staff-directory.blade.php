@@ -10,6 +10,8 @@
   'lead' => 'The people who teach, research and run the University — search by name, title or department, or browse a faculty at a time.',
   'mark' => 'Staff',
   'trail' => [['label' => 'About MRU', 'url' => route('about')], ['label' => 'Staff directory']],
+  'photo' => asset('images/photos/hero-staff.jpg'),
+  'photoAlt' => 'A member of staff presenting at a University session',
 ])
 
 <section>

@@ -6,14 +6,19 @@
 |---|---|---|
 | Commercial pages reachable under MRU brand | 6 | **0** (gated, `features.commerce`) |
 | Templates using the numbered section motif | ~30 | **0** |
-| Pages with no images at all | 24 of 32 | **12 of 32** |
+| Pages with no images at all | 24 of 32 | **10 of 32** (measured, not estimated) |
 | Pages with SEO issues (title/desc/canonical/OG/uniqueness) | not measured | **0 of 32** |
 | Pages with structured data | 4 | **32** |
-| Test suite | 1134 | **1168** |
+| Test suite | 1134 | **1209** |
 
-Still open: 12 image-less pages (several legitimately data-first — the fees table, the almanac,
-downloads, publication lists), the thin index pages needing designed empty states (`/events`,
-`/gallery`, `/jobs`), `/university-council` role lines, and the deeper content work in §3.
+Still open, counted against the running site rather than estimated: **10** pages carry no
+photograph. Seven are legitimately data-first — `/almanac`, `/downloads`, `/admissions/fees`,
+`/admissions/intakes`, `/admissions/faqs`, `/scholar/publications`, `/scholar/directory`. Three
+want one and have no fitting picture in any archive: `/accommodation` (it names Kabaka Hall,
+Princess Hall and the Graduate Residence and can show none of them), `/admissions/scholarships`
+and `/jobs`. See §6.2 — this is now a request to the university, not a task.
+
+Also open: `/university-council` role lines, and the deeper content work in §3.
 
 **Original status: proposed, not started.** Written 2026-09-04, after the homepage reached production
 standard (Phases Q–AE in `04-IMPLEMENTATION-LOG.md`). Every number below was measured against the
@@ -179,8 +184,10 @@ working pass, at the standard the homepage now sets.
 ## 6. Open questions for the university
 
 1. **The commercial pages** — delete outright, or keep them alive on a separate non-MRU domain?
-2. **Photography** — is there a larger official archive than the ~70 news images? Several pages
-   (accommodation, library, sports facilities) need photographs that do not currently exist.
+2. **Photography** — the MUHINDO archive (127 frames, Phase AH) answered this for the library,
+   sports, engineering, agriculture, governance and student life. Still missing, and still needed:
+   **the halls of residence** — `/accommodation` names Kabaka Hall, Princess Hall and the Graduate
+   Residence and can show none of them — and the campus buildings as buildings, for `/who-we-are`.
 3. **Fees** — are the published figures current for 2026/2027, and cleared for publication?
 4. **The almanac** is published as the Registrar's *draft pending Senate approval*, per the document
    itself. Confirm that is acceptable publicly, or gate it until approved.

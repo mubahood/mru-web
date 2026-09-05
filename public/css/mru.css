@@ -1846,6 +1846,19 @@ table{border-collapse:separate;border-spacing:0;width:100%;}
 .gal-item:hover{box-shadow:var(--sh-3);}
 .gal-filters a{border-radius:var(--r-pill);}
 
+/* An even strip, for the pages that show a fixed handful of photographs
+   rather than the whole gallery. .gal-grid is a multi-column layout that
+   balances by height; with six tiles of near-identical aspect it settles on
+   1-1-2-2 and leaves a hole under the first two. A plain grid on one aspect
+   ratio cannot, and reuses .gal-item for the frame, hover and caption.
+
+   The column count is fixed rather than auto-fit: auto-fit fitted five tiles
+   across 1440px and left the sixth alone on a row of its own. */
+.gal-strip{display:grid;gap:16px;grid-template-columns:repeat(3,minmax(0,1fr));}
+.gal-strip .gal-item{aspect-ratio:4/3;margin:0;}
+@media(max-width:860px){.gal-strip{grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media(max-width:520px){.gal-strip{grid-template-columns:minmax(0,1fr);}}
+
 /* Pagination */
 .pagination{margin-top:var(--s-6);gap:8px;font-size:14px;}
 .pagination a,.pagination span{border-radius:var(--r-sm);padding:8px 13px;}
@@ -2493,7 +2506,7 @@ html.menu-open::after{content:'';position:fixed;inset:0;z-index:48;
    own — it sits on the photograph. Colours come from three variables so the
    solid and transparent states differ by their values, not by a second copy
    of every rule. */
-header.site{--hdr-fg:var(--tx);--hdr-brand:var(--pri);--hdr-crest:none;}
+header.site{--hdr-fg:var(--tx);--hdr-brand:var(--pri);--hdr-crest:none;--hdr-fg-on:var(--pri);}
 .brand .brand-name{color:var(--hdr-brand);}
 .brand img.crest{filter:var(--hdr-crest);}
 .nav-link{color:var(--hdr-fg);}
@@ -2536,11 +2549,21 @@ body.has-hero header.site{position:fixed;top:0;left:0;right:0;
   -webkit-backdrop-filter:blur(22px) saturate(160%);backdrop-filter:blur(22px) saturate(160%);
   border-bottom:1px solid rgba(255,255,255,.16);
   box-shadow:0 8px 32px -16px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.14);
-  --hdr-fg:rgba(255,255,255,.95);--hdr-brand:#fff;--hdr-crest:brightness(0) invert(1);}
+  --hdr-fg:rgba(255,255,255,.95);--hdr-brand:#fff;--hdr-crest:brightness(0) invert(1);--hdr-fg-on:#fff;}
 body.has-hero .brand .brand-name small{color:var(--gold-l);}
 body.has-hero .topbar{background:transparent;border-bottom:1px solid rgba(255,255,255,.14);}
-body.has-hero .nav-link:hover{color:#fff;}
-body.has-hero .nav-link.on{color:#fff;}
+/* The hovered, open or current item took a hard #fff, which was right only
+   while the header is the frosted pane over the photograph. The moment the
+   reader scrolls, or opens any panel, the bar turns white and every other
+   label switches to --hdr-fg — but this one stayed white, so hovering a
+   top-level item on the home page made its own label vanish (measured:
+   rgb(255,255,255) on rgba(255,255,255,.94), a contrast ratio of 1:1).
+   It now follows the same state machine as --hdr-fg, through its own token,
+   which is what the three-variable design above was for. */
+body.has-hero .nav-link:hover,
+body.has-hero .nav-link.on,
+body.has-hero .nav-item:hover .nav-link,
+body.has-hero .nav-item.is-open .nav-link{color:var(--hdr-fg-on);}
 body.has-hero .signin{color:rgba(255,255,255,.88);}
 body.has-hero .signin:hover{color:#fff;}
 body.has-hero .burger{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.4);color:#fff;}
@@ -2553,7 +2576,7 @@ html.menu-open body.has-hero header.site{
   background:rgba(255,255,255,.94);-webkit-backdrop-filter:saturate(180%) blur(14px);
   backdrop-filter:saturate(180%) blur(14px);
   border-bottom-color:transparent;box-shadow:none;
-  --hdr-fg:var(--tx);--hdr-brand:var(--pri);--hdr-crest:none;}
+  --hdr-fg:var(--tx);--hdr-brand:var(--pri);--hdr-crest:none;--hdr-fg-on:var(--pri);}
 html.is-scrolled body.has-hero header.site{box-shadow:var(--sh-2);}
 html.is-scrolled body.has-hero .brand .brand-name small,
 html.menu-open body.has-hero .brand .brand-name small{color:var(--gold-d);}
@@ -2947,7 +2970,7 @@ a.grad-school-strip{flex-direction:row;}
    photograph scrolling normally instead of a broken promise. */
 .band-news{position:relative;
   background:linear-gradient(rgba(4,19,43,.87),rgba(4,19,43,.92)),
-             url('../images/news-band.jpg') center/cover no-repeat;
+             url('../images/photos/band-students.jpg') center/cover no-repeat;
   background-attachment:fixed,fixed;}
 @media (hover:none),(max-width:900px){
   .band-news{background-attachment:scroll,scroll;}

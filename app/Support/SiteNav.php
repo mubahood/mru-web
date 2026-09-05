@@ -32,7 +32,7 @@ class SiteNav
                 'blurb' => 'A royal university of the Buganda Kingdom, accredited by NCHE.',
                 // Panel media: a design asset in public/images, not a
                 // settings-managed storage path an admin clean-up could break.
-                'image' => 'images/menu-about.jpg',
+                'image' => 'images/photos/menu-about.jpg',
                 'children' => [
                     ['label' => 'About MRU', 'url' => route('about'), 'icon' => 'fa-building-columns',
                         'desc' => 'Our story, our campuses and what we stand for.',
@@ -95,7 +95,8 @@ class SiteNav
                 'url' => route('programmes.index'),
                 'match' => ['faculties.*', 'programmes.*', 'almanac', 'library', 'downloads', 'courses.*'],
                 'icon' => 'fa-book-open',
-                'blurb' => '46+ programmes across four faculties and the Graduate School.',
+                'blurb' => 'Programmes across four faculties and the Graduate School.',
+                'image' => 'images/photos/menu-academics.jpg',
                 'children' => [
                     ['label' => 'All programmes', 'url' => route('programmes.index'), 'icon' => 'fa-magnifying-glass',
                         'desc' => 'Find your programme by level, faculty or name.',
@@ -123,6 +124,7 @@ class SiteNav
                 'match' => ['scholar.*'],
                 'icon' => 'fa-flask',
                 'blurb' => 'MRU Scholar: the university\'s open research repository.',
+                'image' => 'images/photos/menu-research.jpg',
                 'children' => [
                     ['label' => 'MRU Scholar', 'url' => route('scholar.home'), 'icon' => 'fa-flask',
                         'desc' => 'The research repository, at a glance.',
@@ -141,7 +143,7 @@ class SiteNav
                 'match' => ['campus-life', 'accommodation', 'sports', 'guild', 'alumni'],
                 'icon' => 'fa-people-group',
                 'blurb' => 'Life at Kakeeka and Kirumba, in and out of class.',
-                'image' => 'images/menu-student-life.jpg',
+                'image' => 'images/photos/menu-student-life.jpg',
                 'children' => [
                     ['label' => 'Campus life', 'url' => route('campus-life'), 'icon' => 'fa-people-group',
                         'desc' => 'Learning, sports, culture and community.',

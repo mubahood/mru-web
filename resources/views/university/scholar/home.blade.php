@@ -7,22 +7,35 @@
 @php
 @endphp
 
-<section class="page-hero">
+{{-- Not the shared page-hero partial: this header carries the repository's
+     four live figures and its own subnav, neither of which that partial takes.
+     It borrows the partial's two-column .has-photo structure so the photograph
+     sits and crops identically to every other page's. --}}
+<section class="page-hero has-photo">
   <span class="hero-mark" aria-hidden="true">Scholar</span>
   <div class="wrap">
     @include('university.partials.breadcrumbs', ['trail' => [['label' => 'Research']]])
-    <p class="eyebrow">Research at MRU</p>
-    <h1>MRU <b style="font-weight:600;color:var(--pri);">Scholar</b></h1>
-    <p>The university's open research repository — publications by MRU academics, free to read, search and download.</p>
-    <div class="trust-chips">
-      <span><i class="fas fa-file-lines" aria-hidden="true"></i> {{ $stats['publications'] }} publications</span>
-      <span><i class="fas fa-user-graduate" aria-hidden="true"></i> {{ $stats['scholars'] }} scholars</span>
-      <span><i class="fas fa-tags" aria-hidden="true"></i> {{ $stats['areas'] }} research areas</span>
-      <span><i class="fas fa-download" aria-hidden="true"></i> {{ number_format($stats['downloads']) }} downloads</span>
-    </div>
-    <div class="subnav">
-      <a href="{{ route('scholar.publications') }}" wire:navigate>Publications</a>
-      <a href="{{ route('scholar.directory') }}" wire:navigate>Scholars directory</a>
+    <div class="ph-inner">
+      <div class="ph-copy">
+        <p class="eyebrow">Research at MRU</p>
+        <h1>MRU <b style="font-weight:600;color:var(--pri);">Scholar</b></h1>
+        <p>The university's open research repository — publications by MRU academics, free to read, search and download.</p>
+        <div class="trust-chips">
+          <span><i class="fas fa-file-lines" aria-hidden="true"></i> {{ $stats['publications'] }} publications</span>
+          <span><i class="fas fa-user-graduate" aria-hidden="true"></i> {{ $stats['scholars'] }} scholars</span>
+          <span><i class="fas fa-tags" aria-hidden="true"></i> {{ $stats['areas'] }} research areas</span>
+          <span><i class="fas fa-download" aria-hidden="true"></i> {{ number_format($stats['downloads']) }} downloads</span>
+        </div>
+        <div class="subnav">
+          <a href="{{ route('scholar.publications') }}" wire:navigate>Publications</a>
+          <a href="{{ route('scholar.directory') }}" wire:navigate>Scholars directory</a>
+        </div>
+      </div>
+      <div class="ph-media">
+        <img src="{{ asset('images/photos/hero-research.jpg') }}"
+             alt="Two academics discussing research posters on crop nutrient deficiency"
+             width="880" height="660" loading="eager" fetchpriority="high" decoding="async">
+      </div>
     </div>
   </div>
 </section>

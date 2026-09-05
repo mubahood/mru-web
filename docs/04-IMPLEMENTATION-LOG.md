@@ -1684,3 +1684,107 @@ Recorded but not acted on, because they are deployment decisions rather than cod
 not gzip-compressing responses (`Accept-Encoding: gzip` returns identical bytes), and the
 first-load payload is dominated by `livewire.js` (379KB) and FontAwesome (155KB), both cacheable
 and both framework-level choices.
+
+---
+
+## Phase AH — the MUHINDO photograph archive
+
+A folder of 127 professional photographs (`460A*.JPG` at 5760×3840, `DSC_*.JPG` at 2704×1800,
+554MB in total) was supplied. Every frame was reviewed — four contact sheets to survey them, then
+eight larger sheets to judge the shortlist properly, then full-resolution crops to read the text a
+caption would rely on. Nothing was selected on a filename.
+
+### What was in it
+
+Material the site had no equivalent of: the **Signature Building** launch — the architect's
+rendering on a banner, the signing, hard hats, an excavator on the ground; the **University
+Football League** trophy, the squad, a stadium line-up, campus fixtures, volleyball and beach
+soccer; **engineering and agriculture** — a structural-model design challenge, solar and
+microcontroller project benches, a Muteesa Engineering Association vest, a research poster
+session on crop nutrient deficiency, a bench-scale process rig, Ankole cattle, a shade-net house;
+and the **library building**, several hundred students on the grass slope, the Guild swearing-in,
+a University dinner, a shared meal, kanzu worn with the blazer.
+
+### 28 photographs, curated rather than dumped
+
+`gallery:import` already existed but derived each title from its filename, which for a camera dump
+means `460A4341` on the public site. It now takes `--manifest=`, a JSON file naming the files to
+import and giving each a slug, title, caption, alt text, category and order. The curation
+therefore lives in `database/data/gallery-muhindo.json` and is reviewable in a diff. The manifest
+supplies the copy on first import only; after that the record belongs to whoever edits it in the
+admin gallery, and a re-run leaves their wording alone unless `--force` says otherwise. A
+manifested photograph arrives published; a bulk drop keeps the column default, unchanged.
+
+Captions state only what is visible in the frame. No dates, no names, no campus attribution —
+none of that is legible in the pictures, and inventing it is the one thing this project does not
+do. Where a caption leans on printed text (the Signature Building banner, the Muteesa Engineering
+Association motto, the LIBRARY sign, the trophy's *University Football League Champions*), that
+text was read at full resolution first.
+
+The gallery goes from **4 published photographs to 32**, across eight categories. 121MB of
+originals became 8.9MB served, averaging 286KB, each with a WebP sibling and an 800px thumbnail.
+
+### Where they landed
+
+| Surface | Before | Now |
+|---|---|---|
+| `/library` hero | the *Guild* photograph, reused | the library building, signed |
+| `/students-guild` hero | students at a registration desk | the swearing-in |
+| `/governance`, `/university-council`, `/staff-directory`, `/events`, `/scholar` | no photograph | one each |
+| Mega menu | 3 of 6 sections had a picture | 5 — Academics and Research gained one |
+| Faculty covers | a boardroom for Business, a group photo for Social Sciences, two readers for STEAD | work that matches the faculty |
+| Homepage news band | people crossing a field | several hundred students on the slope |
+| `/sports` | hero only | six sporting photographs, from the gallery |
+| `/campus-life` strip | unordered, portraits included | ordered, portraits excluded |
+
+The `/sports` strip is driven by the gallery's `Sport` category rather than hard-coded, so it
+follows what the admin publishes and disappears cleanly when nothing is categorised that way.
+
+### Three defects found on the way
+
+**1. The nav label vanished on hover.** `body.has-hero .nav-link:hover{color:#fff}` was written for
+the frosted header over the hero photograph. But the header turns solid white the moment the
+reader scrolls *or* opens any panel, at which point every other label switches to `--hdr-fg` and
+this one did not: measured `rgb(255,255,255)` on `rgba(255,255,255,.94)`, a contrast ratio of
+1:1. Hovering any top-level item on the home page made its own label disappear. The hover, open
+and current states now run through their own `--hdr-fg-on` token, following the same state machine
+as the rest — which is what the three-variable design was for.
+
+**2. `.gal-grid` left a hole.** It is a CSS multi-column layout, which balances by height. With six
+tiles of near-identical aspect it settled on 1-1-2-2 and left an empty quarter under the first two
+columns. Replacing `columns` with `auto-fit` made it worse — five across at 1440px and the sixth
+alone on its own row. `.gal-strip` is a plain grid on a fixed three columns (two at 860px, one at
+520px) with one aspect ratio, which cannot do either. `.gal-grid` keeps its masonry on `/gallery`,
+where a mixed-ratio wall is the point.
+
+**3. An unordered `limit(8)`.** The campus-life strip took whichever eight rows the engine reached
+first — free to differ between two loads of the same page, and never honouring the order set in
+the admin gallery. Now ordered, and portraits are excluded: the heading promises the campus, and a
+head-and-shoulders of one person is not that.
+
+Also corrected while in the file: the Academics menu blurb claimed "46+ programmes" against 44
+published — the same drift `liveStats()` fixed on the homepage. The count is dropped rather than
+retyped, because a number a human maintains by hand is a number that will be wrong again.
+
+### Verified
+
+`PageImageryTest` (12) asserts each page renders the photograph it names *and* that the file exists
+on disk — a blade pointing at a missing asset still returns 200 and simply shows a broken frame,
+which is how two of these reached a commit earlier. `GalleryManifestTest` (10) pins the manifest's
+shape: required fields, unique slugs and source files, slugs that are readable words rather than
+camera filenames, and alt text that describes the picture rather than repeating the title.
+
+136 image assets across 23 pages all resolve 200. No horizontal overflow and no broken images at
+390px or 1440px on any changed page. Full suite **1209 passed, 1 skipped**.
+
+Pages carrying no photograph, counted across all 32 public pages: **24 → 10**. A first draft of
+this note said 6; that number was asserted rather than measured, and measuring it gave 11 — which
+is also what surfaced that `hero-research.jpg` had been built and never wired. `/scholar` now uses
+it, in the shared two-column header structure rather than a second copy of it. Of the 10 that
+remain, seven are data-first pages where a photograph would be decoration, and three
+(`/accommodation`, `/admissions/scholarships`, `/jobs`) have nothing fitting in any archive held.
+
+Note for deployment: `storage/app/public` is gitignored, as it always has been, so the gallery
+files and faculty covers are not in the repository. They are reproduced with
+`php artisan gallery:import <folder> --manifest=database/data/gallery-muhindo.json`. The chrome
+images under `public/images/photos/` are tracked.

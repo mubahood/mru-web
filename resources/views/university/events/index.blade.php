@@ -16,6 +16,8 @@
     ['fa-location-dot', 'Kampala & Masaka campuses'],
   ],
   'trail' => [['label' => 'News & Events', 'url' => route('insights.index')], ['label' => 'Events']],
+  'photo' => asset('images/photos/hero-events.jpg'),
+  'photoAlt' => 'A full marquee of students at a University occasion',
 ])
 
 <section>
