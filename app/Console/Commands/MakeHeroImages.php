@@ -30,6 +30,8 @@ class MakeHeroImages extends Command
 
     /** Base name => source path relative to the public disk. */
     private const SOURCES = [
+        'hero-engineering' => 'university/hero/source-engineering.jpg',
+        'hero-agriculture' => 'university/hero/source-agriculture.jpg',
         'hero-graduation' => 'university/hero/slide_1783846485_3a6e5459.jpg',
         'hero-international' => 'university/hero/slide_1784646836_c86c18c2.jpg',
         'hero-heritage' => 'news/WhatsApp-Image-2025-11-26-at-11.48.59.jpeg',

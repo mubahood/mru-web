@@ -1788,3 +1788,37 @@ Note for deployment: `storage/app/public` is gitignored, as it always has been, 
 files and faculty covers are not in the repository. They are reproduced with
 `php artisan gallery:import <folder> --manifest=database/data/gallery-muhindo.json`. The chrome
 images under `public/images/photos/` are tracked.
+
+### Phase AH.1 — and onto the landing page itself
+
+The first pass put the new photography on the inner pages and left the home page alone, which was
+the wrong call: the landing is where most readers only ever get to.
+
+**Two slides added, at positions two and three.** *Learning by building it* — students and a
+lecturer testing a paper structural model — and *A classroom with the gate open*, the Ankole herd
+on the farm. Both were chosen against the slider's own scrim, which is a `100deg` gradient running
+from `rgba(1,12,30,.74)` to transparent by 60%: the copy sits over the darkened left, so a hero
+photograph needs its subject on the **right**. Compositing the candidates under that gradient
+before choosing is what ruled out the Muteesa Engineering Association vest (subject centre-left,
+would have been swallowed) and chose these two. *A royal university of the Buganda Kingdom* stays
+first, on request.
+
+Sources live on the public disk and are named in `MakeHeroImages::SOURCES`, so the responsive
+700/1100/1600 set is reproducible from a clone rather than made by hand. First paint is unchanged:
+one slide loads eagerly and always has; the other seven hydrate after `load`, so the two additions
+cost 345KB *after* the page is usable and nothing before it.
+
+**A picture desk on the home page.** Six photographs under the faculty grid — the Signature
+Building signing, the squad and the trophy, a structural model under test, a solar control bench,
+the poster session, the Ankole herd — each with its category, title and caption **printed under
+the frame**. Not a hover reveal: a hover caption does not exist on a phone at all, and does not
+exist for anyone skimming on a desktop either, which is most readers.
+
+The selection is the gallery's own `is_featured` flag, so an editor changes what the home page
+shows from the admin gallery without touching a template. There is deliberately no fallback to
+"whatever is newest": a home-page gallery is an editorial choice, and with nothing featured the
+section stays away rather than filling itself.
+
+Slider contract 14/14, menu 10/10. The slider test had been asserting a literal *five* inert
+slides; with eight slides that failed on the site being **edited**, not on the site being wrong,
+so the check now derives the count. Suite **1211 passed, 1 skipped**.

@@ -81,6 +81,31 @@ class PageImageryTest extends TestCase
         $this->get(route('sports'))->assertOk()->assertDontSee('A season on the field');
     }
 
+    public function test_the_home_page_picture_desk_shows_featured_photographs_with_their_captions(): void
+    {
+        $this->photo('Testing the model', 'Academics', 'gallery/structural-model-test.jpg')
+            ->update(['is_featured' => true, 'caption' => 'Students and staff test a paper structural model to destruction.']);
+        $this->photo('Not featured', 'Campus', 'gallery/quiet-corner.jpg', 2);
+
+        $this->get(route('home'))->assertOk()
+            ->assertSee('The work, as it actually looks')
+            ->assertSee('gallery/thumbs/structural-model-test.jpg', escape: false)
+            ->assertSee('Students and staff test a paper structural model to destruction.')
+            ->assertDontSee('quiet-corner.jpg', escape: false);
+    }
+
+    /**
+     * A home-page gallery is an editorial choice. With nothing featured the
+     * section stays away rather than filling itself with whatever is newest —
+     * the same guard every other section on that page carries.
+     */
+    public function test_the_picture_desk_is_absent_when_nothing_is_featured(): void
+    {
+        $this->photo('Testing the model', 'Academics', 'gallery/structural-model-test.jpg');
+
+        $this->get(route('home'))->assertOk()->assertDontSee('The work, as it actually looks');
+    }
+
     private function photo(string $title, string $category, string $path, int $sort = 1): GalleryPhoto
     {
         return GalleryPhoto::create([

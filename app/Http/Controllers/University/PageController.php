@@ -38,6 +38,11 @@ class PageController extends Controller
             'scholarships' => Scholarship::where('is_published', true)->orderBy('sort_order')->get(),
             'leaders' => StaffMember::where('is_published', true)->where('staff_role', 'leadership')
                 ->whereNotNull('photo')->orderBy('sort_order')->limit(4)->get(),
+            // The picture desk. Featured only, and no fallback to "whatever is
+            // newest": a homepage gallery is an editorial choice, so if nobody
+            // has made one the section stays away rather than filling itself.
+            'galleryPicks' => GalleryPhoto::published()->where('is_featured', true)
+                ->orderBy('sort_order')->orderBy('id')->limit(6)->get(),
             'yearGlance' => $this->yearGlance(),
             'testimonials' => collect(json_decode((string) \App\Support\Settings::get('portfolio.testimonials', '[]'), true) ?: []),
         ]);
