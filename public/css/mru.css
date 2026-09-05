@@ -1253,7 +1253,7 @@ html:not(.js-nav) .nav-item:focus-within > .mega{opacity:1;visibility:visible;tr
       opacity:0;transform:translateY(6px);transition:opacity .22s,transform .22s;}
     .gal-item:hover .gal-cap,.gal-item:focus-visible .gal-cap{opacity:1;transform:none;}
     .gal-t{display:block;font-size:12.5px;font-weight:600;color:#fff;line-height:1.3;}
-    .gal-c{display:block;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+    .gal-c{display:block;font-size:11.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
       color:var(--gold);margin-top:2px;}
     .gal-zoom{position:absolute;top:8px;right:8px;width:26px;height:26px;display:flex;align-items:center;
       justify-content:center;background:rgba(255,255,255,.92);color:var(--pri);font-size:10px;
@@ -1691,12 +1691,20 @@ a.pill:hover{border-color:var(--pri);color:var(--pri);background:var(--pri-soft)
 .contact-depts span{color:var(--tx2);}
 .contact-depts a{font-weight:600;color:var(--pri);}
 
+/* A DOI is one unbreakable 300px token; on a 390px phone it pushed the whole
+   publications list into horizontal scroll. Long identifiers and URLs in
+   content have to be allowed to break mid-string — there is no space in them
+   for the browser to use. */
+.pub-doi{color:var(--tx3);font-weight:500;overflow-wrap:anywhere;word-break:break-word;}
+main a[href^="http"],main a[href^="mailto"]{overflow-wrap:anywhere;}
+
 /* Breadcrumbs sit above the page title, quiet by default: they are wayfinding
    and a search-result trail, not a headline. */
 .crumbs{margin-bottom:18px;}
 .crumbs ol{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;
   align-items:center;gap:8px;font-size:12.5px;}
 .crumbs li{display:inline-flex;align-items:center;gap:8px;}
+.crumbs a,.crumbs [aria-current="page"]{display:inline-flex;align-items:center;min-height:30px;}
 .crumbs a{color:var(--tx2);font-weight:500;}
 .crumbs a:hover{color:var(--pri);}
 .crumbs i{font-size:8px;color:var(--tx3);}
@@ -1735,6 +1743,16 @@ a.pill:hover{border-color:var(--pri);color:var(--pri);background:var(--pri-soft)
 /* ------------------------------------------------------- 8. Forms & input */
 
 input,select,textarea,button{font-family:inherit;}
+/* A <select> is as wide as its longest option unless it is told otherwise,
+   and the faculty filter carries "Faculty of Science, Technology, Engineering,
+   Art and Design" — 461px of it, which pushed a 390px phone into 108px of
+   horizontal scroll on /programmes and /staff-directory. */
+.filter-bar select,.filter-bar input,.filter-bar button{max-width:100%;min-width:0;}
+.filter-bar select{text-overflow:ellipsis;}
+@media(max-width:640px){
+  .filter-bar{flex-direction:column;align-items:stretch;}
+  .filter-bar select,.filter-bar input,.filter-bar button{width:100%;}
+}
 .filter-bar{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:var(--s-5);
   padding:16px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);}
 .filter-bar select,.filter-bar input[type=text]{border:1px solid var(--line-2);background:#fff;
@@ -2422,8 +2440,13 @@ html.menu-open::after{content:'';position:fixed;inset:0;z-index:48;
   background:rgba(1,15,38,.46);-webkit-backdrop-filter:blur(16px) saturate(150%);
   backdrop-filter:blur(16px) saturate(150%);border:1px solid rgba(255,255,255,.16);
   box-shadow:0 10px 28px -14px rgba(0,0,0,.5);}
-.hs-dot{width:36px;height:4px;padding:0;border:0;border-radius:var(--r-pill);cursor:pointer;
-  background:rgba(255,255,255,.5);overflow:hidden;transition:background .2s;}
+/* The dot is a 4px rule by design, which is a 4px touch target by accident.
+   The bar keeps its size; the button grows a transparent 13px band above and
+   below it so a thumb can actually land on it. */
+.hs-dot{width:36px;height:4px;padding:13px 0;border:0;border-radius:var(--r-pill);cursor:pointer;
+  background:rgba(255,255,255,.5);background-clip:content-box;
+  box-sizing:content-box;overflow:hidden;transition:background .2s;}
+.hs-dot span{background-clip:content-box;}
 .hs-dot:hover{background:rgba(255,255,255,.72);}
 .hs-dot:focus-visible{outline:2px solid var(--gold);outline-offset:4px;}
 .hs-dot span{display:block;height:100%;width:0;background:var(--gold);border-radius:inherit;}
@@ -2798,7 +2821,7 @@ a.grad-school-strip{flex-direction:row;}
   flex-wrap:wrap;margin-bottom:var(--s-5);}
 .alm-next{flex:0 0 auto;max-width:340px;background:var(--pri);color:#fff;
   border-radius:var(--r-lg);padding:20px 22px;box-shadow:var(--sh-2);}
-.alm-next-label{display:block;font-size:10.5px;font-weight:700;letter-spacing:.1em;
+.alm-next-label{display:block;font-size:11.5px;font-weight:700;letter-spacing:.1em;
   text-transform:uppercase;color:var(--gold);margin-bottom:8px;}
 .alm-next strong{display:block;font-size:15px;font-weight:600;line-height:1.45;}
 .alm-next-when{display:inline-flex;align-items:center;gap:7px;margin-top:10px;
@@ -2815,7 +2838,7 @@ a.grad-school-strip{flex-direction:row;}
   font-weight:700;color:var(--gold-d);}
 .alm-ms-what{display:block;font-size:14px;font-weight:600;color:var(--tx);
   line-height:1.5;margin-top:5px;}
-.alm-ms-tag{display:inline-block;margin-top:7px;font-size:10px;font-weight:700;
+.alm-ms-tag{display:inline-block;margin-top:7px;font-size:11.5px;font-weight:700;
   letter-spacing:.06em;text-transform:uppercase;color:var(--tx3);}
 
 .alm-filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:var(--s-3);}

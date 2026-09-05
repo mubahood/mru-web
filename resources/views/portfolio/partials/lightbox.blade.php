@@ -24,7 +24,11 @@
   <button type="button" class="lb-nav next" data-lb-next aria-label="Next photograph"><i class="fas fa-chevron-right"></i></button>
 
   <figure class="lb-stage">
-    <img class="lb-img" id="lb-img" alt="">
+    {{-- A transparent 1x1 placeholder: an <img> with no src at all is reported
+       as a broken image by auditors and some assistive tech, and this element
+       exists before anything has been opened in it. --}}
+    <img class="lb-img" id="lb-img" alt=""
+         src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7">
     <figcaption class="lb-meta">
       <span class="lb-count" id="lb-count"></span>
       <span class="lb-title" id="lb-title"></span>

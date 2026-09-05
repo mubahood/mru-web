@@ -78,7 +78,7 @@
                 </a>
               @endif
               @if($publication->doi)
-                <span style="color:var(--tx3);font-weight:500;">DOI: {{ $publication->doi }}</span>
+                <span class="pub-doi">DOI: {{ $publication->doi }}</span>
               @endif
             </div>
           </article>
