@@ -19,6 +19,8 @@
     ['fa-passport', 'Valid passport required'],
     ['fa-language', 'English-taught programmes'],
   ],
+  'photo' => asset('storage/university/hero/hero-international-1100.jpg'),
+  'photoAlt' => 'International visitors with Muteesa I Royal University staff outside a campus building',
 ])
 
 @if($intlRequirements->isNotEmpty())

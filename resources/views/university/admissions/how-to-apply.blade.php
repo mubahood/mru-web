@@ -18,6 +18,8 @@
     ['fa-laptop', 'Apply online on the E-Portal'],
     ['fa-file-lines', 'Paper forms at either campus'],
   ])),
+  'photo' => asset('storage/university/hero/hero-student-voice-1100.jpg'),
+  'photoAlt' => 'Students completing registration forms at an outdoor desk on campus',
 ])
 
 @if(! empty($admissions['steps']))

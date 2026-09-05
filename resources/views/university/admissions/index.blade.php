@@ -21,6 +21,8 @@
     ! empty($admissions['application_fee']) ? ['fa-coins', 'Application fee '.$admissions['application_fee']] : null,
     ['fa-graduation-cap', $programmeCount.'+ programmes'],
   ])),
+  'photo' => asset('storage/university/hero/hero-graduation-1100.jpg'),
+  'photoAlt' => 'Graduands in cap and gown seated at a Muteesa I Royal University graduation ceremony',
 ])
 
 {{-- Three moves from reading this page to a submitted application. --}}

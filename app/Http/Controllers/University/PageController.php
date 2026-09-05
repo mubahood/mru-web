@@ -9,6 +9,7 @@ use App\Models\Faculty;
 use App\Models\GalleryPhoto;
 use App\Models\Partner;
 use App\Models\Post;
+use App\Models\Programme;
 use App\Models\Publication;
 use App\Models\Scholarship;
 use App\Models\StaffMember;
@@ -27,7 +28,7 @@ class PageController extends Controller
     {
         return view('university.home', [
             'identity' => University::identity(),
-            'stats' => University::get('stats'),
+            'stats' => $this->liveStats(),
             'admissions' => University::get('admissions'),
             'faculties' => Faculty::published()->withCount('programmes')->get(),
             'news' => Post::published()->latest('published_at')->limit(3)->get(),
@@ -40,6 +41,35 @@ class PageController extends Controller
             'yearGlance' => $this->yearGlance(),
             'testimonials' => collect(json_decode((string) \App\Support\Settings::get('portfolio.testimonials', '[]'), true) ?: []),
         ]);
+    }
+
+    /**
+     * The headline stat row, with its two countable figures taken from the
+     * database rather than from the settings copy.
+     *
+     * Those two had drifted: the row claimed "46+ Academic Programmes" against
+     * 44 published, and "5 Faculties & Graduate School" when there are four
+     * faculties plus the Graduate School. A number a human retypes after every
+     * curriculum change is a number that will be wrong again next term, so the
+     * label stays editable and the figure is counted. Anything the database
+     * cannot answer (campuses, the NCHE mark) passes through untouched.
+     */
+    private function liveStats(): array
+    {
+        $faculties = Faculty::published()->count();
+        $gradSchools = Faculty::published()->where('name', 'like', '%Graduate School%')->count();
+
+        return array_map(function (array $stat) use ($faculties, $gradSchools) {
+            $label = strtolower($stat['label'] ?? '');
+
+            if (str_contains($label, 'facult')) {
+                $stat['value'] = (string) max($faculties - $gradSchools, 0);
+            } elseif (str_contains($label, 'programme')) {
+                $stat['value'] = Programme::published()->count().'+';
+            }
+
+            return $stat;
+        }, University::get('stats'));
     }
 
     /**

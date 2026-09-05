@@ -24,6 +24,8 @@
     ['fa-list-check', 'Requirements by level'],
     ['fa-stamp', 'NCHE-recognised equivalents accepted'],
   ],
+  'photo' => asset('storage/university/hero/hero-classroom-1100.jpg'),
+  'photoAlt' => 'Students seated in a full Muteesa I Royal University lecture hall',
 ])
 
 @foreach($levels as $key => $level)
