@@ -13,6 +13,7 @@
   'eyebrow' => 'Who We Are',
   'title' => $identity['strapline'] ?? 'Rooted in Heritage. Focused on the Future.',
   'lead' => $identity['motto'] ?? 'Seeking Greater Horizons in Thought and Action',
+  'trail' => [['label' => 'About MRU', 'url' => route('about')], ['label' => 'Who we are']],
 ])
 
 <section>

@@ -21,6 +21,7 @@
   ],
   'photo' => asset('storage/university/hero/hero-international-1100.jpg'),
   'photoAlt' => 'International visitors with Muteesa I Royal University staff outside a campus building',
+  'trail' => [['label' => 'Admissions', 'url' => route('admissions.index')], ['label' => 'International students']],
 ])
 
 @if($intlRequirements->isNotEmpty())

@@ -13,6 +13,7 @@
   'title' => 'Student Accommodation',
   'lead' => 'A room on campus puts you minutes from your first lecture. Here is where our students live, and how to book.',
   'mark' => 'Halls',
+  'trail' => [['label' => 'Student Life', 'url' => route('campus-life')], ['label' => 'Accommodation']],
 ])
 
 @if(!empty($halls))

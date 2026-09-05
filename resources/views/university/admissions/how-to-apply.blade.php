@@ -20,6 +20,7 @@
   ])),
   'photo' => asset('storage/university/hero/hero-student-voice-1100.jpg'),
   'photoAlt' => 'Students completing registration forms at an outdoor desk on campus',
+  'trail' => [['label' => 'Admissions', 'url' => route('admissions.index')], ['label' => 'How to apply']],
 ])
 
 @if(! empty($admissions['steps']))

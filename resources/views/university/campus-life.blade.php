@@ -11,6 +11,7 @@
   'eyebrow' => 'Campus Life',
   'title' => 'Campus Life',
   'lead' => 'Learning, sports, culture, events and community — on two campuses.',
+  'trail' => [['label' => 'Student Life']],
 ])
 
 {{-- The five pillars of student life. Two of them have their own pages. --}}

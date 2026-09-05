@@ -9,6 +9,7 @@
   'title' => 'Staff Directory',
   'lead' => 'The people who teach, research and run the University — search by name, title or department, or browse a faculty at a time.',
   'mark' => 'Staff',
+  'trail' => [['label' => 'About MRU', 'url' => route('about')], ['label' => 'Staff directory']],
 ])
 
 <section>

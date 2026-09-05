@@ -16,6 +16,7 @@
   'mark' => 'Royals',
   'photo' => asset('images/page-sports.jpg'),
   'photoAlt' => 'The Muteesa I Royal University football team lifting the 2025/26 University Football League trophy',
+  'trail' => [['label' => 'Student Life', 'url' => route('campus-life')], ['label' => 'Sports & lifestyle']],
 ])
 
 @if(!empty($sports))

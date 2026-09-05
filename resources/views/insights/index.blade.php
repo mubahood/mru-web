@@ -7,6 +7,7 @@
 <section class="page-hero tex-glow">
   <span class="hero-mark" aria-hidden="true">BLOG</span>
   <div class="wrap">
+    @include('university.partials.breadcrumbs', ['trail' => [['label' => 'News']]])
     <div class="eyebrow">News &amp; Announcements</div>
     <h1>University News</h1>
     <p>Announcements, stories and updates from across Muteesa I Royal University — graduations, admissions, research, sports and student life.</p>

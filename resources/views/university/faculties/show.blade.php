@@ -2,6 +2,26 @@
 @section('title', $faculty->name.' | Muteesa I Royal University')
 @section('desc', \Illuminate\Support\Str::limit(strip_tags($faculty->description ?: $faculty->about ?: $faculty->name.' at Muteesa I Royal University: programmes, departments and staff.'), 150))
 
+@push('jsonld')
+@php
+  $facultyNode = array_filter([
+    '@context' => 'https://schema.org',
+    '@type' => 'EducationalOrganization',
+    'name' => $faculty->name,
+    'description' => $faculty->description ?: $faculty->tagline,
+    'url' => route('faculties.show', $faculty),
+    'parentOrganization' => [
+      '@type' => 'CollegeOrUniversity',
+      'name' => \App\Support\University::identity()['name'] ?? 'Muteesa I Royal University',
+      'url' => route('home'),
+    ],
+    'department' => collect($faculty->departments ?? [])
+        ->map(fn ($d) => ['@type' => 'EducationalOrganization', 'name' => $d])->all() ?: null,
+  ]);
+@endphp
+<script type="application/ld+json">{!! json_encode($facultyNode, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}</script>
+@endpush
+
 @section('content')
 
 @php
@@ -10,6 +30,11 @@
 <section class="page-hero">
   <span class="hero-mark" aria-hidden="true">{{ $faculty->short_name ?: 'Faculty' }}</span>
   <div class="wrap">
+    @include('university.partials.breadcrumbs', ['trail' => [
+      ['label' => 'Academics', 'url' => route('programmes.index')],
+      ['label' => 'Faculties & schools', 'url' => route('faculties.index')],
+      ['label' => $faculty->name],
+    ]])
     <p class="eyebrow">Faculties &amp; Schools</p>
     <h1>{{ $faculty->name }}</h1>
     @if($faculty->tagline)<p>{{ ucfirst($faculty->tagline) }}.</p>@endif

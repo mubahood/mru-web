@@ -26,6 +26,7 @@
   ],
   'photo' => asset('storage/university/hero/hero-classroom-1100.jpg'),
   'photoAlt' => 'Students seated in a full Muteesa I Royal University lecture hall',
+  'trail' => [['label' => 'Admissions', 'url' => route('admissions.index')], ['label' => 'Entry requirements']],
 ])
 
 @foreach($levels as $key => $level)

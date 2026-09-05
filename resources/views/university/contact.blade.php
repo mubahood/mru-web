@@ -12,6 +12,7 @@
   'eyebrow' => 'Contact',
   'title' => 'Contact Us',
   'lead' => 'By phone, WhatsApp, email or in person on either campus — and messages sent here reach a person, not a mailbox nobody reads.',
+  'trail' => [['label' => 'About MRU', 'url' => route('about')], ['label' => 'Contact us']],
 ])
 
 <section>

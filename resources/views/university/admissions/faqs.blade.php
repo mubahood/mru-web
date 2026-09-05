@@ -91,6 +91,7 @@
     ['fa-circle-question', count($faqs).' questions answered'],
     ['fa-bolt', 'Straight answers, no jargon'],
   ],
+  'trail' => [['label' => 'Admissions', 'url' => route('admissions.index')], ['label' => 'FAQs']],
 ])
 
 <section>

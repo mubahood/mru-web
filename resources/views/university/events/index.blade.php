@@ -15,6 +15,7 @@
     ['fa-calendar-days', $upcoming->count().' upcoming'],
     ['fa-location-dot', 'Kampala & Masaka campuses'],
   ],
+  'trail' => [['label' => 'News & Events', 'url' => route('insights.index')], ['label' => 'Events']],
 ])
 
 <section>

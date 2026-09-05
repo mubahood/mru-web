@@ -10,6 +10,7 @@
 <section class="page-hero">
   <span class="hero-mark" aria-hidden="true">Scholar</span>
   <div class="wrap">
+    @include('university.partials.breadcrumbs', ['trail' => [['label' => 'Research']]])
     <p class="eyebrow">Research at MRU</p>
     <h1>MRU <b style="font-weight:600;color:var(--pri);">Scholar</b></h1>
     <p>The university's open research repository — publications by MRU academics, free to read, search and download.</p>

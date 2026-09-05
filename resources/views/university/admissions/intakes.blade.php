@@ -14,6 +14,7 @@
   'chips' => collect($admissions['intakes'] ?? [])
       ->map(fn ($intake) => ['fa-calendar-days', ($intake['name'] ?? '').' — apply '.($intake['window'] ?? '')])
       ->values()->all(),
+  'trail' => [['label' => 'Admissions', 'url' => route('admissions.index')], ['label' => 'Intakes & deadlines']],
 ])
 
 @if(! empty($admissions['intakes']))

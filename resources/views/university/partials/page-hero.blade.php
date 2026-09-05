@@ -18,6 +18,9 @@
 <section class="page-hero{{ $hasPhoto ? ' has-photo' : '' }}">
   <span class="hero-mark" aria-hidden="true">{{ $mark ?? $eyebrow ?? '' }}</span>
   <div class="wrap">
+    @isset($trail)
+      @include('university.partials.breadcrumbs', ['trail' => $trail])
+    @endisset
     <div class="ph-inner">
       <div class="ph-copy">
         @isset($eyebrow)<p class="eyebrow">{{ $eyebrow }}</p>@endisset

@@ -14,6 +14,7 @@
   'mark' => 'Guild',
   'photo' => asset('images/page-guild.jpg'),
   'photoAlt' => "Students registering at an outdoor desk during Students' Guild elections",
+  'trail' => [['label' => 'Student Life', 'url' => route('campus-life')], ['label' => 'Students\' Guild']],
 ])
 
 <section style="padding-bottom:0;">

@@ -16,6 +16,7 @@
     ['fa-award', $scholarships->count().' schemes'],
     ['fa-hand-holding-heart', 'Merit, need & special categories'],
   ],
+  'trail' => [['label' => 'Admissions', 'url' => route('admissions.index')], ['label' => 'Scholarships']],
 ])
 
 <section>

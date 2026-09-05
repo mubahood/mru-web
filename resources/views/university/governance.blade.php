@@ -11,6 +11,7 @@
   'eyebrow' => 'Governance',
   'title' => 'University Governance',
   'lead' => 'The University is led by its principal officers and standing committees, under the oversight of the University Council.',
+  'trail' => [['label' => 'About MRU', 'url' => route('about')], ['label' => 'Governance']],
 ])
 
 @if($leadership->isNotEmpty())

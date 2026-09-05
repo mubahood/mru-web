@@ -8,6 +8,7 @@
   'eyebrow' => 'Academics',
   'title' => 'Faculties & Schools',
   'lead' => 'Every programme belongs to a faculty that teaches it, researches it, and walks you into a career with it.',
+  'trail' => [['label' => 'Academics', 'url' => route('programmes.index')], ['label' => 'Faculties & schools']],
 ])
 
 <section>

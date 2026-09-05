@@ -8,6 +8,7 @@
   'eyebrow' => 'MRU Scholar',
   'title' => 'Scholars Directory',
   'lead' => 'The researchers behind the repository. Open a profile to see a scholar\'s publications.',
+  'trail' => [['label' => 'Research', 'url' => route('scholar.home')], ['label' => 'Scholars directory']],
 ])
 
 <section style="padding-top:30px;">

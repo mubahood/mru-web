@@ -15,6 +15,7 @@
     ['fa-briefcase', $open->count().' open '.\Illuminate\Support\Str::plural('role', $open->count())],
     ['fa-location-dot', 'Kampala & Masaka campuses'],
   ],
+  'trail' => [['label' => 'News & Events', 'url' => route('insights.index')], ['label' => 'Vacancies']],
 ])
 
 <section>

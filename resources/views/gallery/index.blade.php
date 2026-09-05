@@ -7,6 +7,10 @@
 <section class="page-hero tex-glow">
   <span class="hero-mark" aria-hidden="true">GALLERY</span>
   <div class="wrap">
+    @include('university.partials.breadcrumbs', ['trail' => [
+      ['label' => 'News & Events', 'url' => route('insights.index')],
+      ['label' => 'Gallery'],
+    ]])
     <div class="eyebrow">In pictures</div>
     <h1>University Gallery</h1>
     <p>Campus life, graduations, sports and events — the university as it actually looks.</p>

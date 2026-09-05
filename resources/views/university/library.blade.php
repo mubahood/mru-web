@@ -12,6 +12,7 @@
   'eyebrow' => 'Library',
   'title' => 'University Library',
   'lead' => 'Books, journals, databases and quiet places to work — with librarians who help you find what your coursework and research need.',
+  'trail' => [['label' => 'Academics', 'url' => route('programmes.index')], ['label' => 'Library']],
 ])
 
 <section>

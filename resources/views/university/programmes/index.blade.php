@@ -9,6 +9,7 @@
   'title' => 'Find your programme',
   'lead' => 'Filter the full directory by level, faculty or name. Every programme page carries entry requirements, tuition and intakes.',
   'chips' => [['fa-book-open', $programmes->count().' programmes shown'], ['fa-school', 'Five faculties + Graduate School'], ['fa-calendar-days', 'August & January intakes']],
+  'trail' => [['label' => 'Academics']],
 ])
 
 <section style="padding-top:30px;">

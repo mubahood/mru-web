@@ -1682,6 +1682,17 @@ a.pill:hover{border-color:var(--pri);color:var(--pri);background:var(--pri-soft)
 .page-hero .eyebrow{margin-bottom:13px;}
 .page-hero .trust-chips,.page-hero .subnav{margin-top:24px;}
 
+/* Breadcrumbs sit above the page title, quiet by default: they are wayfinding
+   and a search-result trail, not a headline. */
+.crumbs{margin-bottom:18px;}
+.crumbs ol{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;
+  align-items:center;gap:8px;font-size:12.5px;}
+.crumbs li{display:inline-flex;align-items:center;gap:8px;}
+.crumbs a{color:var(--tx2);font-weight:500;}
+.crumbs a:hover{color:var(--pri);}
+.crumbs i{font-size:8px;color:var(--tx3);}
+.crumbs [aria-current="page"]{color:var(--gold-d);font-weight:700;}
+
 /* Optional photograph in the page header. Only pages with a real, relevant
    picture pass one; the rest keep the plain header rather than being handed
    a placeholder. The picture is eager/high-priority because when present it

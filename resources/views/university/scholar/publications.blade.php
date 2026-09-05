@@ -8,6 +8,7 @@
   'eyebrow' => 'MRU Scholar',
   'title' => 'Publications',
   'lead' => 'Search the repository by title, author keywords, journal, type, research area or year.',
+  'trail' => [['label' => 'Research', 'url' => route('scholar.home')], ['label' => 'Publications']],
 ])
 
 <section style="padding-top:30px;">

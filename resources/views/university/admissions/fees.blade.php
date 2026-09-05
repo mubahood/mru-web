@@ -30,6 +30,7 @@
     ['fa-building-columns', 'Listed by faculty'],
     ['fa-mobile-screen', 'Pay by mobile money'],
   ])),
+  'trail' => [['label' => 'Admissions', 'url' => route('admissions.index')], ['label' => 'Fees structure']],
 ])
 
 @foreach($faculties as $faculty)

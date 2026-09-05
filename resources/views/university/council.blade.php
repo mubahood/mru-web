@@ -12,6 +12,7 @@
   'title' => 'The University Council',
   'lead' => 'The Council is the supreme governing body of the University.',
   'mark' => 'Council',
+  'trail' => [['label' => 'About MRU', 'url' => route('about')], ['label' => 'University Council']],
 ])
 
 @forelse($members as $group => $people)

@@ -39,9 +39,10 @@
      this tag before falling back to a screenshot of the page. --}}
 <link rel="manifest" href="{{ asset('manifest.json') }}">
 <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('images/logo-192.png') }}">
-<meta name="apple-mobile-web-app-title" content="Muhindo">
+<meta name="apple-mobile-web-app-title" content="MRU">
 <meta property="og:type" content="{{ $type }}">
-<meta property="og:site_name" content="Muhindo Mubaraka">
+<meta property="og:site_name" content="{{ config('app.name') }}">
+<meta property="og:locale" content="en_UG">
 <meta property="og:title" content="{{ $seoTitle }}">
 <meta property="og:description" content="{{ $seoDescription }}">
 <meta property="og:url" content="{{ $seoCanonical }}">

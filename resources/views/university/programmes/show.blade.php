@@ -36,6 +36,11 @@
 <section class="page-hero">
   <span class="hero-mark" aria-hidden="true">{{ $programme->award_code ?: strtoupper(substr($programme->level, 0, 3)) }}</span>
   <div class="wrap">
+    @include('university.partials.breadcrumbs', ['trail' => array_values(array_filter([
+      ['label' => 'Academics', 'url' => route('programmes.index')],
+      $programme->faculty ? ['label' => $programme->faculty->name, 'url' => route('faculties.show', $programme->faculty)] : null,
+      ['label' => $programme->name],
+    ]))])
     <p class="eyebrow">{{ $programme->levelLabel() }}@if($programme->faculty) · {{ $programme->faculty->name }}@endif</p>
     <h1>{{ $programme->name }}@if($programme->award_code) <span style="color:var(--gold-d);font-weight:500;">({{ $programme->award_code }})</span>@endif</h1>
     <div class="trust-chips">

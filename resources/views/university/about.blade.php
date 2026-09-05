@@ -18,6 +18,7 @@
   ],
   'photo' => asset('images/page-about.jpg'),
   'photoAlt' => "A speaker at the Buganda Partnership Symposium holding the Kingdom's Social Transformation booklet",
+  'trail' => [['label' => 'About MRU']],
 ])
 
 {{-- The founding story, told beside the crest it produced. --}}

@@ -18,6 +18,7 @@
   'eyebrow' => 'Downloads',
   'title' => 'Downloads',
   'lead' => 'Official university documents: plans, policies, forms and guides.',
+  'trail' => [['label' => 'Academics', 'url' => route('programmes.index')], ['label' => 'Downloads']],
 ])
 
 <section style="padding:22px 0 0;">

@@ -9,6 +9,7 @@
   'title' => 'Academic Almanac',
   'lead' => 'Every date of the academic year — when semesters open, when examinations run, when the Council sits, and who is answerable for each activity.',
   'mark' => 'Almanac',
+  'trail' => [['label' => 'Academics', 'url' => route('programmes.index')], ['label' => 'Academic almanac']],
 ])
 
 @if($total === 0)
