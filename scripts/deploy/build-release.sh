@@ -65,6 +65,13 @@ echo "==> production dependencies (no dev)"
 # The server runs PHP 8.2.33; this laptop runs 8.3.9. Without pinning the
 # platform, composer is free to resolve a dependency that requires 8.3 and the
 # release then fatals on the first request.
+#
+# --classmap-authoritative is fast but unforgiving: the autoloader will not look
+# on disk for a class that is not in the map, so **a later incremental upload of
+# a NEW class file is not enough** — the class stays unloadable and every page
+# that touches it 500s. Shipping the ODEL section this way took the whole site
+# down until vendor/composer/autoload_*.php were regenerated and uploaded too.
+# scripts/deploy/refresh-autoload.sh exists for exactly that case.
 ( cd "$OUT/laravel" \
   && "$PHP" "$COMPOSER" config platform.php 8.2.33 >/dev/null \
   && "$PHP" "$COMPOSER" install \

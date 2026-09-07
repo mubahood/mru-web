@@ -93,3 +93,19 @@ Documents download. `sitemap.xml` carries 233 URLs on the right host.
 3. **Mail.** `MAIL_*` is unset, so the contact form stores messages but sends
    no notification.
 4. **gzip.** Still not enabled at the server; unchanged from the earlier audit.
+
+## The classmap trap
+
+The release is built with `composer install --classmap-authoritative`, which tells the autoloader
+the classmap is the whole truth: it will not fall back to searching the filesystem. Editing an
+existing class and uploading it works. **Adding a new one does not** — the class stays unloadable,
+and every page that touches it returns 500.
+
+Shipping the ODEL section this way took the entire site down. `routes/web.php` referenced
+`App\Support\Odel` at registration time, so the failure was not confined to `/odel`: route loading
+threw on every request, and the main site went with it. Recovery was two minutes once the cause was
+clear, but the cause is invisible from the symptom.
+
+`scripts/deploy/refresh-autoload.sh` regenerates the classmap and uploads it. Run it after any
+deploy that adds a class, before rebuilding the caches. A full `deploy.sh` does not need it — the
+classmap is generated as part of the build.
