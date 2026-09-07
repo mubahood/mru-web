@@ -28,6 +28,7 @@ class OdelTest extends TestCase
         return [
             'hub' => ['odel.index'], 'modes' => ['odel.modes'], 'how it works' => ['odel.how-it-works'],
             'what you get' => ['odel.what-you-get'], 'credit' => ['odel.credit'],
+            'platform' => ['odel.platform'],
             'programmes' => ['odel.programmes'], 'quality' => ['odel.quality'],
             'governance' => ['odel.governance'], 'calendar' => ['odel.calendar'],
             'support' => ['odel.support'], 'faqs' => ['odel.faqs'], 'start' => ['odel.apply'],
@@ -160,6 +161,41 @@ class OdelTest extends TestCase
             foreach ($column['links'] as $link) {
                 $this->get($link['url'])->assertOk();
             }
+        }
+    }
+
+    /**
+     * The third label exists because the delivered system forced it. The
+     * coursework push is written and working and has never been run in
+     * production; "in place" would be a lie to a student and "established by
+     * policy" would be wrong the other way. If someone collapses the three
+     * back into two, this fails.
+     */
+    public function test_a_built_but_unused_feature_is_labelled_as_neither_running_nor_promised(): void
+    {
+        $this->assertNotSame(Odel::statusLabel(Odel::BUILT), Odel::statusLabel(Odel::IN_PLACE));
+        $this->assertNotSame(Odel::statusLabel(Odel::BUILT), Odel::statusLabel(Odel::COMMITTED));
+
+        $push = collect(Odel::platform())->firstWhere('title', 'Coursework marks into your record');
+        $this->assertNotNull($push, 'the coursework push must still be listed');
+        $this->assertSame(Odel::BUILT, $push['status'], 'the push has never run in production');
+
+        $this->get(route('odel.platform'))->assertOk()
+            ->assertSee(Odel::statusLabel(Odel::BUILT))
+            ->assertSee('has not yet been used in production');
+    }
+
+    /** Every platform entry has to be renderable and honestly labelled. */
+    public function test_every_platform_entry_carries_a_known_status(): void
+    {
+        $this->assertNotEmpty(Odel::platform());
+
+        foreach (Odel::platform() as $f) {
+            foreach (['title', 'icon', 'status', 'body'] as $field) {
+                $this->assertArrayHasKey($field, $f);
+                $this->assertNotEmpty($f[$field], ($f['title'] ?? '?')." has an empty {$field}");
+            }
+            $this->assertContains($f['status'], [Odel::IN_PLACE, Odel::BUILT, Odel::COMMITTED], $f['title']);
         }
     }
 

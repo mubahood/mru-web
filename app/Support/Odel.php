@@ -29,8 +29,21 @@ namespace App\Support;
  */
 class Odel
 {
+    /** Running, and in routine use. */
     public const IN_PLACE = 'in_place';
 
+    /**
+     * The software exists and works, but is not yet in routine use.
+     *
+     * A third label was needed once the delivered system was documented. The
+     * coursework push is written, tested and reachable — and has never been
+     * committed once in production. Calling that "in place" would be a lie to
+     * a student; calling it "established by policy" would be wrong in the
+     * other direction, because it is built.
+     */
+    public const BUILT = 'built';
+
+    /** Approved by the University Council; not asserted here as built or staffed. */
     public const COMMITTED = 'committed';
 
     /** Council approval, commencement, and the review both documents set for themselves. */
@@ -240,9 +253,50 @@ class Odel
         ];
     }
 
+    /**
+     * What the ODEL system actually gives a student and a lecturer.
+     *
+     * Distinct from the policies above: those say what the University
+     * committed to, this is the software that does it. Every status here was
+     * set against the delivered system's own figures, not against a feature
+     * list — a screen that exists and is used daily is not the same claim as
+     * one that exists and has never been run.
+     *
+     * @return list<array<string, mixed>>
+     */
+    public static function platform(): array
+    {
+        return [
+            ['title' => 'An online space for every course', 'icon' => 'fa-layer-group', 'status' => self::IN_PLACE,
+                'body' => 'Every course offering has its own space on the student portal — one per course, per year, per semester. It is where the material, the coursework and the announcements for that course live.'],
+            ['title' => 'Course material, organised', 'icon' => 'fa-book-open', 'status' => self::IN_PLACE,
+                'body' => 'Teaching content is structured as chapters and topics rather than a pile of files, so you can see the shape of the course and where you are in it. Readings, video, pages and links sit inside the topic they belong to.'],
+            ['title' => 'Assignments submitted online', 'icon' => 'fa-file-arrow-up', 'status' => self::IN_PLACE,
+                'body' => 'Upload a file, type your answer, or both. Your work saves as you go before you submit it. Deadlines, late windows, multiple attempts and individual extensions are all handled by the system rather than by email.'],
+            ['title' => 'Marks and feedback in one place', 'icon' => 'fa-pen-to-square', 'status' => self::IN_PLACE,
+                'body' => 'Grading returns a score and written feedback against your submission, so the comment and the work it refers to stay together.'],
+            ['title' => 'Quizzes and online tests', 'icon' => 'fa-list-check', 'status' => self::IN_PLACE,
+                'body' => 'Multiple choice, true/false, short answer and written questions, with a time limit where the lecturer sets one. Questions and options can be shuffled, and what you see after finishing is set by the lecturer.'],
+            ['title' => 'Lectures, online or on campus', 'icon' => 'fa-chalkboard-user', 'status' => self::IN_PLACE,
+                'body' => 'Scheduled with a joining link where the session is online. One lecture can serve several courses at once, which is how a shared session is run without splitting the class in three.'],
+            ['title' => 'Attendance you can mark yourself', 'icon' => 'fa-user-check', 'status' => self::IN_PLACE,
+                'body' => 'A lecturer opens a register for a set number of minutes and gives the class a code. You check yourself in within that window. Registers are opened and closed deliberately, so there is a record of both.'],
+            ['title' => 'Your timetable, exportable', 'icon' => 'fa-calendar-days', 'status' => self::IN_PLACE,
+                'body' => 'A week grid of your sessions with room and campus, a list view that works on a phone, and a download that drops the sessions into your own calendar. Clashing sessions are drawn side by side rather than on top of each other.'],
+            ['title' => 'Announcements from your lecturer', 'icon' => 'fa-bullhorn', 'status' => self::IN_PLACE,
+                'body' => 'Course updates reach the whole class and can be pinned, so the important one does not scroll away.'],
+            ['title' => 'Coursework marks into your record', 'icon' => 'fa-arrow-right-arrow-left', 'status' => self::BUILT,
+                'body' => 'The system can carry marks earned in ODEL through to the official coursework mark on your academic record, under a share set by University policy. This is built and working, but has not yet been used in production — coursework marks are still entered the established way.'],
+        ];
+    }
+
     /** Human label for a status value. */
     public static function statusLabel(string $status): string
     {
-        return $status === self::IN_PLACE ? 'In place' : 'Established by policy';
+        return match ($status) {
+            self::IN_PLACE => 'In place',
+            self::BUILT => 'Built, not yet in use',
+            default => 'Established by policy',
+        };
     }
 }

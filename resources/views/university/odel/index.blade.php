@@ -64,6 +64,32 @@
 <section>
   <div class="wrap">
     <div class="sec-head left">
+      <p class="eyebrow">The System You Will Use</p>
+      <h2>This is not a correspondence course</h2>
+      <p>ODEL is a working platform, not a promise. Every course has an online space; material is
+         organised into chapters and topics; assignments and quizzes are submitted and marked
+         online; attendance can be taken by check-in; and you get your own timetable.</p>
+    </div>
+    <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));">
+      @foreach(array_slice(\App\Support\Odel::platform(), 0, 4) as $f)
+        <div class="card" data-rise>
+          <span class="ic"><i class="fas {{ $f['icon'] }}" aria-hidden="true"></i></span>
+          <h3 style="font-size:15.5px;">{{ $f['title'] }}</h3>
+          <p style="font-size:13.5px;">{{ \Illuminate\Support\Str::limit($f['body'], 120) }}</p>
+        </div>
+      @endforeach
+    </div>
+    <div style="margin-top:var(--s-5);">
+      <a href="{{ route('odel.platform') }}" wire:navigate class="btn ghost">
+        Everything the platform does <i class="fas fa-arrow-right" aria-hidden="true"></i>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="band-surface">
+  <div class="wrap">
+    <div class="sec-head left">
       <p class="eyebrow">What Flexible Learning Is For</p>
       <h2>Five things the policy commits the University to</h2>
       <p>Taken from section 4 of the Flexible Learning Policy, which the University Council
@@ -94,7 +120,7 @@
 </section>
 
 @if($dates->isNotEmpty())
-<section class="band-surface">
+<section>
   <div class="wrap">
     <div class="sec-head left">
       <p class="eyebrow">Dates</p>

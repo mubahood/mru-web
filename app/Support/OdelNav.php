@@ -23,6 +23,7 @@ class OdelNav
     {
         return [
             ['label' => 'Study modes', 'url' => route('odel.modes'), 'match' => ['odel.modes', 'odel.mode']],
+            ['label' => 'The platform', 'url' => route('odel.platform'), 'match' => ['odel.platform']],
             ['label' => 'How it works', 'url' => route('odel.how-it-works'), 'match' => ['odel.how-it-works']],
             ['label' => 'What you get', 'url' => route('odel.what-you-get'), 'match' => ['odel.what-you-get']],
             ['label' => 'Credit', 'url' => route('odel.credit'), 'match' => ['odel.credit']],
@@ -52,6 +53,7 @@ class OdelNav
                 'label' => 'Studying this way',
                 'links' => [
                     ['label' => 'The six study modes', 'url' => route('odel.modes')],
+                    ['label' => 'The platform', 'url' => route('odel.platform')],
                     ['label' => 'How ODEL works', 'url' => route('odel.how-it-works')],
                     ['label' => 'What you are entitled to', 'url' => route('odel.what-you-get')],
                     ['label' => 'Credit for what you know', 'url' => route('odel.credit')],

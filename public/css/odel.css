@@ -100,6 +100,9 @@ body.odel{background:var(--bg);}
   letter-spacing:.06em;text-transform:uppercase;padding:4px 9px;border-radius:var(--r-pill);
   white-space:nowrap;}
 .od-status.is-place{background:var(--ok-soft);color:var(--ok);}
+/* Built but unused sits between the other two, and must not read as either:
+   not the green of something in daily use, not the gold of a paper promise. */
+.od-status.is-built{background:var(--od-soft);color:var(--od-d);}
 .od-status.is-committed{background:var(--gold-soft);color:var(--gold-d);}
 .od-clause{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;
   color:var(--tx3);white-space:nowrap;}

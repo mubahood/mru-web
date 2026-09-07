@@ -109,6 +109,7 @@ Route::controller(\App\Http\Controllers\University\OdelController::class)->prefi
     Route::get('/modes', 'modes')->name('modes');
     Route::get('/modes/{mode}', 'mode')->name('mode')
         ->whereIn('mode', array_keys(\App\Support\Odel::modes()));
+    Route::get('/platform', 'platform')->name('platform');
     Route::get('/how-it-works', 'howItWorks')->name('how-it-works');
     Route::get('/what-you-get', 'whatYouGet')->name('what-you-get');
     Route::get('/credit', 'credit')->name('credit');

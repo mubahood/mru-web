@@ -45,7 +45,7 @@ class SitemapController extends Controller
         // generated from the same list the section itself renders, so a mode
         // added to the policy transcription is indexed without a second edit.
         $static = array_merge($static, [
-            route('odel.index'), route('odel.modes'), route('odel.how-it-works'),
+            route('odel.index'), route('odel.modes'), route('odel.platform'), route('odel.how-it-works'),
             route('odel.what-you-get'), route('odel.credit'), route('odel.programmes'),
             route('odel.quality'), route('odel.governance'), route('odel.calendar'),
             route('odel.support'), route('odel.faqs'), route('odel.apply'),

@@ -59,3 +59,8 @@ new-temp/
 release/
 .deploy-stage/
 storage/app/prod/
+
+# Internal engineering notes about the live Campus Dynamics systems.
+# This repository is PUBLIC. Anything describing the internals, schema or
+# security posture of eportal/eadmin stays out of it.
+internal-docs/

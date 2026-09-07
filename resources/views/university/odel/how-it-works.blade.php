@@ -99,6 +99,13 @@
            studying online with MRU feels before committing to a programme.</p>
         <span class="link">Browse the courses <i class="fas fa-arrow-right" aria-hidden="true"></i></span>
       </a>
+      <a href="{{ route('odel.platform') }}" wire:navigate class="proj-card" data-rise>
+        <span class="client">In detail</span>
+        <h3>What the platform does</h3>
+        <p>Course spaces, chapters and topics, online assignments and quizzes, attendance and your
+           timetable — each with an honest note on whether it is in daily use.</p>
+        <span class="link">The ODEL platform <i class="fas fa-arrow-right" aria-hidden="true"></i></span>
+      </a>
       <a href="{{ route('library') }}" wire:navigate class="proj-card" data-rise>
         <span class="client">Research</span>
         <h3>The University Library</h3>

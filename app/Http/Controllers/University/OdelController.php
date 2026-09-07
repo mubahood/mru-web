@@ -48,6 +48,21 @@ class OdelController extends Controller
         ]);
     }
 
+    /**
+     * What the delivered system actually does.
+     *
+     * Separate from howItWorks(), which explains the policy model. This page
+     * is the software: the screens a student works in, each carrying whether
+     * it is in routine use, built but unused, or a policy commitment.
+     */
+    public function platform(): View
+    {
+        return view('university.odel.platform', [
+            'platform' => Odel::platform(),
+            'eportal' => University::links()['eportal'] ?? 'https://eportal.mru.ac.ug/',
+        ]);
+    }
+
     public function howItWorks(): View
     {
         return view('university.odel.how-it-works', [
