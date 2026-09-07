@@ -681,10 +681,16 @@ html:not(.js-nav) .nav-item:focus-within > .mega{opacity:1;visibility:visible;tr
        z-index 45: below the mobile action bar (50), the menu (55) and the
        header (60), so it can never sit on top of Buy, Hire or an open menu. */
     .wa{position:fixed;right:18px;bottom:18px;z-index:45;display:flex;flex-direction:column;align-items:flex-end;gap:10px;}
-    .wa-btn{width:54px;height:54px;border-radius:50%;border:0;cursor:pointer;
-      background:#25D366;color:#fff;font-size:26px;line-height:1;
-      display:flex;align-items:center;justify-content:center;
+    /* A pill, not a bare circle. The icon alone said "WhatsApp" and nothing
+       about who the queue is for, which sent enrolled students to a group
+       staffed by Admissions. The label is part of the control, not a tooltip,
+       because a tooltip does not exist on a phone. */
+    .wa-btn{min-height:54px;border-radius:var(--r-pill);border:0;cursor:pointer;
+      background:#25D366;color:#fff;font-size:24px;line-height:1;
+      display:inline-flex;align-items:center;justify-content:center;gap:10px;
+      padding:0 20px 0 17px;text-decoration:none;
       box-shadow:0 6px 20px rgba(37,211,102,.42);transition:transform .15s,box-shadow .15s;}
+    .wa-label{font-size:14.5px;font-weight:600;letter-spacing:.005em;white-space:nowrap;}
     .wa-btn:hover{transform:scale(1.06);box-shadow:0 8px 26px rgba(37,211,102,.52);}
     .wa-btn:focus-visible{outline:3px solid var(--pri);outline-offset:3px;}
     /* Coming soon */
@@ -705,7 +711,11 @@ html:not(.js-nav) .nav-item:focus-within > .mega{opacity:1;visibility:visible;tr
     @media (max-width: 900px) {
       /* Clear of the mobile action bar, which is where Buy and Hire live. */
       .wa{right:14px;bottom:calc(72px + env(safe-area-inset-bottom, 0px));}
-      .wa-btn{width:50px;height:50px;font-size:24px;}
+      /* Narrower phones keep the label — that is the whole point of it — but
+         give back the padding and a little type size to stay clear of the
+         action bar beneath. */
+      .wa-btn{min-height:48px;font-size:21px;padding:0 16px 0 14px;gap:8px;}
+      .wa-label{font-size:13.5px;}
     }
 
     /* Deep band, used once or twice per page to break the cream monotony. */
@@ -1904,7 +1914,9 @@ table{border-collapse:separate;border-spacing:0;width:100%;}
 .mmenu .mm-actions{gap:12px;margin-top:24px;}
 
 /* Floating helpers */
-.wa-btn{border-radius:var(--r-pill);width:58px;height:58px;}
+/* The university skin used to round the circle up to 58px. The control is a
+   labelled pill now, so a fixed width would clip the label — height only. */
+.wa-btn{border-radius:var(--r-pill);min-height:58px;}
 .act-bar{border-radius:var(--r-lg) var(--r-lg) 0 0;box-shadow:var(--sh-4);}
 .act-bar .btn{border-radius:var(--r-pill);}
 
@@ -2595,7 +2607,22 @@ body.has-hero main > section:first-of-type{padding-top:0;}
 /* The floating WhatsApp launcher owns the bottom-right corner, which is
    where the slider's next-arrow would otherwise land. Reserve the space
    rather than stack two round buttons on top of each other. */
-@media(min-width:901px){ .hs-bar-inner{padding-right:82px;} }
+/* The launcher is a labelled pill, not a 58px circle, so the slider bar has to
+   give back much more room than the 82px reserved when it was round. Measured:
+   209px at 1440 and 188px at 390 — at 390 it was sitting on top of a slider
+   dot, and on that breakpoint the dots are the only control the slider has.
+   One variable so the reserve cannot drift from the thing it is reserving for. */
+:root{ --wa-reserve:232px; }
+@media(min-width:901px){ .hs-bar-inner{padding-right:var(--wa-reserve);} }
+
+/* Below 901px reserving space does nothing: the dots are left-aligned and do
+   not shrink, so the pill still covered three of them — and on that breakpoint
+   the arrows are hidden, which makes the dots the slider's only control. The
+   pill lifts clear of the bar instead. Scoped to has-hero, so it only moves on
+   the one page that has a slider to clear. */
+@media(max-width:900px){
+  body.has-hero .wa{bottom:calc(140px + env(safe-area-inset-bottom, 0px));}
+}
 
 /* The institutional statement that opens the intro band, right under the
    slider. Tighter bottom margin than a normal .sec-head: the stats sit close

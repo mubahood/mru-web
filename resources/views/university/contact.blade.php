@@ -41,10 +41,18 @@
         </div>
 
         @isset($contacts['whatsapp'])
+          {{-- The group is staffed by Admissions. Saying so here stops an
+               enrolled student joining it with a fees or results question and
+               waiting for an answer it was never going to give. --}}
           <div class="item" data-rise>
-            <h4><i class="fab fa-whatsapp" aria-hidden="true"></i> WhatsApp</h4>
+            <h4><i class="fab fa-whatsapp" aria-hidden="true"></i> WhatsApp — admission enquiries</h4>
             <a href="{{ ($contacts['whatsapp_link'] ?? null) ?: \App\Support\University::WHATSAPP_GROUP }}"
                target="_blank" rel="noopener">{{ $contacts['whatsapp'] }}</a>
+            <p style="font-size:12.5px;color:var(--tx3);margin:6px 0 0;line-height:1.55;">
+              For people asking about applying. <strong>Already a student?</strong> Use the
+              <a href="{{ \App\Support\University::links()['eportal'] ?? 'https://eportal.mru.ac.ug/' }}" rel="external" class="link">Student E-Portal</a>
+              or write to the Academic Registrar.
+            </p>
           </div>
         @endisset
 

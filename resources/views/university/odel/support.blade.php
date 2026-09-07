@@ -28,11 +28,16 @@
         <p>The University switchboard will route you to admissions or to a faculty.</p>
         <p><a href="tel:{{ str_replace(' ', '', $contacts['phone'] ?? '+256200903000') }}" class="link">{{ $contacts['phone'] ?? '+256 200 903 000' }}</a></p>
       </div>
+      {{-- Most people reading this page are already enrolled, so the WhatsApp
+           group is the wrong queue for them and the card has to say so first. --}}
       <div class="card" data-rise>
         <span class="ic"><i class="fab fa-whatsapp" aria-hidden="true"></i></span>
-        <h3>On WhatsApp</h3>
-        <p>The University's WhatsApp group — the quickest way to ask a short question.</p>
-        <p><a href="{{ ($contacts['whatsapp_link'] ?? null) ?: \App\Support\University::WHATSAPP_GROUP }}" target="_blank" rel="noopener" class="link">Join the group <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a></p>
+        <h3>WhatsApp — for admission enquiries</h3>
+        <p>The University's WhatsApp group is staffed by Admissions and answers people deciding
+           whether to apply. If you are <strong>already an MRU student</strong>, your course, marks
+           and registration questions belong with your lecturer, the Academic Registrar's Office or
+           the Student E-Portal — not here.</p>
+        <p><a href="{{ ($contacts['whatsapp_link'] ?? null) ?: \App\Support\University::WHATSAPP_GROUP }}" target="_blank" rel="noopener" class="link">Asking about admission? Join the group <i class="fas fa-arrow-up-right-from-square" aria-hidden="true"></i></a></p>
       </div>
     </div>
   </div>

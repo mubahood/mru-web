@@ -19,7 +19,7 @@
         Apply Now <i class="fas fa-arrow-right" aria-hidden="true"></i>
       </a>
       <a href="{{ $wa }}" target="_blank" rel="noopener" class="btn ghost lg" style="color:#fff;border-color:rgba(255,255,255,.4);">
-        <i class="fab fa-whatsapp" aria-hidden="true"></i> WhatsApp Admissions
+        <i class="fab fa-whatsapp" aria-hidden="true"></i> Ask Admissions on WhatsApp
       </a>
     </div>
   </div>

@@ -79,6 +79,35 @@ class WhatsAppLauncherTest extends TestCase
         }
     }
 
+    /**
+     * The group is staffed by Admissions. A bare green circle said only
+     * "WhatsApp" and sent enrolled students into a queue that was never going
+     * to answer a fees or results question, so the control now names its own
+     * audience — in the visible label and in the accessible name, not in a
+     * tooltip, which does not exist on a phone.
+     */
+    public function test_the_launcher_names_who_it_is_for(): void
+    {
+        $html = (string) $this->get('/')->assertOk()->getContent();
+
+        $this->assertStringContainsString('wa-label', $html, 'the button must carry a visible label');
+        $this->assertStringContainsString('Admission enquiries', $html);
+        $this->assertMatchesRegularExpression('/aria-label="[^"]*prospective students[^"]*"/', $html,
+            'the accessible name must say who the queue is for');
+    }
+
+    /** And the pages an enrolled student is most likely to read must send them elsewhere. */
+    public function test_pages_an_enrolled_student_reads_point_them_away_from_the_group(): void
+    {
+        foreach (['/contact', '/odel/support'] as $path) {
+            $html = (string) $this->get($path)->assertOk()->getContent();
+            $this->assertStringContainsString('admission enquiries', strtolower($html),
+                "{$path} must say the group is for admission enquiries");
+            $this->assertMatchesRegularExpression('/already (a|an) (mru )?student/i', $html,
+                "{$path} must tell an enrolled student where to go instead");
+        }
+    }
+
     /** With the setting emptied the button still goes somewhere real, never to "#". */
     public function test_an_emptied_setting_falls_back_to_the_group(): void
     {

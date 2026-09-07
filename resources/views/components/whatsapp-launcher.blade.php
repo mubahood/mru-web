@@ -1,22 +1,22 @@
 {{--
   The floating WhatsApp launcher.
 
-  It used to open a small panel asking "what brings you here?", because a bare
-  "chat with us" button produces "hi" and then nothing — the visitor has to
-  compose the awkward first sentence and most will not. The panel answered that
-  by writing the opener for them, through wa.me's ?text= parameter, and even
-  named the course or programme the button was pressed on.
+  It used to open a panel asking "what brings you here?" and compose an opening
+  message through wa.me's ?text= parameter. That went when the destination
+  became a group invite, which carries no prefilled message.
 
-  That whole design depended on ?text=. The destination is now a WhatsApp
-  **group** invite (chat.whatsapp.com), and a group link carries no prefilled
-  message: ?text= is ignored. Keeping the panel would mean asking a question and
-  then ignoring the answer, so the button is what it now honestly is — one tap
-  into the University's WhatsApp group.
+  What replaced it was a bare green circle — and a bare green circle says
+  nothing about who it is for. The group is staffed by Admissions and answers
+  people deciding whether to apply. An enrolled student arriving there with a
+  fees, results or registration question is in the wrong queue, and will wait
+  for an answer that was never going to come from it. So the button now carries
+  its own label, and names the audience in the accessible name too rather than
+  leaving it to the icon.
 
   Placement rules it must not break:
     header is z-index 60, mobile menu 55, the mobile action bar 50.
     This sits at 45, so an open menu covers it and the action bar (Apply Now)
-    is never blocked by a floating circle. On mobile it lifts clear of that bar.
+    is never blocked. On mobile it lifts clear of that bar.
 --}}
 @props(['link' => null])
 @php
@@ -29,8 +29,10 @@
 
 <div class="wa">
   <a class="wa-btn" href="{{ $href }}" target="_blank" rel="noopener"
-     data-a="cta.click" data-a-label="WhatsApp: group"
-     aria-label="Join the Muteesa I Royal University WhatsApp group">
+     data-a="cta.click" data-a-label="WhatsApp: admission enquiries"
+     title="For people asking about admission. Already a student? Use the Student E-Portal or contact the Academic Registrar."
+     aria-label="Ask about admission on WhatsApp — for prospective students; enrolled students should use the Student E-Portal">
     <i class="fab fa-whatsapp" aria-hidden="true"></i>
+    <span class="wa-label">Admission enquiries</span>
   </a>
 </div>
