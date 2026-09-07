@@ -95,6 +95,32 @@ Route::controller(\App\Http\Controllers\University\PageController::class)->group
     Route::post('/contact', 'sendMessage')->middleware('throttle:8,1')->name('contact.store');
 });
 
+/*
+ * ODEL — Open, Distance and E-Learning.
+ *
+ * Its own section with its own layout and menu, because its reader is not the
+ * main site's reader: an adult with a job and a family, asking how study would
+ * fit around both. Everything it says is drawn from the two Council-approved
+ * policies, and the mode detail route is constrained to the six the Flexible
+ * Learning Policy names so an invented mode 404s rather than renders.
+ */
+Route::controller(\App\Http\Controllers\University\OdelController::class)->prefix('odel')->name('odel.')->group(function () {
+    Route::get('/', 'index')->name('index');
+    Route::get('/modes', 'modes')->name('modes');
+    Route::get('/modes/{mode}', 'mode')->name('mode')
+        ->whereIn('mode', array_keys(\App\Support\Odel::modes()));
+    Route::get('/how-it-works', 'howItWorks')->name('how-it-works');
+    Route::get('/what-you-get', 'whatYouGet')->name('what-you-get');
+    Route::get('/credit', 'credit')->name('credit');
+    Route::get('/programmes', 'programmes')->name('programmes');
+    Route::get('/quality', 'quality')->name('quality');
+    Route::get('/governance', 'governance')->name('governance');
+    Route::get('/calendar', 'calendar')->name('calendar');
+    Route::get('/support', 'support')->name('support');
+    Route::get('/faqs', 'faqs')->name('faqs');
+    Route::get('/start', 'apply')->name('apply');
+});
+
 // The footer sign-up, reachable from every page.
 Route::post('/newsletter', [\App\Http\Controllers\University\NewsletterController::class, 'store'])
     ->middleware('throttle:6,1')->name('newsletter.store');

@@ -40,6 +40,20 @@ class SitemapController extends Controller
             route('privacy'), route('terms'),
         ];
 
+        // ODEL is a section with its own layout and menu, so its pages would
+        // otherwise be reachable only from inside it. The six mode pages are
+        // generated from the same list the section itself renders, so a mode
+        // added to the policy transcription is indexed without a second edit.
+        $static = array_merge($static, [
+            route('odel.index'), route('odel.modes'), route('odel.how-it-works'),
+            route('odel.what-you-get'), route('odel.credit'), route('odel.programmes'),
+            route('odel.quality'), route('odel.governance'), route('odel.calendar'),
+            route('odel.support'), route('odel.faqs'), route('odel.apply'),
+        ], array_map(
+            fn (string $mode) => route('odel.mode', $mode),
+            array_keys(\App\Support\Odel::modes())
+        ));
+
         $urls = array_map(fn (string $loc) => ['loc' => $loc, 'lastmod' => null], $static);
 
         foreach (Faculty::published()->get(['id', 'slug', 'updated_at']) as $faculty) {
