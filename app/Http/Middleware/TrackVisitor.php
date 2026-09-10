@@ -101,17 +101,10 @@ class TrackVisitor
             return false;
         }
 
-        foreach ((array) config('analytics.ignore_paths', []) as $pattern) {
-            if ($request->is($pattern)) {
-                return false;
-            }
-        }
-
-        if (config('analytics.ignore_admins', true) && $request->user()?->isAdmin()) {
-            return false;
-        }
-
-        return true;
+        // Path and admin exclusions live in AnalyticsScope so that Google
+        // Analytics obeys exactly the same rules; two trackers with two copies
+        // of this list would drift and then disagree for ever.
+        return \App\Support\AnalyticsScope::measurable($request);
     }
 
     private function isHtml(Response $response): bool

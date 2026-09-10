@@ -73,6 +73,30 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Google Analytics (GA4)
+    |--------------------------------------------------------------------------
+    | Runs alongside the first-party analytics above rather than replacing it.
+    | The two answer different questions: this one compares the site to the rest
+    | of the web and survives a database restore; the first-party one knows what
+    | a "programme page" is and never leaves the server.
+    |
+    | The id lives in the environment, not the markup. A staging copy with the
+    | production id pollutes the real numbers, and the only way to notice is to
+    | wonder why traffic doubled.
+    |
+    | `respect_exclusions` makes Google obey the same ignore_admins and
+    | ignore_paths rules as the first-party tracker. Without it the back office
+    | is deliberately excluded from one system and silently measured by the
+    | other, and the two never agree.
+    */
+
+    'google' => [
+        'id' => env('GA_MEASUREMENT_ID'),
+        'respect_exclusions' => env('GA_RESPECT_EXCLUSIONS', true),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Browser beacon
     |--------------------------------------------------------------------------
     | Reports reading time and scroll depth once a page is being left. Without

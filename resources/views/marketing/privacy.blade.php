@@ -27,8 +27,14 @@
           University stores the transaction reference and amount, never your full card or mobile
           money credentials.</li>
       <li><strong>Site analytics:</strong> we measure page visits in aggregate (pages viewed,
-          country, device type) to understand what visitors need. This measurement is first-party;
-          we do not sell or share browsing data with advertisers.</li>
+          country, device type) to understand what visitors need. This is done in two ways. Our own
+          measurement is first-party and never leaves the University's servers. We also use
+          <strong>Google Analytics</strong>, which sets cookies in your browser and sends details of
+          the pages you view to Google, a third party, under
+          <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google's own
+          privacy policy</a>. The University does not sell your browsing data, and neither system
+          records what you type into forms. Neither runs on the staff and administration areas of
+          this site.</li>
     </ul>
 
     <h2>Admissions</h2>

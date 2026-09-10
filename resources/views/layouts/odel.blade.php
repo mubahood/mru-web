@@ -20,6 +20,7 @@
   <link rel="stylesheet" href="{{ \App\Support\Asset::versioned('css/mru.css') }}">
   <link rel="stylesheet" href="{{ \App\Support\Asset::versioned('css/odel.css') }}">
   <link rel="stylesheet" href="{{ \App\Support\Asset::versioned('css/notices.css') }}">
+  <x-analytics.google />
   @stack('styles')
 </head>
 <body class="odel">

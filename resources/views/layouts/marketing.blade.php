@@ -25,6 +25,7 @@
   @livewireStyles
   <link rel="stylesheet" href="{{ \App\Support\Asset::versioned('css/mru.css') }}">
   <link rel="stylesheet" href="{{ \App\Support\Asset::versioned('css/notices.css') }}">
+  <x-analytics.google />
   @stack('styles')
 </head>
 <body>
