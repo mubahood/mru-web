@@ -66,9 +66,19 @@
    real content width — a fixed duration makes a short notice crawl and a long
    one sprint. */
 .ns-ticker{padding-right:66px;}
-.ns-track{display:flex;flex:1;min-width:0;width:max-content;
+/* flex:0 0 auto, NOT flex:1. With flex:1 the track shrinks below max-content
+   to fit its parent, and the keyframe's translateX(-50%) then resolves against
+   that shrunken *layout* width rather than the content width — measured, it
+   moved 687px where the content needed 1723px, so it crawled at 45px/s instead
+   of the 115px/s the duration implied AND the loop never lined up with the end
+   of the first run. The track must be allowed to be as wide as its content. */
+.ns-track{display:flex;flex:0 0 auto;width:max-content;
   animation:ns-scroll var(--ns-dur,34s) linear infinite;}
 .ns-run{display:flex;align-items:center;gap:9px;padding-right:52px;white-space:nowrap;}
+/* Between items in a shared lane. A diamond rather than a pipe: at 13px a pipe
+   reads as part of the sentence it follows. */
+.ns-sep{flex-shrink:0;width:5px;height:5px;margin:0 13px;transform:rotate(45deg);
+  background:var(--gold-l);opacity:.75;}
 @keyframes ns-scroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
 .ns-ticker:hover .ns-track,
 .ns-ticker:focus-within .ns-track,

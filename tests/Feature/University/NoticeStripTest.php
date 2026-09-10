@@ -137,8 +137,69 @@ class NoticeStripTest extends TestCase
         $html = (string) $this->get('/')->assertOk()->getContent();
 
         $this->assertSame(2, substr_count($html, 'class="ns-run"'), 'the ticker needs two runs to loop');
-        $this->assertStringContainsString('<div class="ns-run" aria-hidden="true">', $html);
+        // Matched loosely: the attribute is emitted by a Blade conditional, so
+        // pinning its exact whitespace made this fail on a formatting change
+        // rather than on the copy being announced twice.
+        $this->assertMatchesRegularExpression('/class="ns-run"\s+aria-hidden="true"/', $html);
         $this->assertStringContainsString('data-ns-pause', $html, 'moving content needs a pause control');
+    }
+
+    /**
+     * Several ticker notices share one moving lane, the way a real news ticker
+     * does. A row each would stack 32px strips until the strip is taller than
+     * the header it sits above.
+     */
+    public function test_ticker_notices_share_a_single_lane(): void
+    {
+        $this->notice(['template' => 'ticker', 'message' => 'Applications are open.']);
+        $this->notice(['template' => 'ticker', 'message' => 'Graduation is in December.']);
+        Notices::forget();
+
+        $html = (string) $this->get('/')->assertOk()->getContent();
+
+        $this->assertSame(1, substr_count($html, 'ns-item ns-ticker'), 'one lane, not one per notice');
+        $this->assertStringContainsString('Applications are open.', $html);
+        $this->assertStringContainsString('Graduation is in December.', $html);
+        // A divider between them, and only between them.
+        $this->assertSame(2, substr_count($html, 'ns-sep'), 'one separator per run, two runs');
+    }
+
+    /** A banner or an urgent notice is a statement, so it keeps its own row. */
+    public function test_non_ticker_notices_keep_their_own_row(): void
+    {
+        $this->notice(['template' => 'ticker', 'message' => 'Scrolling item.']);
+        $this->notice(['template' => 'urgent', 'message' => 'Campus closed today.']);
+        Notices::forget();
+
+        $html = (string) $this->get('/')->assertOk()->getContent();
+
+        $this->assertSame(1, substr_count($html, 'ns-item ns-ticker'), 'the ticker lane');
+        $this->assertSame(1, substr_count($html, 'ns-item ns-urgent'), 'plus a row of its own');
+    }
+
+    /** The lane's dismiss key must change when any notice in it changes. */
+    public function test_the_lane_key_tracks_every_notice_in_it(): void
+    {
+        $this->notice(['template' => 'ticker', 'message' => 'One.']);
+        Notices::forget();
+        $before = Notices::tickerKey();
+
+        $this->notice(['template' => 'ticker', 'message' => 'Two.']);
+        Notices::forget();
+
+        $this->assertNotSame($before, Notices::tickerKey());
+    }
+
+    /** One notice refusing dismissal keeps the whole lane on screen. */
+    public function test_the_lane_is_only_dismissible_if_every_notice_allows_it(): void
+    {
+        $this->notice(['template' => 'ticker', 'is_dismissible' => true]);
+        Notices::forget();
+        $this->assertTrue(Notices::tickerDismissible());
+
+        $this->notice(['template' => 'ticker', 'message' => 'Cannot be dismissed.', 'is_dismissible' => false]);
+        Notices::forget();
+        $this->assertFalse(Notices::tickerDismissible());
     }
 
     public function test_an_unknown_template_falls_back_rather_than_breaking_the_page(): void

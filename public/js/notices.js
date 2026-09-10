@@ -39,13 +39,14 @@
     // --- the ticker -----------------------------------------------------
     var track = item.querySelector('[data-ns-track]');
     if (track && !reduced) {
-      // Pace by distance, not by a fixed duration: a short notice should not
-      // crawl and a long one should not sprint. ~70px per second reads at
-      // walking pace; the floor stops a very short notice looping frantically.
+      // Pace by distance, not by a fixed duration: a short lane should not
+      // crawl and a long one should not sprint. ~118px per second reads
+      // briskly and still tracks by eye; the floor stops a very short lane
+      // looping frantically.
       var pace = function () {
         var half = track.scrollWidth / 2;
         if (!half) return;
-        track.style.setProperty('--ns-dur', Math.max(14, Math.round(half / 70)) + 's');
+        track.style.setProperty('--ns-dur', Math.max(9, Math.round(half / 118)) + 's');
       };
       pace();
       if (window.ResizeObserver) new ResizeObserver(pace).observe(item);
