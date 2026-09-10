@@ -23,7 +23,9 @@ class SiteNoticeSeeder extends Seeder
                 'icon' => 'fa-graduation-cap',
                 'link_url' => 'https://eportal.mru.ac.ug/apply/',
                 'link_label' => 'Apply now',
-                'template' => 'countdown',
+                // Moving, not static: the strip is a marquee and this is its
+                // headline notice. The countdown pill renders on any template.
+                'template' => 'ticker',
                 // No start: it is open now. It retires itself at the end of
                 // January rather than waiting for somebody to remember.
                 'starts_at' => null,

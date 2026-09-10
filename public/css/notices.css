@@ -34,7 +34,12 @@
 .ns-go:focus-visible{outline:2px solid #fff;outline-offset:2px;}
 
 /* --- controls --------------------------------------------------------- */
-.ns-x,.ns-pause{position:absolute;top:50%;transform:translateY(-50%);
+/* z-index above the ticker's fade. Both are positioned, the fade is a ::after
+   and therefore paints last, and it hid the controls completely — the pause
+   button was still clickable (the fade has pointer-events:none) but invisible,
+   which is worse than not having one: WCAG 2.2.2 asks for a control the reader
+   can find, not one they can only hit by accident. */
+.ns-x,.ns-pause{position:absolute;z-index:2;top:50%;transform:translateY(-50%);
   width:26px;height:26px;display:flex;align-items:center;justify-content:center;
   background:rgba(255,255,255,.14);border:0;border-radius:var(--r-pill);
   color:inherit;font-size:11px;cursor:pointer;opacity:.75;transition:opacity .15s,background .15s;}
@@ -62,15 +67,19 @@
    through them looked like a collision. A short fade in the bar's own colour
    lets the message disappear cleanly instead of colliding with the controls.
    Pointer-events off so it never eats a click meant for the buttons. */
-.ns-ticker::after{content:'';position:absolute;top:0;bottom:0;right:0;width:110px;
+.ns-ticker::after{content:'';position:absolute;z-index:1;top:0;bottom:0;right:0;width:110px;
   pointer-events:none;
-  background:linear-gradient(90deg,rgba(2,52,121,0) 0%,var(--pri) 55%);}
+  background:linear-gradient(90deg,rgba(10,79,168,0) 0%,#0A4FA8 55%);}
 
 /* --- template: banner ------------------------------------------------- */
 .ns-static{display:flex;align-items:center;gap:10px;flex-wrap:wrap;
   justify-content:center;flex:1;min-width:0;padding:9px 0;}
 .ns-banner{background:var(--pri);color:#fff;}
-.ns-ticker{background:var(--pri);color:#fff;}
+/* The ticker is the moving template, and movement is the point of the strip,
+   so it gets the richer ground rather than the flat one — a notice should not
+   have to choose between scrolling and looking like it matters. */
+.ns-ticker{background:linear-gradient(90deg,var(--pri-d),var(--pri) 55%,#0A4FA8);color:#fff;}
+.ns-ticker .ns-count{background:var(--gold);color:#3A2600;}
 
 /* --- template: urgent ------------------------------------------------- */
 .ns-urgent{background:var(--bad);color:#fff;font-weight:600;}
