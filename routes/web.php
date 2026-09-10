@@ -481,6 +481,7 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(fun
     Route::resource('scholarships', \App\Http\Controllers\Admin\ScholarshipController::class)->except('show');
     Route::resource('vacancies', \App\Http\Controllers\Admin\VacancyController::class)->except('show');
     Route::resource('partners', \App\Http\Controllers\Admin\PartnerController::class)->except('show');
+    Route::resource('notices', \App\Http\Controllers\Admin\SiteNoticeController::class)->except('show')->parameters(['notices' => 'notice']);
     Route::resource('scholars', \App\Http\Controllers\Admin\ScholarController::class)->except('show');
     Route::resource('publications', \App\Http\Controllers\Admin\PublicationController::class)->except('show');
     Route::resource('research-areas', \App\Http\Controllers\Admin\ResearchAreaController::class)->except('show');

@@ -60,6 +60,7 @@
           ['label' => 'Testimonials', 'icon' => 'fa-quote-left', 'route' => 'admin.testimonials.index', 'match' => ['admin.testimonials.*']],
       ]],
       ['key' => 'content', 'label' => 'Website content', 'icon' => 'fa-pen-fancy', 'gate' => ['manage-settings', 'portfolio.manage'], 'items' => [
+          ['label' => 'Notice strip', 'icon' => 'fa-bullhorn', 'route' => 'admin.notices.index', 'match' => ['admin.notices.*']],
           ['label' => 'Pages & copy', 'icon' => 'fa-pen-fancy', 'route' => 'admin.site-content.index', 'match' => ['admin.site-content.*']],
           ['label' => 'News', 'icon' => 'fa-newspaper', 'route' => 'admin.posts.index', 'match' => ['admin.posts.*']],
           ['label' => 'Gallery', 'icon' => 'fa-images', 'route' => 'admin.gallery.index', 'match' => ['admin.gallery.*']],

@@ -1,0 +1,113 @@
+/* =========================================================================
+   The notice strip
+   =========================================================================
+   Sits above the header, so it must not fight it. The header is z-index 60 and
+   sticky; the strip scrolls away with the page rather than pinning, because two
+   fixed bars on a phone is most of the screen gone.
+
+   Four templates share one shell. Everything below the shell is a repaint —
+   colour, weight, motion — so a new template is a class and a case, never a
+   new layout.
+   -------------------------------------------------------------------- */
+.ns{position:relative;z-index:61;}
+.ns-item{position:relative;display:flex;align-items:center;gap:10px;
+  min-height:44px;padding:0 46px 0 16px;overflow:hidden;
+  font-size:13.5px;line-height:1.4;}
+.ns-item + .ns-item{border-top:1px solid rgba(255,255,255,.14);}
+.ns-item[hidden]{display:none;}
+
+/* --- the shared pieces ------------------------------------------------ */
+.ns-icon{flex-shrink:0;opacity:.9;}
+.ns-tag{flex-shrink:0;font-size:10.5px;font-weight:800;letter-spacing:.1em;
+  text-transform:uppercase;padding:3px 8px;border-radius:var(--r-pill);
+  background:rgba(255,255,255,.18);white-space:nowrap;}
+.ns-msg{font-weight:500;}
+.ns-count{flex-shrink:0;display:inline-flex;align-items:center;gap:6px;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;font-weight:700;
+  padding:3px 9px;border-radius:var(--r-pill);background:rgba(0,0,0,.22);white-space:nowrap;}
+.ns-go{flex-shrink:0;display:inline-flex;align-items:center;gap:7px;
+  font-weight:700;text-decoration:none;padding:4px 12px;border-radius:var(--r-pill);
+  background:var(--gold);color:#3A2600;white-space:nowrap;
+  transition:transform .14s,box-shadow .14s,background .14s;}
+.ns-go:hover{background:var(--gold-l);transform:translateY(-1px);
+  box-shadow:0 4px 12px rgba(0,0,0,.22);}
+.ns-go:focus-visible{outline:2px solid #fff;outline-offset:2px;}
+
+/* --- controls --------------------------------------------------------- */
+.ns-x,.ns-pause{position:absolute;top:50%;transform:translateY(-50%);
+  width:26px;height:26px;display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,.14);border:0;border-radius:var(--r-pill);
+  color:inherit;font-size:11px;cursor:pointer;opacity:.75;transition:opacity .15s,background .15s;}
+.ns-x:hover,.ns-pause:hover{opacity:1;background:rgba(255,255,255,.28);}
+.ns-x:focus-visible,.ns-pause:focus-visible{opacity:1;outline:2px solid #fff;outline-offset:2px;}
+.ns-x{right:12px;}
+.ns-pause{right:44px;}
+.ns-item:not(:has(.ns-x)) .ns-pause{right:12px;}
+
+/* --- template: ticker -------------------------------------------------
+   Two identical runs side by side, translated by exactly half the track, so
+   the loop has no seam. Duration is set per element by the script from the
+   real content width — a fixed duration makes a short notice crawl and a long
+   one sprint. */
+.ns-ticker{padding-right:78px;}
+.ns-track{display:flex;flex:1;min-width:0;width:max-content;
+  animation:ns-scroll var(--ns-dur,34s) linear infinite;}
+.ns-run{display:flex;align-items:center;gap:10px;padding-right:56px;white-space:nowrap;}
+@keyframes ns-scroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+.ns-ticker:hover .ns-track,
+.ns-ticker:focus-within .ns-track,
+.ns-ticker.is-paused .ns-track{animation-play-state:paused;}
+
+/* The track scrolls past the pause and dismiss buttons, and text showing
+   through them looked like a collision. A short fade in the bar's own colour
+   lets the message disappear cleanly instead of colliding with the controls.
+   Pointer-events off so it never eats a click meant for the buttons. */
+.ns-ticker::after{content:'';position:absolute;top:0;bottom:0;right:0;width:110px;
+  pointer-events:none;
+  background:linear-gradient(90deg,rgba(2,52,121,0) 0%,var(--pri) 55%);}
+
+/* --- template: banner ------------------------------------------------- */
+.ns-static{display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  justify-content:center;flex:1;min-width:0;padding:9px 0;}
+.ns-banner{background:var(--pri);color:#fff;}
+.ns-ticker{background:var(--pri);color:#fff;}
+
+/* --- template: urgent ------------------------------------------------- */
+.ns-urgent{background:var(--bad);color:#fff;font-weight:600;}
+.ns-urgent .ns-tag{background:rgba(0,0,0,.26);}
+.ns-urgent .ns-go{background:#fff;color:var(--bad);}
+.ns-urgent .ns-go:hover{background:#FFECEC;}
+
+/* --- template: countdown ---------------------------------------------- */
+.ns-countdown{background:linear-gradient(90deg,var(--pri-d),var(--pri) 55%,#0A4FA8);color:#fff;}
+.ns-countdown .ns-count{background:var(--gold);color:#3A2600;}
+
+/* --- responsive -------------------------------------------------------
+   Below 760 the banner and countdown stop centring and start wrapping: a
+   centred three-part line on a phone breaks into ragged islands. The ticker
+   keeps scrolling — that is what it is for on a narrow screen. */
+@media(max-width:760px){
+  .ns-item{font-size:12.5px;padding-right:40px;}
+  .ns-static{justify-content:flex-start;gap:8px;padding:8px 0;}
+  .ns-tag{font-size:9.5px;padding:2px 7px;}
+  .ns-go{padding:4px 10px;font-size:12px;}
+  .ns-x,.ns-pause{width:24px;height:24px;}
+  .ns-ticker{padding-right:70px;}
+}
+@media(max-width:420px){
+  /* The label is the first thing to go: the message carries the meaning. */
+  .ns-static .ns-tag{display:none;}
+}
+
+/* --- motion ------------------------------------------------------------
+   Reduced motion gets no scroll at all. The track becomes a normal wrapping
+   line and the duplicate run is removed, so nothing is read twice. */
+@media(prefers-reduced-motion:reduce){
+  .ns-track{animation:none;width:auto;flex-wrap:wrap;}
+  .ns-run[aria-hidden="true"]{display:none;}
+  .ns-run{white-space:normal;padding-right:0;}
+  .ns-ticker{padding-right:46px;}
+  .ns-pause{display:none;}
+  .ns-go{transition:none;}
+  .ns-go:hover{transform:none;}
+}

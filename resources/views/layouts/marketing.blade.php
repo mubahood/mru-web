@@ -24,6 +24,7 @@
   <noscript><link rel="stylesheet" href="{{ asset('vendor/fa/css/all.min.css') }}"></noscript>
   @livewireStyles
   <link rel="stylesheet" href="{{ \App\Support\Asset::versioned('css/mru.css') }}">
+  <link rel="stylesheet" href="{{ \App\Support\Asset::versioned('css/notices.css') }}">
   @stack('styles')
 </head>
 <body>
@@ -51,6 +52,8 @@
   {{-- Utility row: the doors people already hold keys to. It folds away on
        scroll so the main bar can stay with the reader without stealing
        height from the page. --}}
+  @include('partials.notice-strip')
+
   <div class="topbar">
     <div class="wrap">
       <a href="{{ $eportalUrl }}" rel="external"><i class="fas fa-right-to-bracket" aria-hidden="true"></i> E-Portal</a>
@@ -935,5 +938,6 @@
 @include('partials.whatsapp-gate')
 <x-analytics.beacon />
 <script src="{{ \App\Support\Asset::versioned('js/whatsapp-gate.js') }}" defer></script>
+<script src="{{ \App\Support\Asset::versioned('js/notices.js') }}" defer></script>
 </body>
 </html>

@@ -19,6 +19,7 @@
        still reaches ODEL. --}}
   <link rel="stylesheet" href="{{ \App\Support\Asset::versioned('css/mru.css') }}">
   <link rel="stylesheet" href="{{ \App\Support\Asset::versioned('css/odel.css') }}">
+  <link rel="stylesheet" href="{{ \App\Support\Asset::versioned('css/notices.css') }}">
   @stack('styles')
 </head>
 <body class="odel">
@@ -28,6 +29,8 @@
 {{-- A thin line back to the University proper. ODEL is a section of MRU, not a
      separate institution, and a reader who lands here from a search must be
      able to tell that at a glance and get back. --}}
+@include('partials.notice-strip')
+
 <div class="od-tie">
   <div class="wrap">
     <a href="{{ route('home') }}" wire:navigate class="od-tie-back">
@@ -139,6 +142,7 @@
 </script>
 @include('partials.whatsapp-gate')
 <script src="{{ \App\Support\Asset::versioned('js/whatsapp-gate.js') }}" defer></script>
+<script src="{{ \App\Support\Asset::versioned('js/notices.js') }}" defer></script>
 @stack('scripts')
 </body>
 </html>
