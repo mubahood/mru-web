@@ -1871,6 +1871,94 @@ table{border-collapse:separate;border-spacing:0;width:100%;}
 @media(max-width:900px){.home-gal{grid-template-columns:repeat(2,minmax(0,1fr));}}
 @media(max-width:560px){.home-gal{grid-template-columns:minmax(0,1fr);gap:var(--s-4);}}
 
+/* =========================================================================
+   The WhatsApp gate
+   =========================================================================
+   Shown before joining the Admissions group, so that joining is a deliberate
+   act rather than a tap on a green button.
+
+   z-index 300. The stack on this site is header 60, mobile menu 55, action bar
+   50, launcher 45, lightbox 200 — a gate that any of those could cover would be
+   worse than no gate, because the reader would see a frozen page instead of a
+   choice.
+   -------------------------------------------------------------------- */
+.wg{position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;
+  padding:20px;}
+.wg[hidden]{display:none;}
+.wg-backdrop{position:absolute;inset:0;background:rgba(4,19,43,.66);
+  -webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);}
+.wg-panel{position:relative;width:min(680px,100%);max-height:calc(100dvh - 40px);
+  display:flex;flex-direction:column;background:#fff;border-radius:var(--r-lg);
+  box-shadow:0 40px 90px -30px rgba(4,19,43,.55);overflow:hidden;}
+
+.wg-head{display:flex;align-items:center;gap:13px;padding:20px 22px 16px;
+  border-bottom:1px solid var(--line);}
+.wg-mark{width:40px;height:40px;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  border-radius:var(--r-pill);background:#25D366;color:#fff;font-size:20px;}
+.wg-head h2{margin:0;font-size:19px;line-height:1.3;color:var(--pri);flex:1;min-width:0;}
+.wg-x{width:34px;height:34px;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  background:none;border:0;border-radius:var(--r-sm);color:var(--tx3);font-size:16px;cursor:pointer;}
+.wg-x:hover{background:var(--surface-2);color:var(--tx);}
+.wg-x:focus-visible{outline:2px solid var(--pri);outline-offset:2px;}
+
+/* The body is the only scrolling part, so the heading and the actions stay put
+   on a short screen instead of the whole dialog running off it. */
+.wg-body{padding:18px 22px 20px;overflow-y:auto;}
+.wg-lead{font-size:14.5px;line-height:1.7;color:var(--tx2);margin:0 0 16px;}
+.wg-lead strong{color:var(--tx);}
+
+.wg-split{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;}
+.wg-col{padding:14px 16px;border-radius:var(--r);border:1px solid var(--line);}
+.wg-yes{background:var(--ok-soft);border-color:#CDE9D7;}
+.wg-no{background:var(--bad-soft);border-color:#F3D5D5;}
+.wg-col-h{display:flex;align-items:center;gap:7px;margin:0 0 8px;font-size:12px;font-weight:700;
+  letter-spacing:.07em;text-transform:uppercase;}
+.wg-yes .wg-col-h{color:var(--ok);}
+.wg-no .wg-col-h{color:var(--bad);}
+.wg-col ul{margin:0;padding-left:17px;}
+.wg-col li{font-size:13px;line-height:1.65;color:var(--tx2);}
+
+.wg-note{display:flex;gap:11px;margin-top:14px;padding:13px 15px;border-radius:var(--r);
+  background:var(--surface);border:1px solid var(--line);}
+.wg-note i{color:var(--pri);font-size:14px;margin-top:3px;flex-shrink:0;}
+.wg-note p{margin:0;font-size:13px;line-height:1.65;color:var(--tx2);}
+.wg-note a{color:var(--pri);font-weight:600;text-decoration:underline;}
+
+.wg-check{display:flex;gap:11px;align-items:flex-start;margin-top:18px;padding:14px 16px;
+  border:1.5px solid var(--line-2);border-radius:var(--r);cursor:pointer;
+  transition:border-color .16s,background .16s;}
+.wg-check:hover{border-color:var(--pri-l);background:var(--pri-soft);}
+.wg-check:has(:checked){border-color:var(--ok);background:var(--ok-soft);}
+.wg-check:has(:focus-visible){outline:2px solid var(--pri);outline-offset:2px;}
+.wg-check input{width:19px;height:19px;margin:1px 0 0;flex-shrink:0;accent-color:var(--ok);cursor:pointer;}
+.wg-check span{font-size:13.5px;line-height:1.6;color:var(--tx);}
+
+.wg-foot{display:flex;gap:10px;justify-content:flex-end;padding:16px 22px;
+  border-top:1px solid var(--line);background:var(--surface);}
+/* Disabled is expressed on the anchor, not by removing the href, and the
+   pointer is deliberately NOT switched off: on a phone the checkbox is below
+   the fold, so a dead button that swallows the tap silently is a dead end.
+   It stays clickable so the click can say what is missing. */
+.wg-go[aria-disabled="true"]{opacity:.5;filter:grayscale(.35);cursor:not-allowed;}
+
+/* The nudge: when someone tries to join without confirming, the checkbox is
+   scrolled to and marked, rather than nothing happening at all. */
+.wg-check.is-wanted{border-color:var(--gold-d);background:var(--gold-soft);
+  animation:wg-pulse .5s ease 2;}
+@keyframes wg-pulse{0%,100%{box-shadow:0 0 0 0 rgba(154,98,5,0);}
+  50%{box-shadow:0 0 0 5px rgba(154,98,5,.18);}}
+@media(prefers-reduced-motion:reduce){ .wg-check.is-wanted{animation:none;} }
+
+@media(max-width:620px){
+  .wg{padding:0;align-items:flex-end;}
+  .wg-panel{width:100%;max-height:92dvh;border-radius:var(--r-lg) var(--r-lg) 0 0;}
+  .wg-head h2{font-size:17px;}
+  .wg-split{grid-template-columns:minmax(0,1fr);}
+  .wg-foot{flex-direction:column-reverse;}
+  .wg-foot .btn{width:100%;justify-content:center;min-height:46px;}
+}
+@media(prefers-reduced-motion:reduce){ .wg-check{transition:none;} }
+
 /* Pagination */
 .pagination{margin-top:var(--s-6);gap:8px;font-size:14px;}
 .pagination a,.pagination span{border-radius:var(--r-sm);padding:8px 13px;}

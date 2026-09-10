@@ -137,6 +137,8 @@
     });
   })();
 </script>
+@include('partials.whatsapp-gate')
+<script src="{{ \App\Support\Asset::versioned('js/whatsapp-gate.js') }}" defer></script>
 @stack('scripts')
 </body>
 </html>

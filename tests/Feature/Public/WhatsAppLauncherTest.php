@@ -108,6 +108,77 @@ class WhatsAppLauncherTest extends TestCase
         }
     }
 
+    /**
+     * Joining is a deliberate act.
+     *
+     * A label on the button is easy to skim past. Every page that can reach the
+     * group therefore carries the gate and the script that arms it, so the
+     * reader is told what the group is for and has to confirm before the join
+     * button will do anything.
+     */
+    public function test_every_page_that_can_reach_the_group_carries_the_gate(): void
+    {
+        foreach (['/', '/contact', '/admissions', '/programmes', '/odel', '/odel/support'] as $path) {
+            $html = (string) $this->get($path)->assertOk()->getContent();
+
+            $this->assertStringContainsString('id="wa-gate"', $html, "{$path} has no gate");
+            $this->assertStringContainsString('whatsapp-gate.js', $html, "{$path} does not arm the gate");
+            $this->assertStringContainsString('data-wg-agree', $html, "{$path} has no confirmation control");
+        }
+    }
+
+    /** The gate has to say what the group is not for, or it is just a speed bump. */
+    public function test_the_gate_names_what_does_not_belong_in_the_group(): void
+    {
+        $html = (string) $this->get('/')->assertOk()->getContent();
+
+        $this->assertStringContainsString('This group is for admission enquiries only', $html);
+
+        // The questions an enrolled student would otherwise bring.
+        foreach (['Marks, results and transcripts', 'Registration and course units',
+            'Fees statements and balances', 'Examinations and retakes'] as $wrongPlace) {
+            $this->assertStringContainsString($wrongPlace, $html);
+        }
+
+        // And where those actually go.
+        $this->assertStringContainsString('Student E-Portal', $html);
+        $this->assertMatchesRegularExpression('/already an mru student/i', $html);
+    }
+
+    /**
+     * The join control ships disabled. If a template ever rendered it live the
+     * confirmation would be decorative, so this pins the served markup rather
+     * than trusting the script to switch it off after load.
+     */
+    public function test_the_join_control_is_disabled_in_the_delivered_markup(): void
+    {
+        $html = (string) $this->get('/')->assertOk()->getContent();
+
+        $this->assertMatchesRegularExpression(
+            '/<a[^>]*data-wg-go[^>]*aria-disabled="true"/s',
+            $html,
+            'the join control must arrive disabled'
+        );
+        $this->assertMatchesRegularExpression('/<a[^>]*data-wg-go[^>]*tabindex="-1"/s', $html,
+            'and out of the tab order until confirmed');
+    }
+
+    /**
+     * Without JavaScript the gate cannot run, and the links must still work.
+     * Breaking the only route to Admissions for someone on a bad connection
+     * would cost more than the gate saves.
+     */
+    public function test_the_links_still_point_at_the_group_without_javascript(): void
+    {
+        $html = (string) $this->get('/')->assertOk()->getContent();
+
+        $this->assertMatchesRegularExpression(
+            '/<a class="wa-btn" href="'.preg_quote(self::GROUP, '/').'"/',
+            $html,
+            'the launcher must carry a real href, not a placeholder the script fills in'
+        );
+    }
+
     /** With the setting emptied the button still goes somewhere real, never to "#". */
     public function test_an_emptied_setting_falls_back_to_the_group(): void
     {
@@ -118,6 +189,12 @@ class WhatsAppLauncherTest extends TestCase
         $html = (string) $this->get('/')->assertOk()->getContent();
 
         $this->assertStringContainsString(self::GROUP, $html);
-        $this->assertStringNotContainsString('href="#"', $html);
+
+        // Scoped to the launcher. A blanket ban on href="#" used to stand here
+        // and started failing for the right reason: the gate's join control
+        // ships with href="#" on purpose, and only takes the real address once
+        // the reader has confirmed. What this guards is the launcher falling
+        // back to a dead link, which is a different thing.
+        $this->assertDoesNotMatchRegularExpression('/<a class="wa-btn"[^>]*href="#"/', $html);
     }
 }

@@ -932,6 +932,8 @@
 @stack('scripts')
 @livewireScripts
 <x-whatsapp-launcher />
+@include('partials.whatsapp-gate')
 <x-analytics.beacon />
+<script src="{{ \App\Support\Asset::versioned('js/whatsapp-gate.js') }}" defer></script>
 </body>
 </html>
