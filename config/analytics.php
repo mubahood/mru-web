@@ -93,6 +93,34 @@ return [
     'google' => [
         'id' => env('GA_MEASUREMENT_ID'),
         'respect_exclusions' => env('GA_RESPECT_EXCLUSIONS', true),
+
+        /*
+         | Consent Mode v2
+         |
+         | Storage is denied until the reader says otherwise in the regions
+         | that require it, and granted elsewhere. Google resolves the region
+         | from the request, so this does not need a geolocation lookup here.
+         |
+         | Most of this University's audience is in Uganda, where prior consent
+         | is not required; defaulting the whole world to denied would put a
+         | dialog in front of every Ugandan applicant for a rule that does not
+         | apply to them. The banner is still shown everywhere, so anyone can
+         | refuse — the region list only decides what happens before they
+         | choose.
+         |
+         | With consent denied, GA still sends cookieless pings. That is the
+         | point of consent mode: no identifiers, no cookies, and the traffic
+         | is still counted in aggregate.
+         */
+        'consent' => [
+            'enabled' => env('GA_CONSENT_MODE', true),
+            // EEA + UK + Switzerland, as ISO 3166-2 regions.
+            'strict_regions' => [
+                'AT', 'BE', 'BG', 'CH', 'CY', 'CZ', 'DE', 'DK', 'EE', 'ES', 'FI', 'FR',
+                'GB', 'GR', 'HR', 'HU', 'IE', 'IS', 'IT', 'LI', 'LT', 'LU', 'LV', 'MT',
+                'NL', 'NO', 'PL', 'PT', 'RO', 'SE', 'SI', 'SK',
+            ],
+        ],
     ],
 
     /*

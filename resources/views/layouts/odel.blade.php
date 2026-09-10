@@ -144,6 +144,8 @@
 @include('partials.whatsapp-gate')
 <script src="{{ \App\Support\Asset::versioned('js/whatsapp-gate.js') }}" defer></script>
 <script src="{{ \App\Support\Asset::versioned('js/notices.js') }}" defer></script>
+<script src="{{ \App\Support\Asset::versioned('js/consent.js') }}" defer></script>
 @stack('scripts')
+@include('partials.consent-bar')
 </body>
 </html>

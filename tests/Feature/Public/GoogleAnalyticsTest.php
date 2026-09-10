@@ -86,6 +86,67 @@ class GoogleAnalyticsTest extends TestCase
     }
 
     /**
+     * Consent defaults must be pushed BEFORE the library is requested and
+     * before config. A default that arrives after gtag has configured is a
+     * default that never applied.
+     */
+    public function test_consent_defaults_come_before_the_library_and_the_config(): void
+    {
+        $html = (string) $this->get('/')->assertOk()->getContent();
+
+        $consent = strpos($html, "gtag('consent', 'default'");
+        $config = strpos($html, "gtag('config'");
+        $library = strpos($html, 'googletagmanager.com/gtag/js');
+
+        $this->assertNotFalse($consent, 'no consent default is set');
+        $this->assertLessThan($config, $consent, 'consent must precede config');
+        $this->assertLessThan($library, $config, 'config must precede the library request');
+    }
+
+    /**
+     * Denied where prior consent is required, granted elsewhere. Defaulting the
+     * whole world to denied would put a dialog in front of every Ugandan
+     * applicant for a rule that does not apply to them.
+     */
+    public function test_storage_is_denied_by_default_only_where_the_law_requires_it(): void
+    {
+        $html = (string) $this->get('/')->assertOk()->getContent();
+
+        // A region-scoped denial, and an unscoped grant.
+        $this->assertMatchesRegularExpression('/analytics_storage: .denied.,\s*
+\s*wait_for_update/', $html);
+        $this->assertStringContainsString("analytics_storage: 'granted'", $html);
+
+        foreach (['"GB"', '"DE"', '"FR"', '"IE"'] as $region) {
+            $this->assertStringContainsString($region, $html, "the strict region list must include {$region}");
+        }
+    }
+
+    public function test_the_consent_bar_ships_hidden_and_offers_both_choices_equally(): void
+    {
+        $html = (string) $this->get('/')->assertOk()->getContent();
+
+        $this->assertStringContainsString('id="consent-bar"', $html);
+        // Hidden in the markup: a reader with no JavaScript must not be shown
+        // two buttons that cannot do anything.
+        $this->assertMatchesRegularExpression('/id="consent-bar"[^>]*hidden/', $html);
+        $this->assertStringContainsString('data-consent="denied"', $html);
+        $this->assertStringContainsString('data-consent="granted"', $html);
+        $this->assertStringContainsString('js/consent.js', $html);
+    }
+
+    /** Consent mode can be switched off without switching off measurement. */
+    public function test_consent_mode_can_be_disabled_independently(): void
+    {
+        config(['analytics.google.consent.enabled' => false]);
+
+        $html = (string) $this->get('/')->assertOk()->getContent();
+
+        $this->assertStringContainsString('googletagmanager.com/gtag/js', $html, 'the tag still loads');
+        $this->assertStringNotContainsString("gtag('consent'", $html);
+    }
+
+    /**
      * The privacy policy said measurement was first-party. Adding a
      * third-party tracker made that untrue, and a live university site
      * misdescribing where its visitors' data goes is not a small thing.

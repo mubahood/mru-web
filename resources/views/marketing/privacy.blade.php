@@ -34,7 +34,9 @@
           <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google's own
           privacy policy</a>. The University does not sell your browsing data, and neither system
           records what you type into forms. Neither runs on the staff and administration areas of
-          this site.</li>
+          this site. You are asked once whether Google Analytics may set its cookie, and the site
+          works identically if you refuse; to change that answer later, clear this site's data in
+          your browser and you will be asked again.</li>
     </ul>
 
     <h2>Admissions</h2>
