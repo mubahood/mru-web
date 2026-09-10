@@ -10,28 +10,39 @@
    new layout.
    -------------------------------------------------------------------- */
 .ns{position:relative;z-index:61;}
-.ns-item{position:relative;display:flex;align-items:center;gap:10px;
-  min-height:44px;padding:0 46px 0 16px;overflow:hidden;
-  font-size:13.5px;line-height:1.4;}
+/* Kept deliberately short. This sits above a sticky header on a phone, and
+   every pixel it takes is a pixel of the page nobody asked for. 32px is a
+   readable line at 13px with room either side and nothing more. */
+.ns-item{position:relative;display:flex;align-items:center;gap:9px;
+  min-height:32px;padding:0 40px 0 14px;overflow:hidden;
+  font-family:'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  font-size:13px;line-height:1.35;letter-spacing:.002em;}
 .ns-item + .ns-item{border-top:1px solid rgba(255,255,255,.14);}
 .ns-item[hidden]{display:none;}
 
 /* --- the shared pieces ------------------------------------------------ */
 .ns-icon{flex-shrink:0;opacity:.9;}
-.ns-tag{flex-shrink:0;font-size:10.5px;font-weight:800;letter-spacing:.1em;
-  text-transform:uppercase;padding:3px 8px;border-radius:var(--r-pill);
-  background:rgba(255,255,255,.18);white-space:nowrap;}
-.ns-msg{font-weight:500;}
-.ns-count{flex-shrink:0;display:inline-flex;align-items:center;gap:6px;
-  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;font-weight:700;
-  padding:3px 9px;border-radius:var(--r-pill);background:rgba(0,0,0,.22);white-space:nowrap;}
-.ns-go{flex-shrink:0;display:inline-flex;align-items:center;gap:7px;
-  font-weight:700;text-decoration:none;padding:4px 12px;border-radius:var(--r-pill);
-  background:var(--gold);color:#3A2600;white-space:nowrap;
-  transition:transform .14s,box-shadow .14s,background .14s;}
-.ns-go:hover{background:var(--gold-l);transform:translateY(-1px);
-  box-shadow:0 4px 12px rgba(0,0,0,.22);}
-.ns-go:focus-visible{outline:2px solid #fff;outline-offset:2px;}
+.ns-tag{flex-shrink:0;font-size:10px;font-weight:800;letter-spacing:.11em;
+  text-transform:uppercase;padding:2px 7px;border-radius:var(--r-pill);
+  background:rgba(255,255,255,.2);white-space:nowrap;}
+.ns-msg{font-weight:500;color:rgba(255,255,255,.96);}
+/* Was a filled chip in a monospace face. Plain text in the same family as the
+   message reads faster and costs no height — the gold is enough to separate
+   it, and tabular numerals stop the figure jittering as it counts down. */
+.ns-count{flex-shrink:0;display:inline-flex;align-items:center;gap:5px;
+  font-size:12px;font-weight:700;color:var(--gold-l);white-space:nowrap;
+  font-variant-numeric:tabular-nums;}
+/* A text button. The filled pill was the tallest thing in the bar and made a
+   40px-high strip out of a 13px line; as text it costs nothing vertically and
+   still reads as the action, because it is the only underlined gold thing
+   here. */
+.ns-go{flex-shrink:0;display:inline-flex;align-items:center;gap:6px;
+  font-weight:700;color:var(--gold-l);white-space:nowrap;padding:2px 0;
+  text-decoration:underline;text-underline-offset:3px;
+  text-decoration-thickness:1.5px;text-decoration-color:rgba(255,199,104,.5);
+  transition:color .14s,text-decoration-color .14s;}
+.ns-go:hover{color:#fff;text-decoration-color:#fff;}
+.ns-go:focus-visible{outline:2px solid #fff;outline-offset:3px;border-radius:2px;}
 
 /* --- controls --------------------------------------------------------- */
 /* z-index above the ticker's fade. Both are positioned, the fade is a ::after
@@ -40,13 +51,13 @@
    which is worse than not having one: WCAG 2.2.2 asks for a control the reader
    can find, not one they can only hit by accident. */
 .ns-x,.ns-pause{position:absolute;z-index:2;top:50%;transform:translateY(-50%);
-  width:26px;height:26px;display:flex;align-items:center;justify-content:center;
+  width:22px;height:22px;display:flex;align-items:center;justify-content:center;
   background:rgba(255,255,255,.14);border:0;border-radius:var(--r-pill);
-  color:inherit;font-size:11px;cursor:pointer;opacity:.75;transition:opacity .15s,background .15s;}
+  color:inherit;font-size:9.5px;cursor:pointer;opacity:.7;transition:opacity .15s,background .15s;}
 .ns-x:hover,.ns-pause:hover{opacity:1;background:rgba(255,255,255,.28);}
 .ns-x:focus-visible,.ns-pause:focus-visible{opacity:1;outline:2px solid #fff;outline-offset:2px;}
-.ns-x{right:12px;}
-.ns-pause{right:44px;}
+.ns-x{right:10px;}
+.ns-pause{right:36px;}
 .ns-item:not(:has(.ns-x)) .ns-pause{right:12px;}
 
 /* --- template: ticker -------------------------------------------------
@@ -54,10 +65,10 @@
    the loop has no seam. Duration is set per element by the script from the
    real content width — a fixed duration makes a short notice crawl and a long
    one sprint. */
-.ns-ticker{padding-right:78px;}
+.ns-ticker{padding-right:66px;}
 .ns-track{display:flex;flex:1;min-width:0;width:max-content;
   animation:ns-scroll var(--ns-dur,34s) linear infinite;}
-.ns-run{display:flex;align-items:center;gap:10px;padding-right:56px;white-space:nowrap;}
+.ns-run{display:flex;align-items:center;gap:9px;padding-right:52px;white-space:nowrap;}
 @keyframes ns-scroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
 .ns-ticker:hover .ns-track,
 .ns-ticker:focus-within .ns-track,
@@ -72,14 +83,13 @@
   background:linear-gradient(90deg,rgba(10,79,168,0) 0%,#0A4FA8 55%);}
 
 /* --- template: banner ------------------------------------------------- */
-.ns-static{display:flex;align-items:center;gap:10px;flex-wrap:wrap;
-  justify-content:center;flex:1;min-width:0;padding:9px 0;}
+.ns-static{display:flex;align-items:center;gap:9px;flex-wrap:wrap;
+  justify-content:center;flex:1;min-width:0;padding:6px 0;}
 .ns-banner{background:var(--pri);color:#fff;}
 /* The ticker is the moving template, and movement is the point of the strip,
    so it gets the richer ground rather than the flat one — a notice should not
    have to choose between scrolling and looking like it matters. */
 .ns-ticker{background:linear-gradient(90deg,var(--pri-d),var(--pri) 55%,#0A4FA8);color:#fff;}
-.ns-ticker .ns-count{background:var(--gold);color:#3A2600;}
 
 /* --- template: urgent ------------------------------------------------- */
 .ns-urgent{background:var(--bad);color:#fff;font-weight:600;}
@@ -89,19 +99,20 @@
 
 /* --- template: countdown ---------------------------------------------- */
 .ns-countdown{background:linear-gradient(90deg,var(--pri-d),var(--pri) 55%,#0A4FA8);color:#fff;}
-.ns-countdown .ns-count{background:var(--gold);color:#3A2600;}
 
 /* --- responsive -------------------------------------------------------
    Below 760 the banner and countdown stop centring and start wrapping: a
    centred three-part line on a phone breaks into ragged islands. The ticker
    keeps scrolling — that is what it is for on a narrow screen. */
 @media(max-width:760px){
-  .ns-item{font-size:12.5px;padding-right:40px;}
-  .ns-static{justify-content:flex-start;gap:8px;padding:8px 0;}
-  .ns-tag{font-size:9.5px;padding:2px 7px;}
-  .ns-go{padding:4px 10px;font-size:12px;}
-  .ns-x,.ns-pause{width:24px;height:24px;}
-  .ns-ticker{padding-right:70px;}
+  .ns-item{font-size:12.5px;min-height:30px;padding:0 36px 0 12px;}
+  .ns-static{justify-content:flex-start;gap:8px;padding:5px 0;}
+  .ns-tag{font-size:9.5px;padding:2px 6px;}
+  .ns-go{font-size:12px;}
+  .ns-count{font-size:11.5px;}
+  .ns-x,.ns-pause{width:20px;height:20px;font-size:9px;}
+  .ns-x{right:8px;} .ns-pause{right:32px;}
+  .ns-ticker{padding-right:58px;}
 }
 @media(max-width:420px){
   /* The label is the first thing to go: the message carries the meaning. */
@@ -115,7 +126,7 @@
   .ns-track{animation:none;width:auto;flex-wrap:wrap;}
   .ns-run[aria-hidden="true"]{display:none;}
   .ns-run{white-space:normal;padding-right:0;}
-  .ns-ticker{padding-right:46px;}
+  .ns-ticker{padding-right:40px;}
   .ns-pause{display:none;}
   .ns-go{transition:none;}
   .ns-go:hover{transform:none;}
